@@ -1,4 +1,4 @@
-import { mountImageGallery } from "./gallery.fdda46f309cd7233.mjs";
+import { mountImageGallery } from "./gallery.0f0781f8b4c930e6.mjs";
 import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.cdbfe5654df6eedc.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};

@@ -199,7 +199,7 @@ function addStyle(doc, root) {
 .matrixlab-gallery[data-wide="true"] .matrixlab-gallery__grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 .matrixlab-gallery__tile{min-width:0;padding:6px;border:1px solid #33573D;border-radius:9px;background:#0D1C12;color:#BDF3CD}.matrixlab-gallery__tile[data-selected="true"]{border-color:#56FF82}
 .matrixlab-gallery__preview{display:block;width:100%;height:80px;object-fit:contain;border-radius:6px;background-color:#0C160F;background-image:linear-gradient(45deg,#18261C 25%,transparent 25%),linear-gradient(-45deg,#18261C 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#18261C 75%),linear-gradient(-45deg,transparent 75%,#18261C 75%);background-size:10px 10px;background-position:0 0,0 5px,5px -5px,-5px 0}
-.matrixlab-gallery__name{margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;line-height:13.5px}.matrixlab-gallery__thumbnail-error{margin-top:5px;color:#FF8B7D;font-size:9px;line-height:13.5px;overflow-wrap:anywhere}.matrixlab-gallery__actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:6px}.matrixlab-gallery__actions button{display:flex;min-width:0;min-height:28px;align-items:center;justify-content:center;border:1px solid #3B6148;border-radius:6px;background:#172F20;color:#BDF3CD;cursor:pointer}.matrixlab-gallery__actions button:disabled{opacity:.38;cursor:default}
+.matrixlab-gallery__name{margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;line-height:13.5px}.matrixlab-gallery__thumbnail-error{margin-top:5px;color:#FF8B7D;font-size:9px;line-height:13.5px;overflow-wrap:anywhere}.matrixlab-gallery__actions{display:flex;justify-content:flex-end;gap:4px;margin-top:6px}.matrixlab-gallery__actions button{display:flex;width:36px;min-width:0;min-height:28px;align-items:center;justify-content:center;border:1px solid #3B6148;border-radius:6px;background:#172F20;color:#BDF3CD;cursor:pointer}.matrixlab-gallery__actions button:disabled{opacity:.38;cursor:default}
 .matrixlab-gallery__selected{color:#9EFFB9;margin-left:4px}.matrixlab-gallery__status{min-height:30px;margin-top:10px;font-size:10px;line-height:16px;color:#97AA9C;overflow-wrap:anywhere}.matrixlab-gallery__status[data-error="true"]{padding:8px 10px;border:1px solid #FF6B5A;border-radius:8px;background:#26110F;color:#FF6B5A}.matrixlab-gallery__empty{margin:20px 0;color:#779681;font-size:10px;line-height:18px;text-align:center}.matrixlab-gallery__pending{opacity:.7}
 `;
   root.appendChild(style);
@@ -348,6 +348,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     tile.draggable = !isPending && !isLinked(node, canonicalWidget);
     const image = doc.createElement("img");
     image.className = "matrixlab-gallery__preview";
+    image.draggable = false;
     image.src = source;
     const identity = isPending ? item.name : item.image;
     const filename = (isPending ? identity : inputPath(identity)).split("/").pop();
@@ -395,8 +396,6 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     const actions = doc.createElement("div");
     actions.className = "matrixlab-gallery__actions";
     actions.append(
-      button("Move image earlier", "M15 18l-6-6 6-6", index === 0 || isLinked(node, canonicalWidget), (event) => move(index, index - 1, event)),
-      button("Move image later", "M9 18l6-6-6-6", index === state.items.length - 1 || isLinked(node, canonicalWidget), (event) => move(index, index + 1, event)),
       button("Remove image reference", "M5 5l14 14M19 5L5 19", isLinked(node, canonicalWidget), (event) => remove(index, event)),
     );
     if (state.selected === index) {
@@ -445,7 +444,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
       status.dataset.error = "false";
       status.textContent = pendingCount
         ? `Uploading ${pendingCount} image${pendingCount === 1 ? "" : "s"}…`
-        : "Run processes all images in shown order; selection preview only.";
+        : "Drag images to reorder. Run processes all images; selection previews only.";
     }
     scheduleSize();
   }
@@ -518,19 +517,26 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     const added = uploaded.filter(Boolean);
     if (destroyed || epoch !== uploadEpoch) return;
     const retainedError = errorMessage;
-    if (added.length) {
-      const items = [...state.items, ...added];
-      const selected = state.selected == null ? state.items.length : state.selected;
-      commit({ version: 1, items, selected }, event, state.selected == null);
-      callback(options, "onUploadComplete", added, state);
+    try {
+      if (added.length) {
+        // The canonical state and link may have changed while uploads were pending.
+        state = parseGalleryState(canonicalWidget.value);
+        const items = [...state.items, ...added];
+        const selected = state.selected == null ? state.items.length : state.selected;
+        if (!commit({ version: 1, items, selected }, event, state.selected == null)) return;
+        callback(options, "onUploadComplete", added, state);
+      }
+      errorMessage = retainedError;
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : "Collection changed during upload.";
+    } finally {
+      for (const item of pending) if (item?.url) (options.URL || globalThis.URL)?.revokeObjectURL?.(item.url);
+      pending = [];
+      uploadInProgress = false;
+      uploadController = null;
+      input.value = "";
+      render();
     }
-    errorMessage = retainedError;
-    for (const item of pending) if (item?.url) (options.URL || globalThis.URL)?.revokeObjectURL?.(item.url);
-    pending = [];
-    uploadInProgress = false;
-    uploadController = null;
-    input.value = "";
-    render();
   }
 
   const choose = () => input.click();

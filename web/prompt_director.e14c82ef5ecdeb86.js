@@ -110,7 +110,7 @@ function restoreWidget(snapshot) {
   const { widget } = snapshot;
   widget.draw = snapshot.draw;
   widget.computeSize = snapshot.computeSize;
-  widget.callback = snapshot.callback;
+  if (widget.callback === snapshot.ownedCallback) widget.callback = snapshot.callback;
   if (snapshot.hadOptions) {
     widget.options = snapshot.options;
     if (widget.options) widget.options.hidden = snapshot.hidden;
@@ -153,7 +153,7 @@ export function parseReferenceCollection(value) {
   if (!data || Array.isArray(data) || typeof data !== "object" ||
       Object.keys(data).sort().join(",") !== "items,selected,version" || data.version !== 1 ||
       !Array.isArray(data.items)) throw new Error("Reference collection has an unsupported shape.");
-  if (data.items.length > 5) throw new Error("Prompt Director accepts at most 5 reference images.");
+  if (data.items.length > 10) throw new Error("Auto Prompter accepts at most 10 reference images.");
   const seen = new Set();
   const items = data.items.map((item, index) => {
     if (!item || Array.isArray(item) || typeof item !== "object" ||
@@ -259,9 +259,17 @@ function responseError(payload, response, fallback) {
 function addStyle(doc, root) {
   const style = doc.createElement("style");
   style.textContent = `
+.matrixlab-director [hidden]{display:none!important}
+@supports (appearance:base-select){
+ .matrixlab-director select,.matrixlab-director select::picker(select){appearance:base-select}
+ .matrixlab-director select::picker(select){background:#0B1710;color:#EDF8F0;border:1px solid #31543C;border-radius:9px;padding:4px;font:13px/19.5px "Cascadia Mono",Consolas,monospace;max-height:320px;overflow:auto}
+ .matrixlab-director select option{padding:8px 10px;border-radius:5px}
+ .matrixlab-director select option:hover,.matrixlab-director select option:focus{background:#173E24;color:#BDFFD0;outline:none}
+ .matrixlab-director select option::checkmark,.matrixlab-director select::picker-icon{color:#00FF41}
+}
 .matrixlab-director{position:relative;z-index:2;display:grid;grid-auto-rows:max-content;align-content:start;margin:0 7px;padding:18px 16px;gap:8px;color:#EDF8F0;font:400 13px/19.5px "Cascadia Mono","Cascadia Code",Consolas,"Liberation Mono",monospace;font-variant-ligatures:none;box-sizing:border-box}
 .matrixlab-director *{box-sizing:border-box;font:inherit}.matrixlab-director__eyebrow{color:#ABC0B1;font-size:9px;line-height:13.5px;letter-spacing:1px;text-transform:uppercase}.matrixlab-director__references{display:flex;justify-content:space-between;gap:8px;color:#97AA9C;font-size:10px;line-height:16px}.matrixlab-director__count{color:#5CF2A5}
-.matrixlab-director label{display:grid;gap:5px;color:#ABC0B1;font-size:11px;line-height:16.5px}.matrixlab-director label[data-linked="true"]::after{content:"LINKED";color:#97AA9C;font-size:9px;line-height:13.5px}.matrixlab-director textarea,.matrixlab-director input,.matrixlab-director select{width:100%;min-height:38px;border:1px solid #31543C;border-radius:9px;padding:8px 10px;background:linear-gradient(125deg,#172B1EDF 0%,#0B1710ED 100%);color:#EDF8F0;text-align:left;direction:ltr}.matrixlab-director textarea:disabled,.matrixlab-director input:disabled,.matrixlab-director select:disabled{border-color:#34513E;background:#0C1710;color:#97AA9C}.matrixlab-director textarea{resize:vertical;min-height:76px}.matrixlab-director__output textarea{min-height:116px}.matrixlab-director textarea:focus-visible,.matrixlab-director input:focus-visible,.matrixlab-director select:focus-visible,.matrixlab-director button:focus-visible,.matrixlab-director summary:focus-visible{outline:2px solid #FFCA6B;outline-offset:4px}.matrixlab-director select option{text-align:left;direction:ltr}
+.matrixlab-director label{display:grid;gap:5px;color:#ABC0B1;font-size:11px;line-height:16.5px}.matrixlab-director label[data-linked="true"]::after{content:"LINKED";color:#97AA9C;font-size:9px;line-height:13.5px}.matrixlab-director textarea,.matrixlab-director input,.matrixlab-director select{width:100%;min-height:38px;border:1px solid #31543C;border-radius:9px;padding:8px 10px;background:linear-gradient(125deg,#172B1EDF 0%,#0B1710ED 100%);color:#EDF8F0;text-align:left;direction:ltr}.matrixlab-director textarea:disabled,.matrixlab-director input:disabled,.matrixlab-director select:disabled{border-color:#34513E;background:#0C1710;color:#97AA9C}.matrixlab-director textarea{resize:vertical;min-height:76px}.matrixlab-director__output textarea{min-height:116px}.matrixlab-director textarea:focus-visible,.matrixlab-director input:focus-visible,.matrixlab-director select:focus-visible,.matrixlab-director button:focus-visible,.matrixlab-director summary:focus-visible{outline:2px solid #FFCA6B;outline-offset:4px}.matrixlab-director select{color-scheme:dark;accent-color:#00FF41}.matrixlab-director select option{text-align:left;direction:ltr;background:#0B1710;color:#EDF8F0}.matrixlab-director select option:checked{background:#173E24;color:#BDFFD0}
 .matrixlab-director button{min-height:40px;border:1px solid #00FF41;border-radius:10px;padding:0 12px;background:linear-gradient(180deg,#173E24 0%,#0B2113 100%);color:#BDFFD0;letter-spacing:1px;text-transform:uppercase;cursor:pointer}.matrixlab-director button:disabled{opacity:.38;cursor:default}.matrixlab-director__actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.matrixlab-director__recover{min-width:96px;border-color:#31543C;text-transform:none;letter-spacing:0}
 .matrixlab-director__credential{display:grid;gap:8px;padding:10px;border:1px solid #21492B;border-radius:9px;background:#08170BDE}.matrixlab-director__credential-status{color:#97AA9C;font-size:10px;line-height:16px;overflow-wrap:anywhere}.matrixlab-director__key-row,.matrixlab-director__model-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px}.matrixlab-director__key-row button,.matrixlab-director__model-row button,.matrixlab-director__change{min-height:38px;border-color:#31543C;text-transform:none;letter-spacing:0}.matrixlab-director__change{justify-self:start}.matrixlab-director__model-error{color:#FF6B5A;font-size:10px;line-height:16px}.matrixlab-director__model-row label[data-invalid="true"] select{border-color:#FF6B5A;background:#26110F}
 .matrixlab-director details{border:1px solid #21492B;border-radius:9px;padding:8px 10px;background:#08170BDE}.matrixlab-director summary{cursor:pointer;color:#97AA9C;font-size:10px;line-height:16px}.matrixlab-director__advanced{display:grid;gap:8px;padding-top:10px}.matrixlab-director__status{min-height:30px;padding:7px 9px;border:1px solid #24462E;border-radius:8px;background:#08170BDE;color:#94C69E;font-size:10px;line-height:16px;overflow-wrap:anywhere}.matrixlab-director__status[data-error="true"]{border-color:#FF6B5A;background:#26110F;color:#FF6B5A}.matrixlab-director__status[data-stale="true"]{border-color:#FFCA6B;background:#241B0D;color:#FFCA6B}
@@ -317,7 +325,7 @@ export function mountPromptDirector(node, options = {}) {
   const references = doc.createElement("div");
   references.className = "matrixlab-director__references";
   const referenceLabel = doc.createElement("span");
-  referenceLabel.textContent = "1–5 reference images";
+  referenceLabel.textContent = "1–10 reference images";
   const referenceCount = doc.createElement("span");
   referenceCount.className = "matrixlab-director__count";
   references.append(referenceLabel, referenceCount);
@@ -331,6 +339,7 @@ export function mountPromptDirector(node, options = {}) {
   const keyInput = doc.createElement("input");
   keyInput.type = "password";
   keyInput.autocomplete = "off";
+  keyInput.spellcheck = false;
   keyInput.setAttribute("aria-label", "xAI API key");
   const connect = doc.createElement("button");
   connect.type = "button";
@@ -342,7 +351,12 @@ export function mountPromptDirector(node, options = {}) {
   changeKey.dataset.action = "change-key";
   changeKey.className = "matrixlab-director__change";
   changeKey.textContent = "Change";
-  credentialPanel.append(credentialStatus, keyRow, changeKey);
+  const disconnect = doc.createElement("button");
+  disconnect.type = "button";
+  disconnect.dataset.action = "disconnect-key";
+  disconnect.className = "matrixlab-director__change";
+  disconnect.textContent = "Disconnect";
+  credentialPanel.append(credentialStatus, keyRow, changeKey, disconnect);
   const instructions = doc.createElement("textarea");
   const instructionLabel = makeLabel(doc, "Instructions", instructions);
   const actions = doc.createElement("div");
@@ -462,10 +476,14 @@ export function mountPromptDirector(node, options = {}) {
   const syncControl = (control, widget) => {
     if (doc.activeElement !== control) control.value = String(widget.value ?? "");
   };
+  let modelOptionsKey = "";
   const rebuildModelOptions = () => {
+    const selected = String(widgets.model.value ?? "");
+    const optionsKey = JSON.stringify([modelIds, modelIds.includes(selected) ? "" : selected]);
+    if (optionsKey === modelOptionsKey) { model.value = selected; return; }
+    modelOptionsKey = optionsKey;
     while (model.firstChild) model.removeChild(model.firstChild);
     if (!model.firstChild && Array.isArray(model.children)) model.children.splice(0, model.children.length);
-    const selected = String(widgets.model.value ?? "");
     if (selected && !modelIds.includes(selected)) {
       const missing = doc.createElement("option");
       missing.value = selected;
@@ -490,7 +508,7 @@ export function mountPromptDirector(node, options = {}) {
     let count = null;
     try { count = currentCollection().items.length; collectionError = ""; }
     catch (error) { collectionError = error?.message || String(error); bindCollectionObserver(null); }
-    referenceCount.textContent = count == null ? "Invalid source" : count ? `${count} connected` : "Optional · none";
+    referenceCount.textContent = count == null ? "Invalid source" : count ? `${count} connected` : "0 connected · at least 1 required";
     const state = generationState(widgets.generation_state.value);
     const busy = Boolean(pending);
     const credentialReady = credential.configured && credential.verified;
@@ -514,13 +532,15 @@ export function mountPromptDirector(node, options = {}) {
     refreshModelsButton.disabled = Boolean(catalogueController) || !credential.configured;
     connect.disabled = busy || blockedOutcome || Boolean(credentialController) || !String(keyInput.value || "").trim();
     changeKey.disabled = busy || blockedOutcome || Boolean(credentialController);
+    disconnect.disabled = changeKey.disabled;
+    disconnect.hidden = !credential.configured;
     const connected = credentialReady;
     keyRow.hidden = connected && !credentialEditing;
     changeKey.hidden = !connected || credentialEditing;
     credentialStatus.textContent = credentialError || (connected
       ? `Connected · ••••${credential.tail || ""} · ${credential.source || "credential"} · ${credential.persistence}`
       : "Enter an xAI API key or use a configured environment key.");
-    generate.disabled = busy || Boolean(credentialController) || count == null || count === 0 || actionLinked || blockedOutcome ||
+    generate.disabled = busy || Boolean(credentialController) || Boolean(catalogueController) || count == null || count === 0 || actionLinked || blockedOutcome ||
       !credentialReady || !modelReady;
     recover.hidden = !state.request_id || !["submitting", "pending", "indeterminate"].includes(state.state);
     recover.disabled = busy || isWidgetLinked(node, "final_prompt") || isWidgetLinked(node, "generation_state");
@@ -653,6 +673,39 @@ export function mountPromptDirector(node, options = {}) {
     }
   };
 
+  const disconnectCredential = async () => {
+    if (destroyed || pending || credentialController ||
+        ["submitting", "pending", "indeterminate"].includes(generationState(widgets.generation_state.value).state)) return;
+    catalogueEpoch += 1;
+    catalogueController?.abort?.();
+    catalogueController = null;
+    const epoch = ++credentialEpoch;
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    credentialController = controller || { abort() {} };
+    credentialError = "";
+    keyInput.value = "";
+    render();
+    try {
+      const response = await service.fetchApi(`${CREDENTIAL_PATH}/disconnect`, {
+        method: "POST",
+        headers: withSession({ "X-Matrix-Credential-Intent": "disconnect-v1" }, credentialSession),
+        signal: controller?.signal,
+      });
+      const payload = await jsonResponse(response, "Credential could not be disconnected");
+      if (destroyed || epoch !== credentialEpoch) return;
+      acceptCredential(payload);
+      modelIds = [];
+      catalogueFingerprint = "";
+      modelError = "";
+    } catch (error) {
+      if (destroyed || error?.name === "AbortError" || epoch !== credentialEpoch) return;
+      credentialError = error?.message || String(error);
+    } finally {
+      if (epoch === credentialEpoch) credentialController = null;
+      render();
+    }
+  };
+
   const commitText = (element, widget, event, stale = false) => {
     actionError = "";
     invokeWidget(widget, element.value, event);
@@ -675,6 +728,7 @@ export function mountPromptDirector(node, options = {}) {
   };
   connect.addEventListener("click", connectCredential);
   changeKey.addEventListener("click", changeCredential);
+  disconnect.addEventListener("click", disconnectCredential);
   refreshModelsButton.addEventListener("click", refreshModels);
 
   const applyCompleted = async (payload, requestId, requestMeta, event) => {
@@ -710,7 +764,7 @@ export function mountPromptDirector(node, options = {}) {
   };
 
   const submit = async (event) => {
-    if (pending || destroyed || credentialController) return;
+    if (pending || destroyed || credentialController || catalogueController) return;
     const savedBeforeSubmit = generationState(widgets.generation_state.value);
     if (["submitting", "pending", "indeterminate"].includes(savedBeforeSubmit.state)) {
       actionError = "Recover the prior request before starting another paid request.";
@@ -733,7 +787,7 @@ export function mountPromptDirector(node, options = {}) {
     let requestId;
     try {
       collection = currentCollection();
-      if (!collection.items.length) throw new Error("Add 1–5 reference images before generating.");
+      if (!collection.items.length) throw new Error("Add 1–10 reference images before generating.");
       if (REQUIRED_WIDGETS.some((name) => isWidgetLinked(node, name))) {
         throw new Error("Disconnect linked Prompt Director fields before generating.");
       }
@@ -889,6 +943,7 @@ export function mountPromptDirector(node, options = {}) {
     recover.removeEventListener("click", recoverRequest);
     connect.removeEventListener("click", connectCredential);
     changeKey.removeEventListener("click", changeCredential);
+    disconnect.removeEventListener("click", disconnectCredential);
     refreshModelsButton.removeEventListener("click", refreshModels);
     halo?.destroy?.();
     snapshots.forEach(restoreWidget);
@@ -908,7 +963,7 @@ export function mountPromptDirector(node, options = {}) {
     actionError = ""; bindCollectionObserver(null); markStale("Reference connection changed"); render(); return result;
   };
   const control = { node, root, host, render, submit, recover: recoverRequest,
-    connectCredential, refreshModels, refreshCredentialStatus, destroy,
+    connectCredential, disconnectCredential, refreshModels, refreshCredentialStatus, destroy,
     get credential() { return { ...credential }; },
     get modelIds() { return [...modelIds]; },
     get catalogueFingerprint() { return catalogueFingerprint; },
@@ -926,7 +981,7 @@ export function mountPromptDirector(node, options = {}) {
     if (!halo) throw new Error("HALO surface mount failed");
     for (const snapshot of snapshots) {
       const widget = snapshot.widget;
-      widget.callback = function (...args) {
+      snapshot.ownedCallback = widget.callback = function (...args) {
         let result;
         try { result = snapshot.callback?.apply(this, args); }
         finally { if (!suppressStale && WATCHED_WIDGETS.has(widget.name)) markStale(); render(); }
@@ -953,6 +1008,7 @@ export function mountPromptDirector(node, options = {}) {
     recover.removeEventListener("click", recoverRequest);
     connect.removeEventListener("click", connectCredential);
     changeKey.removeEventListener("click", changeCredential);
+    disconnect.removeEventListener("click", disconnectCredential);
     refreshModelsButton.removeEventListener("click", refreshModels);
     halo?.destroy?.();
     snapshots.forEach(restoreWidget);

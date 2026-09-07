@@ -21,7 +21,7 @@ from typing import Any, Mapping
 from urllib.parse import urlsplit
 
 from ..auth_provider_key import ProviderKeyStore
-from ..io_image_collection import input_digest, load_ordered_records, parse_collection_state
+from ..io_image_collection import MAX_IMAGES, input_digest, load_ordered_records, parse_collection_state
 from ..spend_tokens import TokenLedger, TokenPrices, TokenUsage
 from ..text_refusal import finish_completion
 from ..errors_taxonomy import failure_from_http
@@ -32,6 +32,7 @@ POST_PATH = "/matrixlab/prompt-director/v1/generate"
 GET_PATH = "/matrixlab/prompt-director/v1/requests/{request_id}"
 MODELS_PATH = "/matrixlab/prompt-director/v1/models"
 CREDENTIAL_PATH = "/matrixlab/prompt-director/v1/credential"
+CREDENTIAL_DISCONNECT_PATH = CREDENTIAL_PATH + "/disconnect"
 MAX_TEXT_CHARS = 64_000
 MAX_OUTPUT_TOKENS = 8_192
 MAX_IMAGE_EDGE = 2_048
@@ -132,11 +133,11 @@ def load_model_configs(path: str | Path | None = None) -> dict[str, ModelConfig]
             cached_price = None if cached_value is None else Decimal(str(cached_value))
         except (KeyError, TypeError, ValueError) as exc:
             raise PromptDirectorError(f"generated model {slug!r} has incomplete pricing/modalities") from exc
-        # xAI does not publish an image-token estimator in this fact. The exact builder
-        # supplies a conservative fixed exposure for the admitted five resized images.
+        # This is a conservative engineering exposure bound, not a provider-exact
+        # estimator: scale the prior 200k/five-image allowance to ten images.
         result[str(slug)] = ModelConfig(
             input_price, output_price, cached_price, fetched,
-            input_token_upper_bound=200_000, max_output_tokens=MAX_OUTPUT_TOKENS,
+            input_token_upper_bound=400_000, max_output_tokens=MAX_OUTPUT_TOKENS,
         )
     if not result:
         raise PromptDirectorError("compiled xAI catalogue contains no image-to-text model")
@@ -190,8 +191,8 @@ def _request_payload(body: Any, models: Mapping[str, ModelConfig]) -> dict[str, 
     else:
         collection = _validate_text(raw_collection, "collection", required=True)
     state = parse_collection_state(collection)
-    if not 1 <= len(state.items) <= 5:
-        raise PromptDirectorError("collection must contain 1 to 5 images")
+    if not 1 <= len(state.items) <= MAX_IMAGES:
+        raise PromptDirectorError(f"collection must contain 1 to {MAX_IMAGES} images")
     model = _validate_text(body.get("model"), "model", required=True)
     if model not in models:
         raise PromptDirectorError("model is not in the generated allowlist")
@@ -248,8 +249,9 @@ def _normalize_trigger(text: str, trigger: str) -> str:
     trigger = trigger.strip()
     if not trigger:
         return text.strip()
-    identifier_style = len(trigger) >= 8 or any(not char.isalpha() for char in trigger)
-    pattern = re.compile(re.escape(trigger) if identifier_style else rf"(?<!\w){re.escape(trigger)}(?!\w)")
+    escaped = re.escape(trigger)
+    # Match explicit tokens only, plus the one known provider defect: <trigger>image.
+    pattern = re.compile(rf"(?<!\w){escaped}(?=$|\W)|(?<!\w){escaped}(?=image(?:$|\W))")
     remainder = " ".join(pattern.sub(" ", text).split()).strip(" ,")
     return trigger + (", " + remainder if remainder else "")
 
@@ -371,15 +373,46 @@ class PromptDirectorService:
     async def connect_credential(self, key: str, *, prior_session="") -> dict:
         if self.credential_sessions is None:
             raise CredentialSessionError("interactive credential sessions are unavailable")
+        with self._lock:
+            prior = self.credential_sessions.resolve(prior_session)
+            if prior.fingerprint:
+                self._refuse_unresolved_credential_change(prior.fingerprint)
         try:
             allowed, catalogue_fingerprint = await self._fetch_catalogue(key)
         except Exception as exc:
             raise CredentialSessionError("xAI rejected the credential")
-        resolved = self.credential_sessions.connect(key, prior_session=prior_session)
-        if prior_session:
-            self._catalogues.clear()
-        self._catalogues[resolved.fingerprint] = (catalogue_fingerprint, allowed)
+        with self._lock:
+            prior = self.credential_sessions.resolve(prior_session)
+            if prior.fingerprint:
+                self._refuse_unresolved_credential_change(prior.fingerprint)
+            resolved = self.credential_sessions.connect(key, prior_session=prior_session)
+            if prior_session:
+                self._catalogues.pop(prior.fingerprint, None)
+            self._catalogues[resolved.fingerprint] = (catalogue_fingerprint, allowed)
         return resolved.status
+
+    def _refuse_unresolved_credential_change(self, fingerprint: str) -> None:
+        with self._connect() as db:
+            row = db.execute(
+                "SELECT 1 FROM prompt_requests WHERE credential_fingerprint=? "
+                "AND state IN ('claimed','submitted','uncertain') LIMIT 1", (fingerprint,),
+            ).fetchone()
+        if row is not None:
+            raise CredentialSessionError(
+                "credential has an unresolved request; recover it before changing credentials"
+            )
+
+    def disconnect_credential(self, session="") -> dict:
+        if self.credential_sessions is None:
+            raise CredentialSessionError("interactive credential sessions are unavailable")
+        with self._lock:
+            current = self.credential_sessions.resolve(session)
+            if current.fingerprint:
+                self._refuse_unresolved_credential_change(current.fingerprint)
+            disconnected = self.credential_sessions.disconnect(session)
+            if current.fingerprint:
+                self._catalogues.pop(current.fingerprint, None)
+        return disconnected.status
 
     async def generate(self, body: Any, *, credential_session="") -> dict[str, Any]:
         credential = self._credential(credential_session)
@@ -400,6 +433,10 @@ class PromptDirectorService:
         payload_sha = hashlib.sha256(_canonical(digest_payload).encode("utf-8")).hexdigest()
         now = time.time()
         with self._lock, self._connect() as db:
+            if self.credential_sessions is not None:
+                current = self.credential_sessions.resolve(credential_session)
+                if current.fingerprint != credential.fingerprint:
+                    raise CredentialSessionError("credential session changed while preparing the request")
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT * FROM prompt_requests WHERE request_id=?", (payload["request_id"],)).fetchone()
             if row is not None:
@@ -438,7 +475,8 @@ class PromptDirectorService:
             max_output_tokens=payload["max_output_tokens"],
         )
         try:
-            request_text = payload["instructions"].strip() or "Describe these references as one coherent image prompt."
+            request_text = (payload["instructions"] if payload["instructions"].strip()
+                            else "Describe these references as one coherent image prompt.")
             with self._connect() as db:
                 db.execute("UPDATE prompt_requests SET state='submitted',updated_at=? WHERE request_id=?", (time.time(), payload["request_id"]))
             response = await self.transport(
@@ -593,5 +631,17 @@ def register_routes(*, models: Mapping[str, ModelConfig] | None = None, service:
         except Exception:
             return web.json_response({"error": "Credential verification failed."}, status=401)
 
+    @routes.post(CREDENTIAL_DISCONNECT_PATH)
+    async def credential_disconnect(request):
+        try:
+            _authorize_credential(request, "disconnect-v1")
+            if await request.read():
+                raise PromptDirectorError("credential disconnect request body must be empty")
+            return web.json_response(backend.disconnect_credential(
+                request.headers.get(SESSION_HEADER, "")
+            ))
+        except Exception:
+            return web.json_response({"error": "Credential disconnect failed."}, status=409)
 
-__all__ = ["CREDENTIAL_PATH", "GET_PATH", "MODELS_PATH", "ModelConfig", "POST_PATH", "PromptDirectorError", "PromptDirectorService", "load_model_configs", "register_routes"]
+
+__all__ = ["CREDENTIAL_DISCONNECT_PATH", "CREDENTIAL_PATH", "GET_PATH", "MODELS_PATH", "ModelConfig", "POST_PATH", "PromptDirectorError", "PromptDirectorService", "load_model_configs", "register_routes"]
