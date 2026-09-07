@@ -86,7 +86,7 @@
       "version": "0.1.0"
     },
     {
-      "content_hash": "45c08e3c66b9b83ae68f9df368100e7c6f32b2952eb9d134ef4e7593275fb06c",
+      "content_hash": "ff06bca6f7818b030fbc40dac8f72b15543c67267e4f35958e91d9737ff10580",
       "id": "io.image-collection",
       "version": "0.2.1"
     },
@@ -152,7 +152,7 @@
     "web/ai_influencer_resolution.18b4c8d747f2ee0f.js",
     "web/easy_crop.157f82dc3106c809.js",
     "web/halo_execution.747fda69560b25a6.js",
-    "web/image_collection.36e68688eaeda4bc.js",
+    "web/image_collection.e7e8a59dbf6f6226.js",
     "web/prompt_director.35a849b5b680adaf.js",
     "web/resolution_control_deck.d377ebd38c41ef2c.js"
   ],

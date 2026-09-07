@@ -1,13 +1,13 @@
 import { haloMinimumNodeHeight, measureHaloContentHeight, mountHaloSurface, setHaloNodeSize } from "./halo.cdbfe5654df6eedc.mjs";
 
 export const GALLERY_STATE_VERSION = 1;
-export const MAX_GALLERY_IMAGES = 5;
+export const MAX_GALLERY_IMAGES = 10;
 export const EMPTY_GALLERY_STATE = '{"version":1,"items":[],"selected":null}';
 
 const MIN_WIDTH = 420;
 const WIDE_WIDTH = 560;
 const MAX_GRID_HEIGHT = 320;
-const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"]);
+const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg"]);
 
 function refuse(message) {
   throw new Error(`MATRIXLAB image collection: ${message}`);
@@ -105,6 +105,7 @@ export function parseGalleryState(value) {
   if (keys.join(",") !== "items,selected,version") refuse("state must contain exactly version, items, and selected");
   if (data.version !== GALLERY_STATE_VERSION || !Number.isInteger(data.version)) refuse("unsupported state version");
   if (!Array.isArray(data.items)) refuse("items must be an array");
+  if (data.items.length > MAX_GALLERY_IMAGES) refuse(`Collection supports 1–${MAX_GALLERY_IMAGES} images total.`);
   const known = new Set();
   const items = data.items.map((item, index) => {
     if (!item || Array.isArray(item) || typeof item !== "object" || Object.keys(item).join(",") !== "image") {
@@ -244,14 +245,14 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
   const heading = doc.createElement("div");
   heading.className = "matrixlab-gallery__heading";
   const headingText = doc.createElement("span");
-  headingText.textContent = "01 / Image collection · 1–5 images";
+  headingText.textContent = "01 / Image collection · 1–10 images";
   const count = doc.createElement("span");
   count.className = "matrixlab-gallery__count";
   heading.append(headingText, count);
   const input = doc.createElement("input");
   input.type = "file";
   input.multiple = true;
-  input.accept = "image/png,image/jpeg,image/webp,image/bmp,image/tiff";
+  input.accept = "image/png,image/jpeg";
   input.hidden = true;
   input.setAttribute("aria-label", "Add images to collection");
   const drop = doc.createElement("button");
@@ -261,7 +262,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
   drop.append(
     icon(doc, "M12 5v14M5 12h14"),
     Object.assign(doc.createElement("span"), { className: "matrixlab-gallery__drop-main", textContent: "Drop images or choose files" }),
-    Object.assign(doc.createElement("span"), { className: "matrixlab-gallery__drop-hint", textContent: "1–5 images · static images · originals stay in ComfyUI input" }),
+    Object.assign(doc.createElement("span"), { className: "matrixlab-gallery__drop-hint", textContent: "1–10 images · JPEG / PNG · original dimensions" }),
   );
   const grid = doc.createElement("div");
   grid.className = "matrixlab-gallery__grid";
@@ -355,6 +356,9 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     thumbnailTokens.set(identity, token);
     image.addEventListener?.("load", () => {
       if (destroyed || thumbnailTokens.get(identity) !== token) return;
+      if (image.naturalWidth > 0 && image.naturalHeight > 0) {
+        dimensions.textContent = `${image.naturalWidth} × ${image.naturalHeight} px`;
+      }
       if (thumbnailErrors.delete(identity)) render();
     });
     image.addEventListener?.("error", () => {
@@ -363,6 +367,8 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
       thumbnailErrors.set(identity, `${filename}: thumbnail unavailable; the file may be missing or corrupt.`);
       render();
     });
+    const dimensions = doc.createElement("div");
+    dimensions.className = "matrixlab-gallery__name";
     const name = doc.createElement("div");
     name.className = "matrixlab-gallery__name";
     name.textContent = filename;
@@ -373,7 +379,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
       textContent: thumbnailError,
     }) : null;
     if (failure) failure.setAttribute("role", "alert");
-    if (isPending) { tile.append(image, name); if (failure) tile.append(failure); return tile; }
+    if (isPending) { tile.append(image, name, dimensions); if (failure) tile.append(failure); return tile; }
     tile.tabIndex = 0;
     tile.setAttribute("role", "option");
     tile.setAttribute("aria-selected", String(state.selected === index));
@@ -396,11 +402,11 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     if (state.selected === index) {
       const selected = doc.createElement("span");
       selected.className = "matrixlab-gallery__selected";
-      selected.textContent = "✓ Selected";
+      selected.textContent = "✓ Preview";
       selected.setAttribute("aria-hidden", "true");
       name.appendChild(selected);
     }
-    tile.append(image, name);
+    tile.append(image, name, dimensions);
     if (failure) tile.append(failure);
     tile.append(actions);
     return tile;
@@ -422,7 +428,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     state.items.forEach((item, index) => grid.appendChild(tileFor(item, index, viewUrl(api, item.image))));
     pending.filter(Boolean).forEach((item) => grid.appendChild(tileFor(item.file, -1, item.url, true)));
     const total = state.items.length;
-    count.textContent = `${total} image${total === 1 ? "" : "s"}${state.selected == null ? " · none selected" : ` · selected image ${state.selected + 1}`}`;
+    count.textContent = `${total} image${total === 1 ? "" : "s"}${state.selected == null ? " · no preview selected" : ` · preview ${state.selected + 1}`}`;
     const pendingCount = pending.filter(Boolean).length;
     empty.hidden = total > 0 || pendingCount > 0;
     grid.hidden = total === 0 && pendingCount === 0;
@@ -445,8 +451,9 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
   }
 
   async function upload(files, event) {
-    const selectedFiles = Array.from(files || []).filter(fileAccepted);
-    if (!selectedFiles.length) { errorMessage = "Choose supported static image files."; render(); return; }
+    const selectedFiles = Array.from(files || []);
+    if (selectedFiles.some((file) => !fileAccepted(file))) { errorMessage = "Choose JPEG or PNG files only; no files were uploaded."; render(); return; }
+    if (!selectedFiles.length) { errorMessage = "Choose JPEG or PNG files."; render(); return; }
     if (state.items.length + selectedFiles.length > MAX_GALLERY_IMAGES) {
       errorMessage = `Choose 1–${MAX_GALLERY_IMAGES} images total; remove an existing image before adding more.`;
       render();

@@ -12,7 +12,7 @@ from ..easy_crop import EasyCropValidationError, crop_image, resolve_image_path
 
 
 STATE_VERSION = 1
-MAX_IMAGES = 5
+MAX_IMAGES = 10
 EMPTY_STATE_JSON = '{"version":1,"items":[],"selected":null}'
 
 
