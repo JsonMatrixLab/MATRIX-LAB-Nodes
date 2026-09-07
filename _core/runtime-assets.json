@@ -1,0 +1,49 @@
+{
+  "assets": {
+    "eye-bbox": {
+      "allowed_dtypes": [
+        "fp32"
+      ],
+      "byte_size": 22545748,
+      "capabilities": [
+        "eye-bbox"
+      ],
+      "folder_name": "ultralytics_bbox",
+      "labels": [
+        "eye"
+      ],
+      "license": "not-declared-in-retained-live-proof",
+      "logical_id": "bbox/Eyeful_v2-Individual.pt",
+      "model_workspace_bytes": 1610612736,
+      "relative_path": "Eyeful_v2-Individual.pt",
+      "role": "eye-bbox",
+      "sha256": "278fee230b1be01cfb8c47c3f9ad7118c7aa33149a2249b80cea4da236361fbe",
+      "stride": 32,
+      "task": "bbox"
+    },
+    "eye-segm": {
+      "allowed_dtypes": [
+        "fp32"
+      ],
+      "byte_size": 375042383,
+      "capabilities": [
+        "eye-segm"
+      ],
+      "folder_name": "sams",
+      "labels": [
+        "foreground"
+      ],
+      "license": "not-declared-in-retained-live-proof",
+      "logical_id": "sam_vit_b_01ec64.pth",
+      "relative_path": "sam_vit_b_01ec64.pth",
+      "role": "eye-segm",
+      "sha256": "ec2df62732614e57411cdcf32a23ffdf28910380d03139ee0f4fcbe91eb8c912",
+      "stride": 16,
+      "task": "segm"
+    }
+  },
+  "proof": {
+    "sha256": "e9cd32a5c2b214f1570a3f9860144bbc0fec72d4a53734555752a8b4a3a34f91"
+  },
+  "schema": "matrix-lab.comfyui-runtime-assets/v1"
+}

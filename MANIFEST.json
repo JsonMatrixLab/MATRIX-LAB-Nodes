@@ -1,0 +1,178 @@
+{
+  "blocks": [
+    {
+      "content_hash": "58cd840f9e5cd96f96367c12381df48437be171e6514002f8e22b8ccf9317ad0",
+      "id": "types.contract",
+      "version": "1.0.2"
+    },
+    {
+      "content_hash": "96c7bd83a6b7fffcb194e21b565e49521df91642e92eeada680871229ccf4ffb",
+      "id": "lists.batch",
+      "version": "0.1.0"
+    },
+    {
+      "content_hash": "bc19237b8f198fc5ff7e59656acf5ab2f432be40ca8b8a457390abee99e57d25",
+      "id": "flow.blocker",
+      "version": "0.1.0"
+    },
+    {
+      "content_hash": "54bbcd06e47c4246cb5c68ab8d5227bbfafd3feaabc8d3db09b48d1c1ce0550e",
+      "id": "flow.utility",
+      "version": "1.0.0"
+    },
+    {
+      "content_hash": "fc2ffc1bc95aac5640e3ece8d4fda50d9cc803578b11710a0cd3999db41aca3f",
+      "id": "ui.appearance",
+      "version": "0.5.0"
+    },
+    {
+      "content_hash": "ac4c602b7cf67b8df3be4283bab6838d6a959b1eb02c491e4de239bc16830ae7",
+      "id": "sample.spectral-hires",
+      "version": "0.3.1"
+    },
+    {
+      "content_hash": "5aef77674993cbe25a71a64e79c6c8ba3edb8ec52798e347204e5067baefeb44",
+      "id": "sample.latent-tail",
+      "version": "0.2.3"
+    },
+    {
+      "content_hash": "01840c9fa972d067a24c93f20cff73eaff08e18b833f54c1cb23c6faefe4b725",
+      "id": "mask.skin-region",
+      "version": "0.3.0"
+    },
+    {
+      "content_hash": "7af6afab2008c90d1396302c3efd948ea6087369602db065a5918547f0d73d15",
+      "id": "mask.eye-region",
+      "version": "0.3.1"
+    },
+    {
+      "content_hash": "19530e5e4bfbba74509e3c5b86112ba872a39b7b596545203b8b4f4045854387",
+      "id": "sample.crop-tail-paste",
+      "version": "0.1.4"
+    },
+    {
+      "content_hash": "f6bb4725513b77c56106291847de8ff391378d49b7e67956927c0715e02365b4",
+      "id": "io.save-clean",
+      "version": "0.2.0"
+    },
+    {
+      "content_hash": "f21b4e35b2fa9cc87e6cf789a7e533e85c80cf167052513c1d343617c6cc83b0",
+      "id": "sample.output-stage",
+      "version": "0.1.1"
+    },
+    {
+      "content_hash": "b0e2bc157eca2086faf3d5b57bf7ae685490c4ec34a7a4cfb3d00925391b112d",
+      "id": "image.renoise",
+      "version": "0.2.2"
+    },
+    {
+      "content_hash": "12c4b225fcff2a1028b361003f5c6b741aa1f3a109f86f8d23055f5237417432",
+      "id": "color.camera-look",
+      "version": "0.1.1"
+    },
+    {
+      "content_hash": "869da644f94fb10c804e477bb2bd8062ffdab3545855f52f56580dbf5ad4f47f",
+      "id": "resolution.dimensions",
+      "version": "1.0.0"
+    },
+    {
+      "content_hash": "2374116ad33a831b5336b00b5524190e432cf8d16d9d7514a78c5971e053f279",
+      "id": "resolution.ai-influencer",
+      "version": "1.0.0"
+    },
+    {
+      "content_hash": "8b9ef9d731c147c5b9491e28f26c5fc5a6d2e4e2be86596b80e16d16d662e999",
+      "id": "easy.crop",
+      "version": "0.1.0"
+    },
+    {
+      "content_hash": "45c08e3c66b9b83ae68f9df368100e7c6f32b2952eb9d134ef4e7593275fb06c",
+      "id": "io.image-collection",
+      "version": "0.2.1"
+    },
+    {
+      "id": "auth.provider-key",
+      "version": "0.8.0"
+    },
+    {
+      "id": "errors.taxonomy",
+      "version": "0.1.0"
+    },
+    {
+      "id": "transport.http",
+      "version": "0.4.2"
+    },
+    {
+      "id": "spend.tokens",
+      "version": "0.1.0"
+    },
+    {
+      "id": "text.refusal",
+      "version": "0.1.0"
+    },
+    {
+      "id": "prompt.director",
+      "version": "0.2.1"
+    }
+  ],
+  "categories": {
+    "MATRIXLAB_AIInfluencerResolution": "MATRIX LAB/Resolution & Layout",
+    "MATRIXLAB_EasyCrop": "MATRIX LAB/Image Processing",
+    "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
+    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
+    "MATRIXLAB_Resolution": "MATRIX LAB/Resolution & Layout",
+    "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_CameraLook": "MATRIX LAB/Image Processing",
+    "MATRIX_CropTailPaste": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_EyeMask": "MATRIX LAB/Masks & Detection",
+    "MATRIX_LatentTail": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_OutputStage": "MATRIX LAB/Image Processing",
+    "MATRIX_Renoise": "MATRIX LAB/Image Processing",
+    "MATRIX_SaveClean": "MATRIX LAB/Input & Output",
+    "MATRIX_SkinMask": "MATRIX LAB/Masks & Detection"
+  },
+  "declaration_hashes": {
+    "MATRIXLAB_AIInfluencerResolution": "8f6737741244227d88ed8a411548fd788fe311f776ca9aba68b67f34bf9695d9",
+    "MATRIXLAB_EasyCrop": "e3e4d55649ba8fd8d1d5fb2abc526af8ca98b3b7a5b62665965eed080b0f3c2a",
+    "MATRIXLAB_ImageBatchLoader": "bd6b56231c6d2842fb044ff7c5a2c775ca2043837a5879eff9a397569b153319",
+    "MATRIXLAB_PromptDirector": "4084dad0bdfe8b49430049245f4f8cc041a409d217b9e55394754f705249c0bc",
+    "MATRIXLAB_Resolution": "38fea06eda599cb3c78a029b8e0478b3625bc1cd281019caec6cd9612a3ff521",
+    "MATRIXSpectralSampler": "767c07ee23b36895169d5039756f8f425ef0aa0e70ca639d616b5af75c829306",
+    "MATRIX_CameraLook": "8c2132f6975da7120cb9fd51e883ba475651a9f2b31ad2365c90944f482f2541",
+    "MATRIX_CropTailPaste": "7c0a5e925c00a9a08d445e9b8c9315909f17084d9279c37f3841cbce9c2670c7",
+    "MATRIX_EyeMask": "c507e7a4ca5c6b959ab503b4229ec929856576567bc28a82b06e8f5cabebd7ef",
+    "MATRIX_LatentTail": "8677264027158b709269b0ffe22c4ce7a9b81862f78d5d9057f964a0f362f83e",
+    "MATRIX_OutputStage": "6ec9c264ab82dfd9b8c0e8640007a26db25818b3bf7a934db34e7403ba441bbc",
+    "MATRIX_Renoise": "78806798d0a4dcd256098631d76eb761898abf11d5a2d15a7530ebb2738ea713",
+    "MATRIX_SaveClean": "3aaeea9d3b5b246e909df9a21ae9f2883bf251c055dcc9f8e89714beae65a3ce",
+    "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2"
+  },
+  "frontend_entrypoints": [
+    "web/ai_influencer_resolution.ff8d6190e4270fdb.js",
+    "web/easy_crop.b6ccffbb1fb612c3.js",
+    "web/halo_execution.bd497d6133e572c1.js",
+    "web/image_collection.ae445ab3d3ab2dc8.js",
+    "web/prompt_director.aff0abcee048f614.js",
+    "web/resolution_control_deck.3add5bece395d45c.js"
+  ],
+  "nodes": [
+    "MATRIXLAB_AIInfluencerResolution",
+    "MATRIXLAB_EasyCrop",
+    "MATRIXLAB_ImageBatchLoader",
+    "MATRIXLAB_PromptDirector",
+    "MATRIXLAB_Resolution",
+    "MATRIXSpectralSampler",
+    "MATRIX_CameraLook",
+    "MATRIX_CropTailPaste",
+    "MATRIX_EyeMask",
+    "MATRIX_LatentTail",
+    "MATRIX_OutputStage",
+    "MATRIX_Renoise",
+    "MATRIX_SaveClean",
+    "MATRIX_SkinMask"
+  ],
+  "pack_id": "matrixlab-all-nodes",
+  "runtime_asset_registry_sha256": "ba2964519d538b65fafbbe2fbad5a9e7d16940334f49fcc517ddab041c59a5c4",
+  "status": "development",
+  "version": "0.1.0"
+}

@@ -1,0 +1,17 @@
+{
+  "family": "Cascadia Mono",
+  "release": "v2407.24",
+  "release_url": "https://github.com/microsoft/cascadia-code/releases/tag/v2407.24",
+  "archive_url": "https://github.com/microsoft/cascadia-code/releases/download/v2407.24/CascadiaCode-2407.24.zip",
+  "archive_sha256": "e67a68ee3386db63f48b9054bd196ea752bc6a4ebb4df35adce6733da50c8474",
+  "archive_entry": "woff2/CascadiaMono.woff2",
+  "font_file": "CascadiaMono.woff2",
+  "font_sha256": "7d4986a68fbbd674c90cdd8cd5d4a28c698640d3472572b006d2978006049799",
+  "font_bytes": 210484,
+  "license": "OFL-1.1",
+  "license_url": "https://raw.githubusercontent.com/microsoft/cascadia-code/v2407.24/LICENSE",
+  "license_file": "CascadiaMono-LICENSE.txt",
+  "license_sha256": "51882cd3cdba4e16f220f44ddb08a635c38c44ea6e0975db2574f4be6f958238",
+  "style": "normal",
+  "weights": [400, 600, 700]
+}

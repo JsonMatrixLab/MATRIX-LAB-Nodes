@@ -1,0 +1,855 @@
+{
+  "fetched": "2026-09-07T16:49:38+02:00",
+  "generator": "nodes/factory/source/tools/fetch_routes.py",
+  "lifecycle": {
+    "completion": "POST {base_url}/v1/chat/completions",
+    "date": "2026-07-29",
+    "default": "completion",
+    "source": "documentation",
+    "type": "sync",
+    "url": "https://docs.x.ai/docs/api-reference#chat-completions"
+  },
+  "models": {
+    "grok-4.20-0309-non-reasoning": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 2000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.2
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 12500,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.25
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 4000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.4
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 50000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 5.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "slug": "grok-4.20-0309-non-reasoning",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-4.20-0309-reasoning": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 2000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.2
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 12500,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.25
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 4000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.4
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 50000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 5.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "slug": "grok-4.20-0309-reasoning",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-4.20-multi-agent-0309": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 2000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.2
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 12500,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.25
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 4000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.4
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 50000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 5.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "slug": "grok-4.20-multi-agent-0309",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-4.3": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 2000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.2
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 12500,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.25
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 4000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.4
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 50000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 5.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 25000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.5
+      },
+      "slug": "grok-4.3",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-4.5": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 3000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.3
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 20000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.0
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 6000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.6
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 40000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 4.0
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 120000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 12.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 60000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 6.0
+      },
+      "slug": "grok-4.5",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-4.6": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 5000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.5
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 20000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.0
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 10000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.0
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 40000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 4.0
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 120000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 12.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 60000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 6.0
+      },
+      "slug": "grok-4.6",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    },
+    "grok-build-0.1": {
+      "cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 2000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.2
+      },
+      "context_window": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "generation_methods": {
+        "date": "2026-07-29",
+        "source": "documentation",
+        "url": "https://docs.x.ai/docs/api-reference#chat-completions",
+        "value": [
+          "chatCompletions"
+        ]
+      },
+      "input_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "input_modalities",
+        "source": "discovery",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 10000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 1.0
+      },
+      "lifecycle_type": "sync",
+      "long_context_cached_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "cached_prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 4000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 0.4
+      },
+      "long_context_input_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "prompt_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 20000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.0
+      },
+      "long_context_output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price_long_context",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 40000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 4.0
+      },
+      "long_context_threshold": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "long_context_threshold",
+        "source": "discovery",
+        "unit": "tokens",
+        "value": 200000
+      },
+      "max_output_tokens": {
+        "source": "unknown",
+        "unit": "tokens",
+        "value": null
+      },
+      "max_temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "output_modalities": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "output_modalities",
+        "source": "discovery",
+        "value": [
+          "text"
+        ]
+      },
+      "output_token_price": {
+        "fetched": "2026-09-07T16:49:38+02:00",
+        "field": "completion_text_token_price",
+        "raw_unit": "usd_cents_per_100_million_tokens",
+        "raw_value": 20000,
+        "source": "discovery",
+        "unit": "usd_per_million_tokens",
+        "value": 2.0
+      },
+      "slug": "grok-build-0.1",
+      "temperature": {
+        "source": "unknown",
+        "value": null
+      },
+      "thinking": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_k": {
+        "source": "unknown",
+        "value": null
+      },
+      "top_p": {
+        "source": "unknown",
+        "value": null
+      }
+    }
+  },
+  "provider": "xai-grok"
+}
