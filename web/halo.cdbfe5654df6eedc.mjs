@@ -479,6 +479,9 @@ function installStyle(doc) {
 .matrixlab-halo__edge{z-index:5;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px)}
 .matrixlab-halo__content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:0 7px;padding:18px 16px}
 .matrixlab-halo__field{position:relative;z-index:2;display:flex;min-width:0;flex-wrap:wrap;min-height:38px;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:9px;background:${HALO_TOKENS.parameterField};color:${HALO_TOKENS.parameterLabel};transition:background-color 150ms ease,border-color 150ms ease}
+.matrixlab-halo__saved-images button,.matrixlab-halo__saved-images a{font-size:11px;padding:6px 8px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.parameterField};color:${HALO_TOKENS.parameterLabel};text-decoration:none;cursor:pointer}
+.matrixlab-halo__saved-images button:disabled{opacity:.4;cursor:default}
+.matrixlab-halo__saved-images button:focus-visible,.matrixlab-halo__saved-images a:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:2px}
 .matrixlab-halo__field:hover{border-color:${HALO_TOKENS.fieldHoverBorder}}
 .matrixlab-halo__field[data-linked="true"]{border-color:${HALO_TOKENS.linkedBorder};background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.linkedText}}
 .matrixlab-halo__field label{min-width:0;flex:1 1 108px;overflow-wrap:anywhere;font-size:11px;line-height:16.5px}
@@ -1135,13 +1138,112 @@ function createWidgetField(doc, node, widget, options) {
   return { field, render, destroy: () => control.removeEventListener("change", commit) };
 }
 
+// Keep output history in ComfyUI; own only the presentation of this node's saved images.
+export function mountHaloSavedImages(node, root, options = {}) {
+  const doc = root.ownerDocument;
+  const section = doc.createElement("section");
+  section.className = "matrixlab-halo__saved-images";
+  Object.assign(section.style, { display: "flex", flexDirection: "column", flex: "1 1 180px", minHeight: "180px", minWidth: "0", gap: "8px", position: "relative", zIndex: "2" });
+  const viewport = doc.createElement("div");
+  Object.assign(viewport.style, { position: "relative", flex: "1 1 auto", minHeight: "130px", overflow: "hidden", borderRadius: "9px", background: "rgba(0,0,0,0.25)" });
+  const status = doc.createElement("span");
+  status.textContent = "Saved image appears here";
+  const toolbar = doc.createElement("div");
+  Object.assign(toolbar.style, { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" });
+  const previous = doc.createElement("button"); previous.type = "button"; previous.textContent = "Previous";
+  const next = doc.createElement("button"); next.type = "button"; next.textContent = "Next";
+  const open = doc.createElement("a"); open.textContent = "Open image"; open.target = "_blank"; open.rel = "noopener noreferrer";
+  const download = doc.createElement("a"); download.textContent = "Download";
+  toolbar.append(previous, status, next, open, download);
+  section.append(viewport, toolbar); root.appendChild(section);
+  let descriptors = [], selected = 0, pendingImage = null, revision = 0, destroyed = false;
+  let lastImages = null;
+  const previousHidden = node.hideOutputImages;
+  let ownsHidden = false;
+  const nativeWidgets = new Map();
+  const syncNativeWidgets = () => {
+    for (const widget of node.widgets || []) {
+      if (widget.name !== "$$canvas-image-preview") continue;
+      if (ownsHidden && !nativeWidgets.has(widget)) {
+        nativeWidgets.set(widget, { hidden: widget.hidden, computeLayoutSize: widget.computeLayoutSize });
+        widget.hidden = true;
+        widget.computeLayoutSize = () => ({ minHeight: 0, maxHeight: 0, minWidth: 0 });
+      }
+    }
+    if (!ownsHidden) {
+      for (const [widget, state] of nativeWidgets) { widget.hidden = state.hidden; widget.computeLayoutSize = state.computeLayoutSize; }
+      nativeWidgets.clear();
+    }
+  };
+  const originalBackground = node.onDrawBackground;
+  const background = function (...args) {
+    try { return originalBackground?.apply(this, args); }
+    finally { update(options.app?.nodeOutputs?.[node.id]); syncNativeWidgets(); }
+  };
+  node.onDrawBackground = background;
+  const hideNative = (hidden) => {
+    if (hidden) { node.hideOutputImages = true; ownsHidden = true; }
+    else { if (ownsHidden && node.hideOutputImages === true) node.hideOutputImages = previousHidden; ownsHidden = false; }
+    syncNativeWidgets();
+    node.setDirtyCanvas?.(true, true);
+  };
+  const cancelLoad = () => {
+    if (pendingImage) { pendingImage.onload = null; pendingImage.onerror = null; pendingImage = null; }
+  };
+  const show = () => {
+    cancelLoad();
+    const token = ++revision;
+    previous.disabled = selected <= 0; next.disabled = selected >= descriptors.length - 1;
+    open.hidden = download.hidden = true;
+    viewport.replaceChildren();
+    if (!descriptors.length) { status.textContent = "Saved image appears here"; hideNative(false); return; }
+    const descriptor = descriptors[selected];
+    const query = new URLSearchParams({ filename: descriptor.filename, subfolder: descriptor.subfolder || "", type: descriptor.type || "output" });
+    const url = options.imageURL?.(query) ?? `${options.app?.api?.apiURL?.("/view") || "./view"}?${query}`;
+    hideNative(true);
+    open.href = download.href = url; download.download = descriptor.filename;
+    open.hidden = download.hidden = false;
+    const image = doc.createElement("img"); pendingImage = image;
+    image.alt = descriptor.filename;
+    Object.assign(image.style, { position: "absolute", inset: "0", width: "100%", height: "100%", objectFit: "contain" });
+    status.textContent = `Loading ${selected + 1} / ${descriptors.length}`;
+    image.onload = () => {
+      if (destroyed || revision !== token) return;
+      cancelLoad(); viewport.replaceChildren(image);
+      status.textContent = `${selected + 1} / ${descriptors.length}`;
+
+    };
+    image.onerror = () => {
+      if (destroyed || revision !== token) return;
+      cancelLoad(); status.textContent = "Preview unavailable";
+    };
+    image.src = url;
+  };
+  const update = (output) => {
+    if (destroyed || !output || !Object.prototype.hasOwnProperty.call(output, "images")) return;
+    if (output.images === lastImages) return;
+    lastImages = output.images;
+    descriptors = Array.isArray(output.images) ? output.images.filter(item => item && typeof item.filename === "string" && item.filename) : [];
+    selected = 0; show();
+  };
+  const goPrevious = () => { if (selected > 0) { selected--; show(); } };
+  const goNext = () => { if (selected + 1 < descriptors.length) { selected++; show(); } };
+  previous.addEventListener("click", goPrevious); next.addEventListener("click", goNext);
+  show();
+  return { section, update, destroy() {
+    destroyed = true; revision++; cancelLoad(); hideNative(false);
+    if (node.onDrawBackground === background) node.onDrawBackground = originalBackground;
+    previous.removeEventListener("click", goPrevious); next.removeEventListener("click", goNext); section.remove();
+  } };
+}
+
 function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, profile = "execution") {
   const nodeType = node?.comfyClass || node?.type;
   if (!allowedIds.has(nodeType) || !node || typeof node.addDOMWidget !== "function") return null;
   if (node[EXECUTION_KEY]) return node[EXECUTION_KEY];
   const doc = options.document || globalThis.document;
   if (!doc?.createElement) return null;
-  const canonicalWidgets = [...(node.widgets || [])];
+  const canonicalWidgets = [...(node.widgets || [])].filter(widget => widget.name !== "$$canvas-image-preview");
   const snapshots = canonicalWidgets.map(snapshotWidget);
   const beforeMount = new Set(node.widgets || []);
   const root = doc.createElement("div");
@@ -1151,6 +1253,11 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   const presentationName = profile === "execution" ? "matrixlab_halo_execution_ui" : "matrixlab_halo_utility_ui";
   const fields = canonicalWidgets.filter((widget) => widget?.name).map((widget) => createWidgetField(doc, node, widget, options));
   for (const field of fields) root.appendChild(field.field);
+  const savedImages = nodeType === "MATRIX_SaveClean" ? mountHaloSavedImages(node, root, options) : null;
+  if (savedImages) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
+  const contentMinimum = () => savedImages
+    ? Math.max(fields.length * 46 + 36, ...fields.map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + 188
+    : measureHaloContentHeight(root, fields.length * 46 + 36);
   let presentation = null;
   let halo = null;
   let destroyed = false;
@@ -1181,6 +1288,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     }
     restoreWidgets(snapshots);
     halo?.destroy();
+    savedImages?.destroy();
     removePresentation();
     root.remove?.();
     host.remove?.();
@@ -1190,8 +1298,8 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     presentation = node.addDOMWidget(presentationName, "matrixlab-halo", host, {
       serialize: false,
       hideOnZoom: false,
-      getMinHeight: () => haloWidgetLayoutHeight(measureHaloContentHeight(root, fields.length * 46 + 36), presentation),
-      getHeight: () => haloWidgetLayoutHeight(measureHaloContentHeight(root, fields.length * 46 + 36), presentation),
+      getMinHeight: () => haloWidgetLayoutHeight(contentMinimum(), presentation),
+      getHeight: () => haloWidgetLayoutHeight(contentMinimum(), presentation),
       afterResize: () => fields.forEach((field) => field.render()),
     });
     if (!presentation) throw new Error("ComfyUI did not create the HALO DOM widget");
@@ -1226,9 +1334,10 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
       currentWidth,
       minimumWidth + horizontalChrome,
     );
-    const contentHeight = measureHaloContentHeight(root, fields.length * 46 + 36);
-    const height = haloMinimumNodeHeight(node, contentHeight,
+    const contentHeight = contentMinimum();
+    const requiredHeight = haloMinimumNodeHeight(node, contentHeight,
       suppliedChrome ?? options.rendererChrome);
+    const height = savedImages ? Math.max(currentHeight, requiredHeight) : requiredHeight;
     if (width === currentWidth && height === currentHeight) return;
     const size = [width, height];
     setHaloNodeSize(node, size);
@@ -1236,7 +1345,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   const scheduleMinimum = () => {
     if (destroyed) return;
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { resizeTimer = null; minimumSize(); fields.forEach((field) => field.render()); halo.renderStatic(); }, 0);
+    resizeTimer = setTimeout(() => { resizeTimer = null; savedImages?.update(options.app?.nodeOutputs?.[node.id]); minimumSize(); fields.forEach((field) => field.render()); halo.renderStatic(); }, 0);
   };
   // Canonical callbacks own state; the DOM is refreshed only after they finish.
   const refresh = () => {
@@ -1255,10 +1364,20 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     const previous = node[name];
     const wrapped = function (...args) {
       try { return previous?.apply(this, args); }
-      finally { refresh(); }
+      finally { savedImages?.update(options.app?.nodeOutputs?.[node.id]); refresh(); }
     };
     refreshHooks.push({ name, previous, wrapped });
     node[name] = wrapped;
+  }
+  if (savedImages) {
+    const previous = node.onExecuted;
+    const wrapped = function (output, ...args) {
+      try { return previous?.call(this, output, ...args); }
+      finally { savedImages.update(output); refresh(); }
+    };
+    refreshHooks.push({ name: "onExecuted", previous, wrapped });
+    node.onExecuted = wrapped;
+    savedImages.update(options.app?.nodeOutputs?.[node.id]);
   }
   wrappedResize = function (...args) {
     const result = previousResize?.apply(this, args);

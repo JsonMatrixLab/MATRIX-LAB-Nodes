@@ -21,7 +21,7 @@
       "version": "1.0.0"
     },
     {
-      "content_hash": "fc2ffc1bc95aac5640e3ece8d4fda50d9cc803578b11710a0cd3999db41aca3f",
+      "content_hash": "4711059e5d137df92236d642802dc4eae1fcb31d7f83b333ddcc319478f90fbc",
       "id": "ui.appearance",
       "version": "0.5.0"
     },
@@ -148,12 +148,12 @@
     "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2"
   },
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.ff8d6190e4270fdb.js",
-    "web/easy_crop.b6ccffbb1fb612c3.js",
-    "web/halo_execution.bd497d6133e572c1.js",
-    "web/image_collection.ae445ab3d3ab2dc8.js",
-    "web/prompt_director.aff0abcee048f614.js",
-    "web/resolution_control_deck.3add5bece395d45c.js"
+    "web/ai_influencer_resolution.18b4c8d747f2ee0f.js",
+    "web/easy_crop.157f82dc3106c809.js",
+    "web/halo_execution.747fda69560b25a6.js",
+    "web/image_collection.36e68688eaeda4bc.js",
+    "web/prompt_director.4b97a4059093539c.js",
+    "web/resolution_control_deck.d377ebd38c41ef2c.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution",

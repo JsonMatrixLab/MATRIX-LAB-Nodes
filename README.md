@@ -4,7 +4,7 @@ A unified ComfyUI custom-node pack with 14 nodes in six functional groups. Devel
 
 | Group | Nodes |
 | --- | --- |
-| Input & Output | Image Batch Loader, Save Clean |
+| Input & Output | Image Batch Loader, Metadata Killer |
 | Resolution & Layout | Resolution, AI Influencer Resolution |
 | Sampling & Detail | Spectral Sampler, Latent Tail, Crop Tail Paste |
 | Masks & Detection | Skin Mask, Eye Mask |

@@ -169,4 +169,4 @@ class MATRIXSaveClean:
         return _operation_block.execute_utility_operation(inputs)
 
 NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXSaveClean}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Save Clean'}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Metadata Killer'}
