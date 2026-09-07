@@ -1,32 +1,21 @@
-"""Compiled declaration for MATRIX_OutputStage; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIXLAB_Resolution; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core import resolution_dimensions as _operation_block
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_OutputStage'
-OPERATION_BLOCK = 'sample.output-stage'
+NODE_ID = 'MATRIXLAB_Resolution'
+OPERATION_BLOCK = 'resolution.dimensions'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'forceInput': True}),
-    'model': ('MODEL', {'forceInput': True}),
-    'noise': ('NOISE', {'forceInput': True}),
-    'positive': ('CONDITIONING', {'forceInput': True}),
-    'vae': ('VAE', {'forceInput': True}),
-    'target_width': ('INT', {'default': 2048, 'min': 16, 'max': 8192, 'step': 16, 'forceInput': True}),
-    'target_height': ('INT', {'default': 2048, 'min': 16, 'max': 8192, 'step': 16, 'forceInput': True}),
-    'upscale_model': ('UPSCALE_MODEL', {'forceInput': True}),
-    'sigma_base': ('FLOAT', {'default': 0.15, 'min': 0.05, 'max': 0.4, 'step': 0.01}),
-    'sigma_per_octave': ('FLOAT', {'default': 0.1, 'min': 0.0, 'max': 0.3, 'step': 0.01}),
-    'steps': ('INT', {'default': 3, 'min': 1, 'max': 12}),
-    'sampler_name': (['euler', 'euler_cfg_pp', 'euler_ancestral', 'euler_ancestral_cfg_pp', 'heun', 'heunpp2', 'exp_heun_2_x0', 'exp_heun_2_x0_sde', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_2s_ancestral_cfg_pp', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_cfg_pp', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_2m_sde_heun', 'dpmpp_2m_sde_heun_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'lcm', 'ipndm', 'ipndm_v', 'deis', 'res_multistep', 'res_multistep_cfg_pp', 'res_multistep_ancestral', 'res_multistep_ancestral_cfg_pp', 'gradient_estimation', 'gradient_estimation_cfg_pp', 'er_sde', 'seeds_2', 'seeds_3', 'sa_solver', 'sa_solver_pece', 'ddim', 'uni_pc', 'uni_pc_bh2'], {'default': 'res_multistep'}),
-    'scheduler': (['beta57', 'simple', 'sgm_uniform', 'karras', 'exponential', 'ddim_uniform', 'beta', 'normal', 'linear_quadratic', 'kl_optimal'], {'default': 'beta57'}),
-    'resize_method': (['lanczos', 'bicubic', 'area'], {'default': 'lanczos'}),
-    'decode_tile': ('INT', {'default': 512, 'min': 64, 'max': 2048, 'step': 64}),
-    'decode_overlap': ('INT', {'default': 64, 'min': 0, 'max': 512, 'step': 16}),
+    'aspect_ratio': (['1:1', '16:9', '9:16', '4:3', '3:4', '3:2', '2:3', '4:5', 'Custom'], {'default': '3:4', 'tooltip': 'Preset aspect ratio, or exact custom pixel dimensions.'}),
+    'resolution_tier': (['1K', '2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 1024, 2048, or 4096 pixels.'}),
+    'custom_width': ('INT', {'default': 2048, 'tooltip': 'Requested width when the aspect ratio is Custom.', 'min': 1, 'max': 16384, 'step': 1}),
+    'custom_height': ('INT', {'default': 2048, 'tooltip': 'Requested height when the aspect ratio is Custom.', 'min': 1, 'max': 16384, 'step': 1}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'vae': 'VAE', 'target_width': 'INT', 'target_height': 'INT', 'upscale_model': 'UPSCALE_MODEL', 'sigma_base': 'FLOAT', 'sigma_per_octave': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'resize_method': 'STRING', 'decode_tile': 'INT', 'decode_overlap': 'INT'}
-REQUIRED_INPUT_NAMES = ('image', 'model', 'noise', 'positive', 'vae', 'target_width', 'target_height')
-OUTPUT_SOCKET_TYPES = ('IMAGE', 'STRING')
+INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING', 'custom_width': 'INT', 'custom_height': 'INT'}
+REQUIRED_INPUT_NAMES = ('aspect_ratio', 'resolution_tier', 'custom_width', 'custom_height')
+OUTPUT_SOCKET_TYPES = ('INT', 'INT')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
 OUTPUT_IS_LIST = (False, False)
@@ -152,43 +141,30 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXOutputStage:
+class MATRIXLABResolution:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'image': _input_widget('image'),
-                'model': _input_widget('model'),
-                'noise': _input_widget('noise'),
-                'positive': _input_widget('positive'),
-                'vae': _input_widget('vae'),
-                'target_width': _input_widget('target_width'),
-                'target_height': _input_widget('target_height'),
+                'aspect_ratio': _input_widget('aspect_ratio'),
+                'resolution_tier': _input_widget('resolution_tier'),
+                'custom_width': _input_widget('custom_width'),
+                'custom_height': _input_widget('custom_height'),
             },
             "optional": {
-                'upscale_model': _input_widget('upscale_model'),
-                'sigma_base': _input_widget('sigma_base'),
-                'sigma_per_octave': _input_widget('sigma_per_octave'),
-                'steps': _input_widget('steps'),
-                'sampler_name': _input_widget('sampler_name'),
-                'scheduler': _input_widget('scheduler'),
-                'resize_method': _input_widget('resize_method'),
-                'decode_tile': _input_widget('decode_tile'),
-                'decode_overlap': _input_widget('decode_overlap'),
             },
         }
 
-    RETURN_TYPES = ('IMAGE', 'STRING')
-    RETURN_NAMES = ('image', 'info')
+    RETURN_TYPES = ('INT', 'INT')
+    RETURN_NAMES = ('width', 'height')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Image Processing'
-    DESCRIPTION = 'Generated from operation block sample.output-stage.'
+    CATEGORY = 'MATRIX LAB/Resolution & Layout'
+    DESCRIPTION = 'Generated from operation block resolution.dimensions.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import sample_output_stage as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -201,5 +177,5 @@ class MATRIXOutputStage:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXOutputStage}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Output Stage'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABResolution}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX RESOLUTION'}

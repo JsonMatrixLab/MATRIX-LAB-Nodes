@@ -1,15 +1,15 @@
-# MATRIXLAB All Nodes
+# MATRIX LAB NODES
 
 A unified ComfyUI custom-node pack with 14 nodes in six functional groups. Development version 0.1.0.
 
 | Group | Nodes |
 | --- | --- |
-| Input & Output | Image Batch Loader, Metadata Killer |
-| Resolution & Layout | Resolution, AI Influencer Resolution |
-| Sampling & Detail | Spectral Sampler, Latent Tail, Crop Tail Paste |
-| Masks & Detection | Skin Mask, Eye Mask |
-| Image Processing | Easy Crop, Camera Look, Renoise, Output Stage |
-| Prompting | Auto Prompter |
+| [Input & Output](nodes/input_output/) | MATRIX METADATA KILLER, MATRIX IMAGE BATCH LOADER |
+| [Resolution & Layout](nodes/resolution_layout/) | MATRIX RESOLUTION, MATRIX AI INFLUENCER RESOLUTION |
+| [Sampling & Detail](nodes/sampling_detail/) | MATRIX SPECTRAL SAMPLER, MATRIX LATENT TAIL, MATRIX CROP TAIL PASTE |
+| [Masks & Detection](nodes/masks_detection/) | MATRIX SKIN MASK, MATRIX EYE MASK |
+| [Image Processing](nodes/image_processing/) | MATRIX RENOISE, MATRIX CAMERA LOOK, MATRIX EASY CROP, MATRIX OUTPUT STAGE |
+| [Prompting](nodes/prompting/) | MATRIX AUTO PROMPTER |
 
 ## Installation
 

@@ -1,28 +1,20 @@
-"""Compiled declaration for MATRIX_SkinMask; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIXLAB_ImageBatchLoader; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_SkinMask'
-OPERATION_BLOCK = 'mask.skin-region'
+NODE_ID = 'MATRIXLAB_ImageBatchLoader'
+OPERATION_BLOCK = 'io.image-collection'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'forceInput': True}),
-    'face': ('BOOLEAN', {'default': True}),
-    'torso': ('BOOLEAN', {'default': True}),
-    'arms': ('BOOLEAN', {'default': True}),
-    'legs': ('BOOLEAN', {'default': True}),
-    'feather_px': ('INT', {'default': 16, 'min': 0, 'max': 64}),
-    'edge_radius_px': ('INT', {'default': 8, 'min': 0, 'max': 32}),
-    'expand_px': ('INT', {'default': 4, 'min': -32, 'max': 32}),
-    'person_gate': ('BOOLEAN', {'default': True}),
+    'collection': ('STRING', {'default': '{"version":1,"items":[],"selected":null}'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'face': 'BOOLEAN', 'torso': 'BOOLEAN', 'arms': 'BOOLEAN', 'legs': 'BOOLEAN', 'feather_px': 'INT', 'edge_radius_px': 'INT', 'expand_px': 'INT', 'person_gate': 'BOOLEAN'}
-REQUIRED_INPUT_NAMES = ('image',)
-OUTPUT_SOCKET_TYPES = ('MASK', 'IMAGE')
+INPUT_SOCKET_TYPES = {'collection': 'STRING'}
+REQUIRED_INPUT_NAMES = ('collection',)
+OUTPUT_SOCKET_TYPES = ('IMAGE', 'MASK')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (False, False)
+OUTPUT_IS_LIST = (True, True)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -145,47 +137,40 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXSkinMask:
+class MATRIXLABImageBatchLoader:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'image': _input_widget('image'),
+                'collection': _input_widget('collection'),
             },
             "optional": {
-                'face': _input_widget('face'),
-                'torso': _input_widget('torso'),
-                'arms': _input_widget('arms'),
-                'legs': _input_widget('legs'),
-                'feather_px': _input_widget('feather_px'),
-                'edge_radius_px': _input_widget('edge_radius_px'),
-                'expand_px': _input_widget('expand_px'),
-                'person_gate': _input_widget('person_gate'),
             },
         }
 
-    RETURN_TYPES = ('MASK', 'IMAGE')
-    RETURN_NAMES = ('mask', 'preview')
+    RETURN_TYPES = ('IMAGE', 'MASK')
+    RETURN_NAMES = ('images', 'masks')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Masks & Detection'
-    DESCRIPTION = 'Generated from operation block mask.skin-region.'
+    CATEGORY = 'MATRIX LAB/Input & Output'
+    DESCRIPTION = 'Generated from operation block io.image-collection.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
+    @classmethod
+    def VALIDATE_INPUTS(cls, collection):
+        from ..._core import io_image_collection as _operation_block
+        return _operation_block.validate_collection_input(collection, execution=False)
+
+    @classmethod
+    def IS_CHANGED(cls, collection):
+        from ..._core import io_image_collection as _operation_block
+        return _operation_block.input_digest(collection)
+
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import mask_skin_region as _operation_block
-        inputs['__flow_runtime__'] = {
-            'resolved_blocks': {OPERATION_BLOCK: _operation_block},
-            'input_socket_types': INPUT_SOCKET_TYPES,
-            'required_input_names': REQUIRED_INPUT_NAMES,
-            'output_socket_types': OUTPUT_SOCKET_TYPES,
-            'batch_policy': BATCH_POLICY,
-            'payload_items': _payload_items(inputs),
-            'input_is_list': INPUT_IS_LIST,
-            'output_is_list': OUTPUT_IS_LIST,
-        }
-        return await execute_compiled_node(NODE_ID, '', '', inputs)
+        from ..._core import io_image_collection as _operation_block
+        import asyncio
+        return await asyncio.to_thread(_operation_block.execute_utility_operation, inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXSkinMask}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Skin Mask'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABImageBatchLoader}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX IMAGE BATCH LOADER'}

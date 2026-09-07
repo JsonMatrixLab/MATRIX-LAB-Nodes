@@ -1,29 +1,19 @@
-"""Compiled declaration for MATRIX_CropTailPaste; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_Renoise; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_CropTailPaste'
-OPERATION_BLOCK = 'sample.crop-tail-paste'
+NODE_ID = 'MATRIX_Renoise'
+OPERATION_BLOCK = 'image.renoise'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'forceInput': True}),
-    'mask': ('MASK', {'forceInput': True}),
-    'model': ('MODEL', {'forceInput': True}),
-    'noise': ('NOISE', {'forceInput': True}),
-    'positive': ('CONDITIONING', {'forceInput': True}),
-    'vae': ('VAE', {'forceInput': True}),
-    'guide_size': ('INT', {'default': 1024, 'min': 256, 'max': 2048, 'step': 16}),
-    'padding_px': ('INT', {'default': 64, 'min': 0, 'max': 512}),
-    'start_sigma': ('FLOAT', {'default': 0.22, 'min': 0.05, 'max': 0.6, 'step': 0.01}),
-    'steps': ('INT', {'default': 3, 'min': 1, 'max': 12}),
-    'sampler_name': (['euler', 'euler_cfg_pp', 'euler_ancestral', 'euler_ancestral_cfg_pp', 'heun', 'heunpp2', 'exp_heun_2_x0', 'exp_heun_2_x0_sde', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_2s_ancestral_cfg_pp', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_cfg_pp', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_2m_sde_heun', 'dpmpp_2m_sde_heun_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'lcm', 'ipndm', 'ipndm_v', 'deis', 'res_multistep', 'res_multistep_cfg_pp', 'res_multistep_ancestral', 'res_multistep_ancestral_cfg_pp', 'gradient_estimation', 'gradient_estimation_cfg_pp', 'er_sde', 'seeds_2', 'seeds_3', 'sa_solver', 'sa_solver_pece', 'ddim', 'uni_pc', 'uni_pc_bh2'], {'default': 'euler_ancestral'}),
-    'scheduler': (['beta57', 'simple', 'sgm_uniform', 'karras', 'exponential', 'ddim_uniform', 'beta', 'normal', 'linear_quadratic', 'kl_optimal'], {'default': 'beta57'}),
-    'feather_px': ('INT', {'default': 12, 'min': 0, 'max': 64}),
-    'color_match': ('BOOLEAN', {'default': False}),
+    'image': ('IMAGE', {'tooltip': 'BHWC image batch.', 'forceInput': True}),
+    'grain_seed': ('INT', {'default': 0, 'min': 0, 'max': 18446744073709551615}),
+    'iso_preset': (['ISO 0 (Off)', 'ISO 50', 'ISO 100 (Clean)', 'ISO 200', 'ISO 400', 'ISO 800', 'ISO 1600', 'Night Mode'], {'default': 'ISO 400'}),
+    'strength': ('FLOAT', {'default': 1.0, 'min': 0.0, 'max': 2.0, 'step': 0.05}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'mask': 'MASK', 'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'vae': 'VAE', 'guide_size': 'INT', 'padding_px': 'INT', 'start_sigma': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'feather_px': 'INT', 'color_match': 'BOOLEAN'}
-REQUIRED_INPUT_NAMES = ('image', 'mask', 'model', 'noise', 'positive', 'vae')
+INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'grain_seed': 'INT', 'iso_preset': 'STRING', 'strength': 'FLOAT'}
+REQUIRED_INPUT_NAMES = ('image',)
 OUTPUT_SOCKET_TYPES = ('IMAGE',)
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
@@ -150,41 +140,31 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXCropTailPaste:
+class MATRIXRenoise:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 'image': _input_widget('image'),
-                'mask': _input_widget('mask'),
-                'model': _input_widget('model'),
-                'noise': _input_widget('noise'),
-                'positive': _input_widget('positive'),
-                'vae': _input_widget('vae'),
             },
             "optional": {
-                'guide_size': _input_widget('guide_size'),
-                'padding_px': _input_widget('padding_px'),
-                'start_sigma': _input_widget('start_sigma'),
-                'steps': _input_widget('steps'),
-                'sampler_name': _input_widget('sampler_name'),
-                'scheduler': _input_widget('scheduler'),
-                'feather_px': _input_widget('feather_px'),
-                'color_match': _input_widget('color_match'),
+                'grain_seed': _input_widget('grain_seed'),
+                'iso_preset': _input_widget('iso_preset'),
+                'strength': _input_widget('strength'),
             },
         }
 
     RETURN_TYPES = ('IMAGE',)
     RETURN_NAMES = ('image',)
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Sampling & Detail'
-    DESCRIPTION = 'Generated from operation block sample.crop-tail-paste.'
+    CATEGORY = 'MATRIX LAB/Image Processing'
+    DESCRIPTION = 'Generated from operation block image.renoise.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import sample_crop_tail_paste as _operation_block
+        from ..._core import image_renoise as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -197,5 +177,5 @@ class MATRIXCropTailPaste:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXCropTailPaste}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Crop Tail Paste'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXRenoise}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX RENOISE'}

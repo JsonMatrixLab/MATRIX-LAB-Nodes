@@ -1,19 +1,24 @@
-"""Compiled declaration for MATRIXLAB_AIInfluencerResolution; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIXLAB_EasyCrop; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core import resolution_ai_influencer as _operation_block
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIXLAB_AIInfluencerResolution'
-OPERATION_BLOCK = 'resolution.ai-influencer'
+NODE_ID = 'MATRIXLAB_EasyCrop'
+OPERATION_BLOCK = 'easy.crop'
 SCHEMA_WIDGETS = {
-    'aspect_ratio': (['1:1', '9:16', '3:4'], {'default': '3:4', 'tooltip': 'AI-influencer delivery aspect ratio.'}),
-    'resolution_tier': (['1K', '2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 1024, 2048, or 4096 pixels.'}),
+    'image': ('STRING', {'default': '', 'image_upload': True}),
+    'aspect_ratio': (['Free', '1:1', '16:9', '9:16', 'Custom'], {'default': 'Free'}),
+    'custom_ratio_width': ('INT', {'default': 1, 'min': 1, 'max': 1000, 'step': 1}),
+    'custom_ratio_height': ('INT', {'default': 1, 'min': 1, 'max': 1000, 'step': 1}),
+    'crop_x': ('FLOAT', {'default': 0.0, 'min': 0.0, 'max': 1.0, 'step': 1e-06}),
+    'crop_y': ('FLOAT', {'default': 0.0, 'min': 0.0, 'max': 1.0, 'step': 1e-06}),
+    'crop_width': ('FLOAT', {'default': 1.0, 'min': 1e-06, 'max': 1.0, 'step': 1e-06}),
+    'crop_height': ('FLOAT', {'default': 1.0, 'min': 1e-06, 'max': 1.0, 'step': 1e-06}),
 }
-IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING'}
-REQUIRED_INPUT_NAMES = ('aspect_ratio', 'resolution_tier')
-OUTPUT_SOCKET_TYPES = ('INT', 'INT')
+IMAGE_UPLOAD_FIELDS = ('image',)
+INPUT_SOCKET_TYPES = {'image': 'STRING', 'aspect_ratio': 'STRING', 'custom_ratio_width': 'INT', 'custom_ratio_height': 'INT', 'crop_x': 'FLOAT', 'crop_y': 'FLOAT', 'crop_width': 'FLOAT', 'crop_height': 'FLOAT'}
+REQUIRED_INPUT_NAMES = ('image', 'aspect_ratio', 'custom_ratio_width', 'custom_ratio_height', 'crop_x', 'crop_y', 'crop_width', 'crop_height')
+OUTPUT_SOCKET_TYPES = ('IMAGE', 'MASK')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
 OUTPUT_IS_LIST = (False, False)
@@ -139,28 +144,49 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLABAIInfluencerResolution:
+class MATRIXLABEasyCrop:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
+                'image': _input_widget('image'),
                 'aspect_ratio': _input_widget('aspect_ratio'),
-                'resolution_tier': _input_widget('resolution_tier'),
+                'custom_ratio_width': _input_widget('custom_ratio_width'),
+                'custom_ratio_height': _input_widget('custom_ratio_height'),
+                'crop_x': _input_widget('crop_x'),
+                'crop_y': _input_widget('crop_y'),
+                'crop_width': _input_widget('crop_width'),
+                'crop_height': _input_widget('crop_height'),
             },
             "optional": {
             },
         }
 
-    RETURN_TYPES = ('INT', 'INT')
-    RETURN_NAMES = ('width', 'height')
+    RETURN_TYPES = ('IMAGE', 'MASK')
+    RETURN_NAMES = ('image', 'mask')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Resolution & Layout'
-    DESCRIPTION = 'Generated from operation block resolution.ai-influencer.'
+    CATEGORY = 'MATRIX LAB/Image Processing'
+    DESCRIPTION = 'Generated from operation block easy.crop.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
+    @classmethod
+    def VALIDATE_INPUTS(cls, **inputs):
+        from ..._core import easy_crop as _operation_block
+        return _operation_block.validate_image_input(
+            inputs.get(IMAGE_UPLOAD_FIELDS[0])
+        )
+
+    @classmethod
+    def IS_CHANGED(cls, **inputs):
+        from ..._core import easy_crop as _operation_block
+        return _operation_block.input_digest(
+            inputs.get(IMAGE_UPLOAD_FIELDS[0])
+        )
+
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
+        from ..._core import easy_crop as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -173,5 +199,5 @@ class MATRIXLABAIInfluencerResolution:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABAIInfluencerResolution}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Resolution - AI Influencer'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABEasyCrop}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX EASY CROP'}

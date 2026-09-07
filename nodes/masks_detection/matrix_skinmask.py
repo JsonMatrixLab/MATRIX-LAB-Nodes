@@ -1,23 +1,28 @@
-"""Compiled declaration for MATRIX_SaveClean; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_SkinMask; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_SaveClean'
-OPERATION_BLOCK = 'io.save-clean'
+NODE_ID = 'MATRIX_SkinMask'
+OPERATION_BLOCK = 'mask.skin-region'
 SCHEMA_WIDGETS = {
-    'images': ('IMAGE', {'forceInput': True}),
-    'filename_prefix': ('STRING', {'default': 'MATRIX'}),
-    'format': (['JPEG', 'PNG'], {'default': 'JPEG'}),
-    'quality': ('INT', {'default': 100, 'min': 1, 'max': 100}),
+    'image': ('IMAGE', {'forceInput': True}),
+    'face': ('BOOLEAN', {'default': True}),
+    'torso': ('BOOLEAN', {'default': True}),
+    'arms': ('BOOLEAN', {'default': True}),
+    'legs': ('BOOLEAN', {'default': True}),
+    'feather_px': ('INT', {'default': 16, 'min': 0, 'max': 64}),
+    'edge_radius_px': ('INT', {'default': 8, 'min': 0, 'max': 32}),
+    'expand_px': ('INT', {'default': 4, 'min': -32, 'max': 32}),
+    'person_gate': ('BOOLEAN', {'default': True}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'images': 'IMAGE', 'filename_prefix': 'STRING', 'format': 'STRING', 'quality': 'INT'}
-REQUIRED_INPUT_NAMES = ('images',)
-OUTPUT_SOCKET_TYPES = ()
+INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'face': 'BOOLEAN', 'torso': 'BOOLEAN', 'arms': 'BOOLEAN', 'legs': 'BOOLEAN', 'feather_px': 'INT', 'edge_radius_px': 'INT', 'expand_px': 'INT', 'person_gate': 'BOOLEAN'}
+REQUIRED_INPUT_NAMES = ('image',)
+OUTPUT_SOCKET_TYPES = ('MASK', 'IMAGE')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = ()
+OUTPUT_IS_LIST = (False, False)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -140,33 +145,47 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXSaveClean:
+class MATRIXSkinMask:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'images': _input_widget('images'),
+                'image': _input_widget('image'),
             },
             "optional": {
-                'filename_prefix': _input_widget('filename_prefix'),
-                'format': _input_widget('format'),
-                'quality': _input_widget('quality'),
+                'face': _input_widget('face'),
+                'torso': _input_widget('torso'),
+                'arms': _input_widget('arms'),
+                'legs': _input_widget('legs'),
+                'feather_px': _input_widget('feather_px'),
+                'edge_radius_px': _input_widget('edge_radius_px'),
+                'expand_px': _input_widget('expand_px'),
+                'person_gate': _input_widget('person_gate'),
             },
         }
 
-    RETURN_TYPES = ()
-    RETURN_NAMES = ()
+    RETURN_TYPES = ('MASK', 'IMAGE')
+    RETURN_NAMES = ('mask', 'preview')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Input & Output'
-    DESCRIPTION = 'Generated from operation block io.save-clean.'
+    CATEGORY = 'MATRIX LAB/Masks & Detection'
+    DESCRIPTION = 'Generated from operation block mask.skin-region.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
-    OUTPUT_NODE = True
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import io_save_clean as _operation_block
-        return _operation_block.execute_utility_operation(inputs)
+        from ..._core import mask_skin_region as _operation_block
+        inputs['__flow_runtime__'] = {
+            'resolved_blocks': {OPERATION_BLOCK: _operation_block},
+            'input_socket_types': INPUT_SOCKET_TYPES,
+            'required_input_names': REQUIRED_INPUT_NAMES,
+            'output_socket_types': OUTPUT_SOCKET_TYPES,
+            'batch_policy': BATCH_POLICY,
+            'payload_items': _payload_items(inputs),
+            'input_is_list': INPUT_IS_LIST,
+            'output_is_list': OUTPUT_IS_LIST,
+        }
+        return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXSaveClean}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Metadata Killer'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXSkinMask}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX SKIN MASK'}

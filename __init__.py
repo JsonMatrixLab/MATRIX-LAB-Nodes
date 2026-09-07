@@ -1,17 +1,17 @@
 """Compiled ComfyUI node pack."""
-from .nodes.matrixspectralsampler import NODE_CLASS_MAPPINGS as _c0, NODE_DISPLAY_NAME_MAPPINGS as _d0
-from .nodes.matrix_latenttail import NODE_CLASS_MAPPINGS as _c1, NODE_DISPLAY_NAME_MAPPINGS as _d1
-from .nodes.matrix_skinmask import NODE_CLASS_MAPPINGS as _c2, NODE_DISPLAY_NAME_MAPPINGS as _d2
-from .nodes.matrix_eyemask import NODE_CLASS_MAPPINGS as _c3, NODE_DISPLAY_NAME_MAPPINGS as _d3
-from .nodes.matrix_croptailpaste import NODE_CLASS_MAPPINGS as _c4, NODE_DISPLAY_NAME_MAPPINGS as _d4
-from .nodes.matrix_saveclean import NODE_CLASS_MAPPINGS as _c5, NODE_DISPLAY_NAME_MAPPINGS as _d5
-from .nodes.matrix_outputstage import NODE_CLASS_MAPPINGS as _c6, NODE_DISPLAY_NAME_MAPPINGS as _d6
-from .nodes.matrix_renoise import NODE_CLASS_MAPPINGS as _c7, NODE_DISPLAY_NAME_MAPPINGS as _d7
-from .nodes.matrix_cameralook import NODE_CLASS_MAPPINGS as _c8, NODE_DISPLAY_NAME_MAPPINGS as _d8
-from .nodes.matrixlab_resolution import NODE_CLASS_MAPPINGS as _c9, NODE_DISPLAY_NAME_MAPPINGS as _d9
-from .nodes.matrixlab_aiinfluencerresolution import NODE_CLASS_MAPPINGS as _c10, NODE_DISPLAY_NAME_MAPPINGS as _d10
-from .nodes.matrixlab_easycrop import NODE_CLASS_MAPPINGS as _c11, NODE_DISPLAY_NAME_MAPPINGS as _d11
-from .nodes.matrixlab_imagebatchloader import NODE_CLASS_MAPPINGS as _c12, NODE_DISPLAY_NAME_MAPPINGS as _d12
+from .nodes.sampling_detail.matrixspectralsampler import NODE_CLASS_MAPPINGS as _c0, NODE_DISPLAY_NAME_MAPPINGS as _d0
+from .nodes.sampling_detail.matrix_latenttail import NODE_CLASS_MAPPINGS as _c1, NODE_DISPLAY_NAME_MAPPINGS as _d1
+from .nodes.masks_detection.matrix_skinmask import NODE_CLASS_MAPPINGS as _c2, NODE_DISPLAY_NAME_MAPPINGS as _d2
+from .nodes.masks_detection.matrix_eyemask import NODE_CLASS_MAPPINGS as _c3, NODE_DISPLAY_NAME_MAPPINGS as _d3
+from .nodes.sampling_detail.matrix_croptailpaste import NODE_CLASS_MAPPINGS as _c4, NODE_DISPLAY_NAME_MAPPINGS as _d4
+from .nodes.input_output.matrix_saveclean import NODE_CLASS_MAPPINGS as _c5, NODE_DISPLAY_NAME_MAPPINGS as _d5
+from .nodes.image_processing.matrix_outputstage import NODE_CLASS_MAPPINGS as _c6, NODE_DISPLAY_NAME_MAPPINGS as _d6
+from .nodes.image_processing.matrix_renoise import NODE_CLASS_MAPPINGS as _c7, NODE_DISPLAY_NAME_MAPPINGS as _d7
+from .nodes.image_processing.matrix_cameralook import NODE_CLASS_MAPPINGS as _c8, NODE_DISPLAY_NAME_MAPPINGS as _d8
+from .nodes.resolution_layout.matrixlab_resolution import NODE_CLASS_MAPPINGS as _c9, NODE_DISPLAY_NAME_MAPPINGS as _d9
+from .nodes.resolution_layout.matrixlab_aiinfluencerresolution import NODE_CLASS_MAPPINGS as _c10, NODE_DISPLAY_NAME_MAPPINGS as _d10
+from .nodes.image_processing.matrixlab_easycrop import NODE_CLASS_MAPPINGS as _c11, NODE_DISPLAY_NAME_MAPPINGS as _d11
+from .nodes.input_output.matrixlab_imagebatchloader import NODE_CLASS_MAPPINGS as _c12, NODE_DISPLAY_NAME_MAPPINGS as _d12
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
@@ -53,10 +53,8 @@ if _matrix_folder_paths is not None:
 WEB_DIRECTORY = "./web"
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]
 
-from ._core.prompt_director import MATRIXLAB_PromptDirector
+from .nodes.prompting.matrixlab_promptdirector import MATRIXLAB_PromptDirector
 NODE_CLASS_MAPPINGS['MATRIXLAB_PromptDirector'] = MATRIXLAB_PromptDirector
-NODE_DISPLAY_NAME_MAPPINGS['MATRIXLAB_PromptDirector'] = 'MATRIX Auto Prompter'
+NODE_DISPLAY_NAME_MAPPINGS['MATRIXLAB_PromptDirector'] = 'MATRIX AUTO PROMPTER'
 from ._core.prompt_director.server_routes import register_routes as _register_prompt_director
 _register_prompt_director()
-
-MATRIXLAB_PromptDirector.CATEGORY = 'MATRIX LAB/Prompting'

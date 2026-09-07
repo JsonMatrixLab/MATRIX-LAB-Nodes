@@ -1,7 +1,7 @@
 """Compiled declaration for MATRIX_CameraLook; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
 NODE_ID = 'MATRIX_CameraLook'
 OPERATION_BLOCK = 'color.camera-look'
@@ -172,7 +172,7 @@ class MATRIXCameraLook:
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import color_camera_look as _operation_block
+        from ..._core import color_camera_look as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -186,4 +186,4 @@ class MATRIXCameraLook:
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
 NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXCameraLook}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Camera Look'}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX CAMERA LOOK'}

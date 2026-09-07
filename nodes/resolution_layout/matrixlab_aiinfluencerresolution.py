@@ -1,28 +1,22 @@
-"""Compiled declaration for MATRIX_LatentTail; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIXLAB_AIInfluencerResolution; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core import resolution_ai_influencer as _operation_block
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_LatentTail'
-OPERATION_BLOCK = 'sample.latent-tail'
+NODE_ID = 'MATRIXLAB_AIInfluencerResolution'
+OPERATION_BLOCK = 'resolution.ai-influencer'
 SCHEMA_WIDGETS = {
-    'model': ('MODEL', {'forceInput': True}),
-    'noise': ('NOISE', {'forceInput': True}),
-    'positive': ('CONDITIONING', {'forceInput': True}),
-    'latent': ('LATENT', {'forceInput': True}),
-    'start_sigma': ('FLOAT', {'default': 0.26, 'min': 0.05, 'max': 0.6, 'step': 0.01}),
-    'steps': ('INT', {'default': 3, 'min': 1, 'max': 12}),
-    'sampler_name': (['euler', 'euler_cfg_pp', 'euler_ancestral', 'euler_ancestral_cfg_pp', 'heun', 'heunpp2', 'exp_heun_2_x0', 'exp_heun_2_x0_sde', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_2s_ancestral_cfg_pp', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_cfg_pp', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_2m_sde_heun', 'dpmpp_2m_sde_heun_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'lcm', 'ipndm', 'ipndm_v', 'deis', 'res_multistep', 'res_multistep_cfg_pp', 'res_multistep_ancestral', 'res_multistep_ancestral_cfg_pp', 'gradient_estimation', 'gradient_estimation_cfg_pp', 'er_sde', 'seeds_2', 'seeds_3', 'sa_solver', 'sa_solver_pece', 'ddim', 'uni_pc', 'uni_pc_bh2'], {'default': 'euler_ancestral'}),
-    'scheduler': (['beta57', 'simple', 'sgm_uniform', 'karras', 'exponential', 'ddim_uniform', 'beta', 'normal', 'linear_quadratic', 'kl_optimal'], {'default': 'beta57'}),
-    'mask': ('MASK', {'forceInput': True}),
+    'aspect_ratio': (['1:1', '9:16', '3:4'], {'default': '3:4', 'tooltip': 'AI-influencer delivery aspect ratio.'}),
+    'resolution_tier': (['1K', '2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 1024, 2048, or 4096 pixels.'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'latent': 'LATENT', 'start_sigma': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'mask': 'MASK'}
-REQUIRED_INPUT_NAMES = ('model', 'noise', 'positive', 'latent')
-OUTPUT_SOCKET_TYPES = ('LATENT',)
+INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING'}
+REQUIRED_INPUT_NAMES = ('aspect_ratio', 'resolution_tier')
+OUTPUT_SOCKET_TYPES = ('INT', 'INT')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (False,)
+OUTPUT_IS_LIST = (False, False)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -145,36 +139,28 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLatentTail:
+class MATRIXLABAIInfluencerResolution:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'model': _input_widget('model'),
-                'noise': _input_widget('noise'),
-                'positive': _input_widget('positive'),
-                'latent': _input_widget('latent'),
+                'aspect_ratio': _input_widget('aspect_ratio'),
+                'resolution_tier': _input_widget('resolution_tier'),
             },
             "optional": {
-                'start_sigma': _input_widget('start_sigma'),
-                'steps': _input_widget('steps'),
-                'sampler_name': _input_widget('sampler_name'),
-                'scheduler': _input_widget('scheduler'),
-                'mask': _input_widget('mask'),
             },
         }
 
-    RETURN_TYPES = ('LATENT',)
-    RETURN_NAMES = ('latent',)
+    RETURN_TYPES = ('INT', 'INT')
+    RETURN_NAMES = ('width', 'height')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Sampling & Detail'
-    DESCRIPTION = 'Generated from operation block sample.latent-tail.'
+    CATEGORY = 'MATRIX LAB/Resolution & Layout'
+    DESCRIPTION = 'Generated from operation block resolution.ai-influencer.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import sample_latent_tail as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -187,5 +173,5 @@ class MATRIXLatentTail:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLatentTail}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Latent Tail'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABAIInfluencerResolution}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX AI INFLUENCER RESOLUTION'}

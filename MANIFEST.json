@@ -147,12 +147,13 @@
     "MATRIX_SaveClean": "3aaeea9d3b5b246e909df9a21ae9f2883bf251c055dcc9f8e89714beae65a3ce",
     "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2"
   },
+  "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
     "web/ai_influencer_resolution.18b4c8d747f2ee0f.js",
     "web/easy_crop.157f82dc3106c809.js",
     "web/halo_execution.747fda69560b25a6.js",
     "web/image_collection.36e68688eaeda4bc.js",
-    "web/prompt_director.4b97a4059093539c.js",
+    "web/prompt_director.35a849b5b680adaf.js",
     "web/resolution_control_deck.d377ebd38c41ef2c.js"
   ],
   "nodes": [
@@ -171,7 +172,7 @@
     "MATRIX_SaveClean",
     "MATRIX_SkinMask"
   ],
-  "pack_id": "matrixlab-all-nodes",
+  "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ba2964519d538b65fafbbe2fbad5a9e7d16940334f49fcc517ddab041c59a5c4",
   "status": "development",
   "version": "0.1.0"

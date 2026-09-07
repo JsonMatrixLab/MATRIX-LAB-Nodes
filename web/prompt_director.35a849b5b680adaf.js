@@ -313,7 +313,7 @@ export function mountPromptDirector(node, options = {}) {
 
   const eyebrow = doc.createElement("div");
   eyebrow.className = "matrixlab-director__eyebrow";
-  eyebrow.textContent = "MATRIX Auto Prompter";
+  eyebrow.textContent = node.title;
   const references = doc.createElement("div");
   references.className = "matrixlab-director__references";
   const referenceLabel = doc.createElement("span");

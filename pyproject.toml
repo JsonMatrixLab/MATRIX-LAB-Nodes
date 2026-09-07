@@ -1,5 +1,5 @@
 [project]
-name = "matrixlab-all-nodes"
+name = "matrix-lab-nodes"
 version = "0.1.0"
 description = "MATRIX LAB custom nodes for ComfyUI."
 readme = "README.md"
@@ -9,4 +9,4 @@ authors = [{ name = "MATRIX LAB" }]
 dependencies = ["Pillow", "aiohttp", "numpy", "scipy", "torch"]
 
 [project.urls]
-Repository = "https://github.com/JsonMatrixLab/MATRIXLAB-All-Nodes"
+Repository = "https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes"

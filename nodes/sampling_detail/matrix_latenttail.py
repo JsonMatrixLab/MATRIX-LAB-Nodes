@@ -1,28 +1,28 @@
-"""Compiled declaration for MATRIX_EyeMask; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_LatentTail; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from .._core.flow_utility import execute_compiled_node
+from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_EyeMask'
-OPERATION_BLOCK = 'mask.eye-region'
+NODE_ID = 'MATRIX_LatentTail'
+OPERATION_BLOCK = 'sample.latent-tail'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'forceInput': True}),
-    'detector': (['bbox/Eyeful_v2-Individual.pt'], {'default': 'bbox/Eyeful_v2-Individual.pt'}),
-    'resolution': ('INT', {'default': 1280, 'min': 64, 'max': 4096, 'step': 64}),
-    'threshold': ('FLOAT', {'default': 0.5, 'min': 0.05, 'max': 0.95, 'step': 0.01}),
-    'min_size_px': ('INT', {'default': 24, 'min': 1, 'max': 1024}),
-    'max_eyes': ('INT', {'default': 2, 'min': 1, 'max': 8}),
-    'sam_refine': ('BOOLEAN', {'default': True}),
-    'feather_px': ('INT', {'default': 6, 'min': 0, 'max': 64}),
-    'sam_erosion_px': ('INT', {'default': 10, 'min': 0, 'max': 32, 'step': 1}),
+    'model': ('MODEL', {'forceInput': True}),
+    'noise': ('NOISE', {'forceInput': True}),
+    'positive': ('CONDITIONING', {'forceInput': True}),
+    'latent': ('LATENT', {'forceInput': True}),
+    'start_sigma': ('FLOAT', {'default': 0.26, 'min': 0.05, 'max': 0.6, 'step': 0.01}),
+    'steps': ('INT', {'default': 3, 'min': 1, 'max': 12}),
+    'sampler_name': (['euler', 'euler_cfg_pp', 'euler_ancestral', 'euler_ancestral_cfg_pp', 'heun', 'heunpp2', 'exp_heun_2_x0', 'exp_heun_2_x0_sde', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_2s_ancestral_cfg_pp', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_cfg_pp', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_2m_sde_heun', 'dpmpp_2m_sde_heun_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'lcm', 'ipndm', 'ipndm_v', 'deis', 'res_multistep', 'res_multistep_cfg_pp', 'res_multistep_ancestral', 'res_multistep_ancestral_cfg_pp', 'gradient_estimation', 'gradient_estimation_cfg_pp', 'er_sde', 'seeds_2', 'seeds_3', 'sa_solver', 'sa_solver_pece', 'ddim', 'uni_pc', 'uni_pc_bh2'], {'default': 'euler_ancestral'}),
+    'scheduler': (['beta57', 'simple', 'sgm_uniform', 'karras', 'exponential', 'ddim_uniform', 'beta', 'normal', 'linear_quadratic', 'kl_optimal'], {'default': 'beta57'}),
+    'mask': ('MASK', {'forceInput': True}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'detector': 'STRING', 'resolution': 'INT', 'threshold': 'FLOAT', 'min_size_px': 'INT', 'max_eyes': 'INT', 'sam_refine': 'BOOLEAN', 'feather_px': 'INT', 'sam_erosion_px': 'INT'}
-REQUIRED_INPUT_NAMES = ('image',)
-OUTPUT_SOCKET_TYPES = ('MASK', 'MASK', 'BBOX', 'IMAGE')
-BATCH_POLICY = 'map'
+INPUT_SOCKET_TYPES = {'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'latent': 'LATENT', 'start_sigma': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'mask': 'MASK'}
+REQUIRED_INPUT_NAMES = ('model', 'noise', 'positive', 'latent')
+OUTPUT_SOCKET_TYPES = ('LATENT',)
+BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (True, True, True, True)
+OUTPUT_IS_LIST = (False,)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -145,36 +145,36 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXEyeMask:
+class MATRIXLatentTail:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'image': _input_widget('image'),
+                'model': _input_widget('model'),
+                'noise': _input_widget('noise'),
+                'positive': _input_widget('positive'),
+                'latent': _input_widget('latent'),
             },
             "optional": {
-                'detector': _input_widget('detector'),
-                'resolution': _input_widget('resolution'),
-                'threshold': _input_widget('threshold'),
-                'min_size_px': _input_widget('min_size_px'),
-                'max_eyes': _input_widget('max_eyes'),
-                'sam_refine': _input_widget('sam_refine'),
-                'feather_px': _input_widget('feather_px'),
-                'sam_erosion_px': _input_widget('sam_erosion_px'),
+                'start_sigma': _input_widget('start_sigma'),
+                'steps': _input_widget('steps'),
+                'sampler_name': _input_widget('sampler_name'),
+                'scheduler': _input_widget('scheduler'),
+                'mask': _input_widget('mask'),
             },
         }
 
-    RETURN_TYPES = ('MASK', 'MASK', 'BBOX', 'IMAGE')
-    RETURN_NAMES = ('mask', 'masks', 'bboxes', 'preview')
+    RETURN_TYPES = ('LATENT',)
+    RETURN_NAMES = ('latent',)
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Masks & Detection'
-    DESCRIPTION = 'Generated from operation block mask.eye-region.'
+    CATEGORY = 'MATRIX LAB/Sampling & Detail'
+    DESCRIPTION = 'Generated from operation block sample.latent-tail.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from .._core import mask_eye_region as _operation_block
+        from ..._core import sample_latent_tail as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -187,5 +187,5 @@ class MATRIXEyeMask:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXEyeMask}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX Eye Mask'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLatentTail}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX LATENT TAIL'}
