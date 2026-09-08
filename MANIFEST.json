@@ -21,7 +21,7 @@
       "version": "1.0.0"
     },
     {
-      "content_hash": "6dbb9004ba17dda6a2aca8ab8dd4e5786b3f5896880cddec02147436984c27b9",
+      "content_hash": "9bbf3d99167453c45d8473b8f1207865fcd9bba369d7066b71289cf41a21219d",
       "id": "ui.appearance",
       "version": "0.5.0"
     },
@@ -46,9 +46,9 @@
       "version": "0.3.1"
     },
     {
-      "content_hash": "4154a30006549c29127e67d0aad6fa04f144ac3f15bb6412775ee436b5f3bfc7",
+      "content_hash": "0f536fb17c9d4e1939b7f89d2bdf40cfe48ea1eacb6090505e0f1466d6ffa643",
       "id": "sample.crop-tail-paste",
-      "version": "0.1.4"
+      "version": "0.1.5"
     },
     {
       "content_hash": "f6bb4725513b77c56106291847de8ff391378d49b7e67956927c0715e02365b4",
@@ -149,12 +149,12 @@
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.87906026aa3ad59a.js",
-    "web/easy_crop.f558721346b62834.js",
-    "web/halo_execution.f42e29009fa9e2b6.js",
-    "web/image_collection.7ff9f13954ccb3b4.js",
-    "web/prompt_director.0080b5debeaa47a8.js",
-    "web/resolution_control_deck.98c005f8a6ecc1b8.js"
+    "web/ai_influencer_resolution.ebb32f136a6a4294.js",
+    "web/easy_crop.3cd2d4db9e4387a9.js",
+    "web/halo_execution.41a5414872870fdf.js",
+    "web/image_collection.8677fd9cc9c550ba.js",
+    "web/prompt_director.b4c0409b1a3bd876.js",
+    "web/resolution_control_deck.355f138d9de085d8.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution",

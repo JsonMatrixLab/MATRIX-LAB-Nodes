@@ -83,7 +83,7 @@ def _number(name: str, value: Any, low: float, high: float) -> float:
 
 
 def compute_crop_geometry(
-    hard_mask: torch.Tensor, *, guide_size: int, padding_px: int
+    hard_mask: torch.Tensor, *, guide_size: int, padding_px: int, skip_tiny: bool = True
 ) -> CropGeometry | None:
     """Resolve one hard `[H,W]` mask into its shifted, 16-aligned crop and target."""
     guide = _integer("guide_size", guide_size, 256, 2048)
@@ -101,7 +101,7 @@ def compute_crop_geometry(
 
     ymin, xmin = points.amin(dim=0).tolist()
     ymax, xmax = points.amax(dim=0).tolist()
-    if xmax - xmin + 1 + 2 * padding < 16 or ymax - ymin + 1 + 2 * padding < 16:
+    if skip_tiny and (xmax - xmin + 1 + 2 * padding < 16 or ymax - ymin + 1 + 2 * padding < 16):
         return None
     center_x = (xmin + xmax) / 2.0
     center_y = (ymin + ymax) / 2.0
@@ -153,6 +153,17 @@ def _resize_mask(mask: torch.Tensor, height: int, width: int) -> torch.Tensor:
     return resized[:, 0]
 
 
+def _resize_soft_mask(mask: torch.Tensor, height: int, width: int) -> torch.Tensor:
+    """Average shrinking axes so narrow confidence regions are not skipped by point samples."""
+    work = mask.unsqueeze(1).float()
+    reduced = (min(height, mask.shape[-2]), min(width, mask.shape[-1]))
+    if reduced != tuple(mask.shape[-2:]):
+        work = F.interpolate(work, size=reduced, mode="area")
+    if tuple(work.shape[-2:]) != (height, width):
+        work = F.interpolate(work, size=(height, width), mode="bilinear", align_corners=False)
+    return work[:, 0]
+
+
 def _cross_dilate(mask: torch.Tensor) -> torch.Tensor:
     padded = F.pad(mask.unsqueeze(1), (1, 1, 1, 1), mode="constant", value=0)
     values = (
@@ -192,6 +203,19 @@ def grow_feather_mask(mask: torch.Tensor, feather_px: int) -> torch.Tensor:
     work = F.conv2d(work, kernel.view(1, 1, 1, -1))
     work = F.pad(work, (0, 0, radius, radius), mode="reflect")
     return F.conv2d(work, kernel.view(1, 1, -1, 1))[:, 0]
+
+
+def _feather_soft_mask(mask: torch.Tensor, radius: int) -> torch.Tensor:
+    """Blur confidence without binarizing; replicate boundaries also support thin crops."""
+    if radius == 0:
+        return mask
+    coords = torch.arange(-radius, radius + 1, device=mask.device, dtype=torch.float32)
+    kernel = torch.exp(-(coords * coords) / (2.0 * radius * radius))
+    kernel = kernel / kernel.sum()
+    work = F.pad(mask.unsqueeze(1).float(), (radius, radius, 0, 0), mode="replicate")
+    work = F.conv2d(work, kernel.view(1, 1, 1, -1))
+    work = F.pad(work, (0, 0, radius, radius), mode="replicate")
+    return F.conv2d(work, kernel.view(1, 1, -1, 1))[:, 0].clamp(0.0, 1.0)
 
 
 def color_match_crop(decoded: torch.Tensor, source: torch.Tensor) -> torch.Tensor:
@@ -243,6 +267,7 @@ def crop_tail_paste(
     scheduler: str = "beta57",
     feather_px: int = 12,
     color_match: bool = False,
+    mask_mode: str = "legacy_grow_feather",
     encode: Callable[[Any, torch.Tensor], Mapping[str, Any]],
     decode: Callable[[Any, Mapping[str, Any]], torch.Tensor],
     run_tail: Callable[..., Mapping[str, Any]],
@@ -262,17 +287,22 @@ def crop_tail_paste(
         raise CropTailValidationError(f"unknown scheduler {scheduler!r}")
     if not isinstance(color_match, bool):
         raise CropTailValidationError("color_match must be boolean")
+    if mask_mode not in ("legacy_grow_feather", "soft_preserve"):
+        raise CropTailValidationError("mask_mode must be legacy_grow_feather or soft_preserve")
     if any(value is None for value in (model, noise, positive, vae)):
         raise CropTailValidationError("model, noise, positive and vae are required")
     if not all(callable(seam) for seam in (encode, decode, run_tail)):
         raise CropTailValidationError("encode, decode and run_tail must be callable")
 
-    hard = torch.round(mask)
+    soft = mask_mode == "soft_preserve"
+    prepared_mask = mask if soft else torch.round(mask)
+    support = (mask > 0).to(torch.float32) if soft else prepared_mask
     geometries = [
         compute_crop_geometry(
-            hard[0 if mask.shape[0] == 1 else index],
+            support[0 if mask.shape[0] == 1 else index],
             guide_size=guide,
             padding_px=padding,
+            skip_tiny=not soft,
         )
         for index in range(batch)
     ]
@@ -288,9 +318,10 @@ def crop_tail_paste(
             continue
         source = image[index : index + 1, geometry.y0 : geometry.y1, geometry.x0 : geometry.x1, :3]
         source_large = _resize_image(source, geometry.target_height, geometry.target_width)
-        hard_crop = hard[mask_index : mask_index + 1, geometry.y0 : geometry.y1, geometry.x0 : geometry.x1]
-        mask_large = _resize_mask(hard_crop, geometry.target_height, geometry.target_width)
-        blend_large = grow_feather_mask(mask_large, feather)
+        mask_crop = prepared_mask[mask_index : mask_index + 1, geometry.y0 : geometry.y1, geometry.x0 : geometry.x1]
+        resize_mask = _resize_soft_mask if soft else _resize_mask
+        mask_large = resize_mask(mask_crop, geometry.target_height, geometry.target_width)
+        blend_large = _feather_soft_mask(mask_large, feather) if soft else grow_feather_mask(mask_large, feather)
         latent = encode(vae, source_large)
         if not isinstance(latent, Mapping) or "samples" not in latent:
             raise CropTailError("encode seam must return a LATENT mapping with 'samples'")
@@ -334,7 +365,10 @@ def crop_tail_paste(
         if color_match:
             decoded = color_match_crop(decoded, source_large)
         patch = _resize_image(decoded, geometry.height, geometry.width).clamp(0.0, 1.0)[0]
-        alpha = _resize_mask(blend_large, geometry.height, geometry.width)[0].to(image.dtype).unsqueeze(-1)
+        # With no feather, paste from the original confidence mask: a resize round trip would
+        # otherwise erode small regions, fill small holes and alter protected zero-mask pixels.
+        paste_mask = mask_crop if soft and feather == 0 else resize_mask(blend_large, geometry.height, geometry.width)
+        alpha = paste_mask[0].to(device=image.device, dtype=image.dtype).unsqueeze(-1)
         destination = output[index, geometry.y0 : geometry.y1, geometry.x0 : geometry.x1, :3]
         output[index, geometry.y0 : geometry.y1, geometry.x0 : geometry.x1, :3] = (
             destination * (1.0 - alpha) + patch * alpha
@@ -384,6 +418,7 @@ def execute_utility_operation(item: dict) -> tuple[torch.Tensor]:
         scheduler=item.get("scheduler", "beta57"),
         feather_px=item.get("feather_px", 12),
         color_match=item.get("color_match", False),
+        mask_mode=item.get("mask_mode", "legacy_grow_feather"),
         encode=_ENCODE,
         decode=_DECODE,
         run_tail=_RUN_TAIL,

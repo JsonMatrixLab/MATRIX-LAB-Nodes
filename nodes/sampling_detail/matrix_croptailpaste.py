@@ -20,9 +20,10 @@ SCHEMA_WIDGETS = {
     'scheduler': (['beta57', 'simple', 'sgm_uniform', 'karras', 'exponential', 'ddim_uniform', 'beta', 'normal', 'linear_quadratic', 'kl_optimal'], {'default': 'beta57'}),
     'feather_px': ('INT', {'default': 12, 'min': 0, 'max': 64}),
     'color_match': ('BOOLEAN', {'default': False}),
+    'mask_mode': (['legacy_grow_feather', 'soft_preserve'], {'default': 'legacy_grow_feather'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'mask': 'MASK', 'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'vae': 'VAE', 'guide_size': 'INT', 'padding_px': 'INT', 'start_sigma': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'feather_px': 'INT', 'color_match': 'BOOLEAN'}
+INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'mask': 'MASK', 'model': 'MODEL', 'noise': 'NOISE', 'positive': 'CONDITIONING', 'vae': 'VAE', 'guide_size': 'INT', 'padding_px': 'INT', 'start_sigma': 'FLOAT', 'steps': 'INT', 'sampler_name': 'STRING', 'scheduler': 'STRING', 'feather_px': 'INT', 'color_match': 'BOOLEAN', 'mask_mode': 'STRING'}
 REQUIRED_INPUT_NAMES = ('image', 'mask', 'model', 'noise', 'positive', 'vae')
 OUTPUT_SOCKET_TYPES = ('IMAGE',)
 BATCH_POLICY = 'exactly-one'
@@ -171,6 +172,7 @@ class MATRIXCropTailPaste:
                 'scheduler': _input_widget('scheduler'),
                 'feather_px': _input_widget('feather_px'),
                 'color_match': _input_widget('color_match'),
+                'mask_mode': _input_widget('mask_mode'),
             },
         }
 

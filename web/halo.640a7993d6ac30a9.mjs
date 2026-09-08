@@ -1086,7 +1086,24 @@ function coerceValue(widget, raw) {
 }
 
 // A presentation policy only: keep backend names, values, order and links intact.
-function spectralFieldPresentation(node, widget) {
+function parameterFieldPresentation(node, widget) {
+  if ((node.comfyClass || node.type) === "MATRIX_CropTailPaste" && widget.name === "mask_mode") {
+    return { label: "Mask behavior", hidden: false,
+      choices: [
+        { value: "legacy_grow_feather", label: "Grow + feather" },
+        { value: "soft_preserve", label: "Soft mask" },
+      ],
+      title: "Grow + feather preserves legacy mask rounding, dilation and hole filling. Preserve soft mask retains confidence; feather is measured at the working resolution. Zero feather preserves original zero-mask pixels." };
+  }
+  if (["MATRIX_CropTailPaste", "MATRIX_LatentTail"].includes(node.comfyClass || node.type)) {
+    const labels = { guide_size: "Working size", padding_px: "Crop padding",
+      start_sigma: "Start sigma", steps: "Steps", sampler_name: "Sampler",
+      scheduler: "Scheduler", feather_px: "Feather", color_match: "Color match" };
+    return { label: labels[widget.name], hidden: false, choices: null,
+      title: widget.name === "guide_size" ? "Longest edge of the resized working crop; this does not limit source mask coverage."
+        : widget.name === "feather_px" ? "Feather radius in working-resolution pixels. Set zero for exact original-mask paste in Soft mask mode."
+        : "" };
+  }
   if ((node.comfyClass || node.type) !== "MATRIXSpectralSampler") return null;
   const value = (name) => node.widgets?.find((item) => item.name === name)?.value;
   const known = (name) => !linkedInput(node, name);
@@ -1144,7 +1161,7 @@ function createWidgetField(doc, node, widget, options) {
   label.htmlFor = inputId;
   let control;
   const choices = () => {
-    const presented = spectralFieldPresentation(node, widget)?.choices;
+    const presented = parameterFieldPresentation(node, widget)?.choices;
     if (presented) return presented;
     const values = typeof widget.options?.values === "function"
       ? widget.options.values.call(widget) : widget.options?.values;
@@ -1163,7 +1180,7 @@ function createWidgetField(doc, node, widget, options) {
   }
   control.id = inputId;
   const render = () => {
-    const presentation = spectralFieldPresentation(node, widget);
+    const presentation = parameterFieldPresentation(node, widget);
     label.textContent = presentation?.label || widget.label || widget.name;
     field.hidden = Boolean(presentation?.hidden);
     // Explicit display handles host styles that override the HTML hidden rule.
@@ -1196,9 +1213,9 @@ function createWidgetField(doc, node, widget, options) {
     marker.hidden = !linked;
   };
   const commit = (event) => {
-    if (linkedInput(node, widget.name) || spectralFieldPresentation(node, widget)?.hidden) { render(); return; }
+    if (linkedInput(node, widget.name) || parameterFieldPresentation(node, widget)?.hidden) { render(); return; }
     const raw = control.type === "checkbox" ? control.checked : control.value;
-    const allowed = spectralFieldPresentation(node, widget)?.choices;
+    const allowed = parameterFieldPresentation(node, widget)?.choices;
     if (allowed && !allowed.some((item) => item.value === raw && !item.disabled)) { render(); return; }
     const result = coerceValue(widget, raw);
     if (!result.accepted) { render(); return; }

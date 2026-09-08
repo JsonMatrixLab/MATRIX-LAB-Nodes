@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.b89f5e0d6a0b1b57.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.f5554171d9d043a1.mjs";
 const ASPECT_RATIOS = ["1:1", "9:16", "3:4"];
 const RESOLUTION_TIERS = ["1K", "2K", "4K"];
 export function calculateResolution(state) {
