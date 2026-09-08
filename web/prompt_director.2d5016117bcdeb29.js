@@ -1,6 +1,7 @@
 import {
   applyHaloSelect,
   createHaloWidgetHost,
+  haloMinimumNodeHeight,
   haloWidgetLayoutHeight,
   measureHaloContentHeight,
   mountHaloSurface,
@@ -97,12 +98,16 @@ function snapshotWidget(widget) {
     hadOptions: Object.prototype.hasOwnProperty.call(widget, "options"),
     options: widget.options,
     hidden: widget.options?.hidden,
+    hadNativeHidden: Object.prototype.hasOwnProperty.call(widget, "hidden"),
+    nativeHidden: widget.hidden,
   };
 }
 
 function hideWidget(snapshot) {
   snapshot.widget.options ||= {};
   snapshot.widget.options.hidden = true;
+  // Classic's DOM bridge reads widget.hidden, not options.hidden.
+  snapshot.widget.hidden = true;
   snapshot.widget.draw = () => {};
   snapshot.widget.computeSize = () => [0, -4];
 }
@@ -111,6 +116,8 @@ function restoreWidget(snapshot) {
   const { widget } = snapshot;
   widget.draw = snapshot.draw;
   widget.computeSize = snapshot.computeSize;
+  if (snapshot.hadNativeHidden) widget.hidden = snapshot.nativeHidden;
+  else delete widget.hidden;
   if (widget.callback === snapshot.ownedCallback) widget.callback = snapshot.callback;
   if (snapshot.hadOptions) {
     widget.options = snapshot.options;
@@ -441,6 +448,7 @@ export function mountPromptDirector(node, options = {}) {
   let destroyed = false;
   let pending = null;
   let resizeTimer = null;
+  let sizingObserver = null;
   let unobserveCollection = () => {};
   let observedWidget = null;
   let suppressStale = false;
@@ -1003,8 +1011,10 @@ export function mountPromptDirector(node, options = {}) {
         ? Math.max(0, nativeNode.offsetWidth - nativeSlot.offsetWidth)
         : 2 * (Number.isFinite(margin) && margin >= 0 ? margin : 10);
       const minimumNodeWidth = MIN_WIDTH + horizontalInsets;
-      if (width < minimumNodeWidth) {
-        setHaloNodeSize(node, [minimumNodeWidth, Number(node.size?.[1]) || DEFAULT_HEIGHT]);
+      const requiredHeight = haloMinimumNodeHeight(node, measuredHeight());
+      const nextWidth = Math.max(width, minimumNodeWidth);
+      if (nextWidth !== width || Math.abs(requiredHeight - Number(node.size?.[1])) > 0.5) {
+        setHaloNodeSize(node, [nextWidth, requiredHeight]);
       }
       halo?.renderStatic?.();
     }, 0);
@@ -1016,6 +1026,7 @@ export function mountPromptDirector(node, options = {}) {
     copyNoticeTimer = null;
     textPreviews.clear();
     clearTimeout(resizeTimer);
+    sizingObserver?.disconnect();
     pending?.controller?.abort?.();
     pending = null;
     credentialEpoch += 1;
@@ -1081,10 +1092,16 @@ export function mountPromptDirector(node, options = {}) {
     node.onRemoved = wrappedRemoved;
     node.onConfigure = wrappedConfigure;
     node.onConnectionsChange = wrappedConnectionsChange;
+    const SizingObserver = doc.defaultView?.ResizeObserver || globalThis.ResizeObserver;
+    if (typeof SizingObserver === "function") {
+      sizingObserver = new SizingObserver(scheduleMinimum);
+      sizingObserver.observe(root);
+    }
     render(); scheduleMinimum();
     void refreshCredentialStatus();
     return control;
   } catch (error) {
+    sizingObserver?.disconnect();
     unobserveCollection();
     credentialEpoch += 1;
     catalogueEpoch += 1;
