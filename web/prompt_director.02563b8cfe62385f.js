@@ -1,10 +1,11 @@
 import {
+  applyHaloSelect,
   createHaloWidgetHost,
   haloWidgetLayoutHeight,
   measureHaloContentHeight,
   mountHaloSurface,
   setHaloNodeSize,
-} from "./halo.cdbfe5654df6eedc.mjs";
+} from "./halo.ffc147e443fbdd64.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
@@ -180,8 +181,26 @@ export function resolveReferenceCollection(node, application = app) {
   const originId = link?.origin_id ?? link?.originId;
   const originSlot = link?.origin_slot ?? link?.originSlot;
   const origin = graphNode(graph, originId);
+  if ((origin?.comfyClass || origin?.type) === "LoadImage") {
+    if (Number(originSlot) !== 0 || origin.outputs?.[originSlot]?.type === "MASK") {
+      throw new Error("Connect the Load Image IMAGE output, not its mask.");
+    }
+    const imageWidget = widgetByName(origin, "image");
+    if (!imageWidget || isWidgetLinked(origin, "image")) {
+      throw new Error("Choose a local file in Load Image before generating.");
+    }
+    const filename = String(imageWidget.value ?? "").replace(/\\/g, "/");
+    if (!filename || / \[(?:output|temp)\]$/.test(filename)) {
+      throw new Error("Choose an input image in Load Image before generating.");
+    }
+    const identity = filename.endsWith(" [input]") ? filename : `${filename} [input]`;
+    return {
+      collection: parseReferenceCollection(JSON.stringify({version: 1, items: [{image: identity}], selected: 0})),
+      widget: imageWidget,
+    };
+  }
   if (!origin || (origin.comfyClass || origin.type) !== LOADER_TYPE) {
-    throw new Error("Connect images directly from MATRIXLAB Image Batch Loader.");
+    throw new Error("Connect IMAGE directly from Load Image or MATRIX IMAGE BATCH LOADER. Other upstream images must first be saved as input files.");
   }
   const output = origin.outputs?.[originSlot];
   if (output?.name && output.name !== "images") {
@@ -260,18 +279,12 @@ function addStyle(doc, root) {
   const style = doc.createElement("style");
   style.textContent = `
 .matrixlab-director [hidden]{display:none!important}
-@supports (appearance:base-select){
- .matrixlab-director select,.matrixlab-director select::picker(select){appearance:base-select}
- .matrixlab-director select::picker(select){background:#0B1710;color:#EDF8F0;border:1px solid #31543C;border-radius:9px;padding:4px;font:13px/19.5px "Cascadia Mono",Consolas,monospace;max-height:320px;overflow:auto}
- .matrixlab-director select option{padding:8px 10px;border-radius:5px}
- .matrixlab-director select option:hover,.matrixlab-director select option:focus{background:#173E24;color:#BDFFD0;outline:none}
- .matrixlab-director select option::checkmark,.matrixlab-director select::picker-icon{color:#00FF41}
-}
+.matrixlab-director__output-header{display:flex;align-items:center;gap:8px}.matrixlab-director__output-header>span:first-child{flex:1}.matrixlab-director .matrixlab-director__copy{display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;min-height:28px;padding:4px;border-radius:6px;letter-spacing:0}.matrixlab-director__copy-status{font-size:10px;line-height:14px;max-width:65%;overflow-wrap:anywhere}
 .matrixlab-director{position:relative;z-index:2;display:grid;grid-auto-rows:max-content;align-content:start;margin:0 7px;padding:18px 16px;gap:8px;color:#EDF8F0;font:400 13px/19.5px "Cascadia Mono","Cascadia Code",Consolas,"Liberation Mono",monospace;font-variant-ligatures:none;box-sizing:border-box}
 .matrixlab-director *{box-sizing:border-box;font:inherit}.matrixlab-director__eyebrow{color:#ABC0B1;font-size:9px;line-height:13.5px;letter-spacing:1px;text-transform:uppercase}.matrixlab-director__references{display:flex;justify-content:space-between;gap:8px;color:#97AA9C;font-size:10px;line-height:16px}.matrixlab-director__count{color:#5CF2A5}
-.matrixlab-director label{display:grid;gap:5px;color:#ABC0B1;font-size:11px;line-height:16.5px}.matrixlab-director label[data-linked="true"]::after{content:"LINKED";color:#97AA9C;font-size:9px;line-height:13.5px}.matrixlab-director textarea,.matrixlab-director input,.matrixlab-director select{width:100%;min-height:38px;border:1px solid #31543C;border-radius:9px;padding:8px 10px;background:linear-gradient(125deg,#172B1EDF 0%,#0B1710ED 100%);color:#EDF8F0;text-align:left;direction:ltr}.matrixlab-director textarea:disabled,.matrixlab-director input:disabled,.matrixlab-director select:disabled{border-color:#34513E;background:#0C1710;color:#97AA9C}.matrixlab-director textarea{resize:vertical;min-height:76px}.matrixlab-director__output textarea{min-height:116px}.matrixlab-director textarea:focus-visible,.matrixlab-director input:focus-visible,.matrixlab-director select:focus-visible,.matrixlab-director button:focus-visible,.matrixlab-director summary:focus-visible{outline:2px solid #FFCA6B;outline-offset:4px}.matrixlab-director select{color-scheme:dark;accent-color:#00FF41}.matrixlab-director select option{text-align:left;direction:ltr;background:#0B1710;color:#EDF8F0}.matrixlab-director select option:checked{background:#173E24;color:#BDFFD0}
+.matrixlab-director label{display:grid;gap:5px;color:#ABC0B1;font-size:11px;line-height:16.5px}.matrixlab-director label[data-linked="true"]::after{content:"LINKED";color:#97AA9C;font-size:9px;line-height:13.5px}.matrixlab-director textarea,.matrixlab-director input{width:100%;min-height:38px;border:1px solid #31543C;border-radius:9px;padding:8px 10px;background:linear-gradient(125deg,#172B1EDF 0%,#0B1710ED 100%);color:#EDF8F0;text-align:left;direction:ltr}.matrixlab-director .matrixlab-halo-select{width:100%;min-height:38px;padding:8px 10px}.matrixlab-director textarea:disabled,.matrixlab-director input:disabled{border-color:#34513E;background:#0C1710;color:#97AA9C}.matrixlab-director textarea{resize:vertical;min-height:76px}.matrixlab-director__output textarea{min-height:116px}.matrixlab-director textarea:focus-visible,.matrixlab-director input:focus-visible,.matrixlab-director button:focus-visible,.matrixlab-director summary:focus-visible{outline:2px solid #FFCA6B;outline-offset:4px}
 .matrixlab-director button{min-height:40px;border:1px solid #00FF41;border-radius:10px;padding:0 12px;background:linear-gradient(180deg,#173E24 0%,#0B2113 100%);color:#BDFFD0;letter-spacing:1px;text-transform:uppercase;cursor:pointer}.matrixlab-director button:disabled{opacity:.38;cursor:default}.matrixlab-director__actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.matrixlab-director__recover{min-width:96px;border-color:#31543C;text-transform:none;letter-spacing:0}
-.matrixlab-director__credential{display:grid;gap:8px;padding:10px;border:1px solid #21492B;border-radius:9px;background:#08170BDE}.matrixlab-director__credential-status{color:#97AA9C;font-size:10px;line-height:16px;overflow-wrap:anywhere}.matrixlab-director__key-row,.matrixlab-director__model-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px}.matrixlab-director__key-row button,.matrixlab-director__model-row button,.matrixlab-director__change{min-height:38px;border-color:#31543C;text-transform:none;letter-spacing:0}.matrixlab-director__change{justify-self:start}.matrixlab-director__model-error{color:#FF6B5A;font-size:10px;line-height:16px}.matrixlab-director__model-row label[data-invalid="true"] select{border-color:#FF6B5A;background:#26110F}
+.matrixlab-director__credential{display:grid;gap:8px;padding:10px;border:1px solid #21492B;border-radius:9px;background:#08170BDE}.matrixlab-director__credential-status{color:#97AA9C;font-size:10px;line-height:16px;overflow-wrap:anywhere}.matrixlab-director__key-row,.matrixlab-director__model-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px}.matrixlab-director__credential-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.matrixlab-director__key-row button,.matrixlab-director__model-row button,.matrixlab-director__change{min-height:38px;border-color:#31543C;text-transform:none;letter-spacing:0}.matrixlab-director__change{width:100%;min-width:0}.matrixlab-director__model-error{color:#FF6B5A;font-size:10px;line-height:16px}.matrixlab-director__model-row label[data-invalid="true"] select{border-color:#FF6B5A;background:#26110F}
 .matrixlab-director details{border:1px solid #21492B;border-radius:9px;padding:8px 10px;background:#08170BDE}.matrixlab-director summary{cursor:pointer;color:#97AA9C;font-size:10px;line-height:16px}.matrixlab-director__advanced{display:grid;gap:8px;padding-top:10px}.matrixlab-director__status{min-height:30px;padding:7px 9px;border:1px solid #24462E;border-radius:8px;background:#08170BDE;color:#94C69E;font-size:10px;line-height:16px;overflow-wrap:anywhere}.matrixlab-director__status[data-error="true"]{border-color:#FF6B5A;background:#26110F;color:#FF6B5A}.matrixlab-director__status[data-stale="true"]{border-color:#FFCA6B;background:#241B0D;color:#FFCA6B}
 `;
   root.appendChild(style);
@@ -356,7 +369,10 @@ export function mountPromptDirector(node, options = {}) {
   disconnect.dataset.action = "disconnect-key";
   disconnect.className = "matrixlab-director__change";
   disconnect.textContent = "Disconnect";
-  credentialPanel.append(credentialStatus, keyRow, changeKey, disconnect);
+  const credentialActions = doc.createElement("div");
+  credentialActions.className = "matrixlab-director__credential-actions";
+  credentialActions.append(changeKey, disconnect);
+  credentialPanel.append(credentialStatus, keyRow, credentialActions);
   const instructions = doc.createElement("textarea");
   const instructionLabel = makeLabel(doc, "Instructions", instructions);
   const actions = doc.createElement("div");
@@ -373,9 +389,26 @@ export function mountPromptDirector(node, options = {}) {
   actions.append(generate, recover);
   const finalPrompt = doc.createElement("textarea");
   const finalLabel = makeLabel(doc, "Final prompt", finalPrompt, "matrixlab-director__output");
+  const finalHeader = doc.createElement("div");
+  finalHeader.className = "matrixlab-director__output-header";
+  const copyPrompt = doc.createElement("button");
+  copyPrompt.type = "button";
+  copyPrompt.dataset.action = "copy-prompt";
+  copyPrompt.className = "matrixlab-director__copy";
+  copyPrompt.title = "Copy final prompt";
+  copyPrompt.setAttribute("aria-label", "Copy final prompt");
+  copyPrompt.innerHTML = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';
+  const copyStatus = doc.createElement("span");
+  copyStatus.className = "matrixlab-director__copy-status";
+  copyStatus.setAttribute("role", "status");
+  copyStatus.setAttribute("aria-live", "polite");
+  const finalTitle = finalLabel.firstChild;
+  finalLabel.removeChild(finalTitle);
+  finalHeader.append(finalTitle, copyStatus, copyPrompt);
+  finalLabel.replaceChildren(finalHeader, finalPrompt);
   const modelRow = doc.createElement("div");
   modelRow.className = "matrixlab-director__model-row";
-  const model = doc.createElement("select");
+  const model = applyHaloSelect(doc.createElement("select"));
   const modelLabel = makeLabel(doc, "Model", model);
   const refreshModelsButton = doc.createElement("button");
   refreshModelsButton.type = "button";
@@ -413,6 +446,10 @@ export function mountPromptDirector(node, options = {}) {
   let suppressStale = false;
   let collectionError = "";
   let actionError = "";
+  let copying = false;
+  let copiedText = null;
+  let copyNoticeTimer = null;
+  const textPreviews = new Map();
   let credentialError = "";
   let modelError = "";
   let credential = { configured: false, verified: false, source: "", tail: "", persistence: "none" };
@@ -456,7 +493,8 @@ export function mountPromptDirector(node, options = {}) {
     if (destroyed || suppressStale) return;
     const prior = generationState(widgets.generation_state.value);
     if (!prior.request_id && !String(widgets.final_prompt.value || "")) return;
-    writeState({ version: 1, ...prior, state: "stale", reason });
+    const unresolved = ["submitting", "pending", "indeterminate"].includes(prior.state);
+    writeState({ version: 1, ...prior, state: unresolved ? prior.state : "stale", reason });
   };
   const bindCollectionObserver = (widget) => {
     if (widget === observedWidget) return;
@@ -500,10 +538,27 @@ export function mountPromptDirector(node, options = {}) {
   };
   const render = () => {
     if (destroyed) return;
+    copyPrompt.disabled = copying || !String(widgets.final_prompt.value ?? "").trim();
+    if (copiedText !== String(widgets.final_prompt.value ?? "")) copyStatus.textContent = "";
     syncControl(instructions, widgets.instructions);
     syncControl(systemPrompt, widgets.system_prompt);
     syncControl(characterTrigger, widgets.character_trigger);
     syncControl(finalPrompt, widgets.final_prompt);
+    // Project saved text into the native text viewer without executing downstream work.
+    // Other STRING consumers receive the exact same value on normal graph execution.
+    const connectedPreviews = new Set();
+    for (const linkId of node.outputs?.[0]?.links || []) {
+      const link = graphLink(node.graph || application?.graph, linkId);
+      const target = graphNode(node.graph || application?.graph, link?.target_id ?? link?.targetId);
+      if ((target?.comfyClass || target?.type) !== "PreviewAny" || typeof target.onExecuted !== "function") continue;
+      connectedPreviews.add(target);
+      const text = String(widgets.final_prompt.value ?? "");
+      if (textPreviews.get(target) === text) continue;
+      textPreviews.set(target, text);
+      try { target.onExecuted({text: [text]}); }
+      catch { textPreviews.delete(target); }
+    }
+    for (const target of textPreviews.keys()) if (!connectedPreviews.has(target)) textPreviews.delete(target);
     rebuildModelOptions();
     let count = null;
     try { count = currentCollection().items.length; collectionError = ""; }
@@ -719,6 +774,35 @@ export function mountPromptDirector(node, options = {}) {
     [characterTrigger, "change", (event) => commitText(characterTrigger, widgets.character_trigger, event, true)],
     [finalPrompt, "input", (event) => commitText(finalPrompt, widgets.final_prompt, event, false)],
     [keyInput, "input", render],
+    [copyPrompt, "click", async (event) => {
+      event.preventDefault?.();
+      event.stopPropagation?.();
+      const text = String(widgets.final_prompt.value ?? "");
+      if (destroyed || copying || !text.trim()) return;
+      copying = true;
+      copiedText = text;
+      clearTimeout(copyNoticeTimer);
+      copyNoticeTimer = null;
+      copyStatus.textContent = "";
+      render();
+      try {
+        const clipboard = options.clipboard || globalThis.navigator?.clipboard;
+        if (!clipboard?.writeText) throw new Error("Clipboard unavailable");
+        await clipboard.writeText(text);
+        if (!destroyed && text === String(widgets.final_prompt.value ?? "")) {
+          copyStatus.textContent = "Copied";
+          copyNoticeTimer = setTimeout(() => {
+            copyNoticeTimer = null;
+            if (!destroyed) copyStatus.textContent = "";
+          }, 3000);
+        }
+      } catch {
+        if (!destroyed && text === String(widgets.final_prompt.value ?? "")) copyStatus.textContent = "Copy failed — select text and copy manually";
+      } finally {
+        copying = false;
+        if (!destroyed) render();
+      }
+    }],
   ];
   for (const [element, type, listener] of listeners) element.addEventListener(type, listener);
   const changeCredential = () => {
@@ -928,6 +1012,9 @@ export function mountPromptDirector(node, options = {}) {
   const destroy = () => {
     if (destroyed) return;
     destroyed = true;
+    clearTimeout(copyNoticeTimer);
+    copyNoticeTimer = null;
+    textPreviews.clear();
     clearTimeout(resizeTimer);
     pending?.controller?.abort?.();
     pending = null;

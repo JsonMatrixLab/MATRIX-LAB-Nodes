@@ -260,6 +260,14 @@ export const HALO_TOKENS = Object.freeze({
   maxDevicePixelRatio: 2,
 });
 
+export function applyHaloSelect(control) {
+  if (control?.tagName !== "SELECT") return control;
+  const classes = String(control.className || "").split(/\s+/).filter(Boolean);
+  if (!classes.includes("matrixlab-halo-select")) classes.push("matrixlab-halo-select");
+  control.className = classes.join(" ");
+  return control;
+}
+
 const FONT_URL = new URL("./assets/CascadiaMono.woff2", import.meta.url).href;
 const SCHEDULER_KEY = Symbol.for(`matrixlab.halo.scheduler.v${HALO_VERSION}`);
 const SURFACE_KEY = Symbol.for(`matrixlab.halo.surface.v${HALO_VERSION}`);
@@ -485,11 +493,13 @@ function installStyle(doc) {
 .matrixlab-halo__field:hover{border-color:${HALO_TOKENS.fieldHoverBorder}}
 .matrixlab-halo__field[data-linked="true"]{border-color:${HALO_TOKENS.linkedBorder};background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.linkedText}}
 .matrixlab-halo__field label{min-width:0;flex:1 1 108px;overflow-wrap:anywhere;font-size:11px;line-height:16.5px}
-.matrixlab-halo__field input,.matrixlab-halo__field select{box-sizing:border-box;min-width:0;width:108px;flex:0 1 108px;max-width:100%;min-height:24px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};text-align:right}
+.matrixlab-halo-select{appearance:auto;box-sizing:border-box;min-width:0;max-width:100%;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};color-scheme:dark;accent-color:${HALO_TOKENS.green};direction:ltr;text-align:left;text-align-last:left}
+.matrixlab-halo-select option{background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};direction:ltr;text-align:left}
+.matrixlab-halo__field input{box-sizing:border-box;min-width:0;width:108px;flex:0 1 108px;max-width:100%;min-height:24px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};text-align:right}
+.matrixlab-halo__field .matrixlab-halo-select{width:108px;flex:0 1 108px;min-height:24px}
 .matrixlab-halo__field input[type="checkbox"]{width:18px;flex:0 0 18px}
-.matrixlab-halo__field select,.matrixlab-halo__field select option{direction:ltr;text-align:left;text-align-last:left}
-.matrixlab-halo__field input:focus-visible,.matrixlab-halo__field select:focus-visible,.matrixlab-halo__field button:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:4px}
-.matrixlab-halo__field input:disabled,.matrixlab-halo__field select:disabled{color:${HALO_TOKENS.linkedText};opacity:1}
+.matrixlab-halo__field input:focus-visible,.matrixlab-halo-select:focus-visible,.matrixlab-halo__field button:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:4px}
+.matrixlab-halo__field input:disabled,.matrixlab-halo-select:disabled{color:${HALO_TOKENS.linkedText};opacity:1}
 .matrixlab-halo__linked{font-size:9px;line-height:13.5px;letter-spacing:1px;color:${HALO_TOKENS.linkedText}}
 .matrixlab-halo [data-halo-effect]{position:relative;overflow:hidden}
 .matrixlab-halo [data-halo-effect="primary"]:active:not(:disabled){transform:translateY(1px)}
@@ -1091,6 +1101,7 @@ function createWidgetField(doc, node, widget, options) {
   let renderedChoices = null;
   if (choices()) {
     control = doc.createElement("select");
+    applyHaloSelect(control);
   } else {
     control = doc.createElement("input");
     control.type = typeof widget.value === "boolean" ? "checkbox" : typeof widget.value === "number" ? "number" : "text";

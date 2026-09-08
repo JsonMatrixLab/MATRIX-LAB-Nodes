@@ -209,7 +209,11 @@ def _request_payload(body: Any, models: Mapping[str, ModelConfig]) -> dict[str, 
         "instructions": _validate_text(body.get("instructions", ""), "instructions"),
         "system_prompt": _validate_text(body.get("system_prompt", ""), "system_prompt"),
         "model": model,
-        "character_trigger": _validate_text(body.get("character_trigger", ""), "character_trigger"),
+        # A trigger is a token, not prose: normalize only surrounding whitespace so
+        # the provider instruction and the saved prompt use the same exact value.
+        "character_trigger": _validate_text(
+            body.get("character_trigger", ""), "character_trigger"
+        ).strip(),
         "max_output_tokens": maximum,
         "temperature": float(temperature),
     }
@@ -252,7 +256,12 @@ def _normalize_trigger(text: str, trigger: str) -> str:
     escaped = re.escape(trigger)
     # Match explicit tokens only, plus the one known provider defect: <trigger>image.
     pattern = re.compile(rf"(?<!\w){escaped}(?=$|\W)|(?<!\w){escaped}(?=image(?:$|\W))")
-    remainder = " ".join(pattern.sub(" ", text).split()).strip(" ,")
+    remainder = " ".join(pattern.sub(" ", text).split()).strip(" ,;:!?—–-")
+    # Removing adjacent duplicate tokens can strand separator punctuation. Clean
+    # only those artifacts; leave punctuation inside the model's prose unchanged.
+    remainder = re.sub(r"[,;:]\s*([!?])", r"\1", remainder)
+    remainder = re.sub(r"([,;:])\s*[,;:]+\s*", r"\1 ", remainder)
+    remainder = re.sub(r"\s+([,;:!?])", r"\1", remainder)
     return trigger + (", " + remainder if remainder else "")
 
 
@@ -415,13 +424,17 @@ class PromptDirectorService:
         return disconnected.status
 
     async def generate(self, body: Any, *, credential_session="") -> dict[str, Any]:
+        # Reject malformed/disallowed payloads before any provider catalogue I/O.
+        # The selected model is checked again against the authenticated live catalogue.
+        payload = _request_payload(body, self.models)
         credential = self._credential(credential_session)
         catalogue = self._catalogues.get(credential.fingerprint)
         if catalogue is None:
             await self.refresh_models(credential_session)
             catalogue = self._catalogues[credential.fingerprint]
         models = catalogue[1]
-        payload = _request_payload(body, models)
+        if payload["model"] not in models:
+            raise PromptDirectorError("model is not in the authenticated provider catalogue")
         # Decode and hash away from the event loop, then claim the exact stable snapshot.
         collection_digest, images = await asyncio.to_thread(
             _prepare_image_snapshot, payload["collection"]
