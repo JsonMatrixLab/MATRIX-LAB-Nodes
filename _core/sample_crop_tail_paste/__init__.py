@@ -105,14 +105,20 @@ def compute_crop_geometry(
         return None
     center_x = (xmin + xmax) / 2.0
     center_y = (ymin + ymax) / 2.0
-    box_width = min(max(xmax - xmin + 1, 256), guide, width)
-    box_height = min(max(ymax - ymin + 1, 256), guide, height)
+    # Source coverage is independent of processing resolution: `guide` caps only the resized
+    # target below. Capping these extents by `guide` clips large or disconnected support bboxes.
+    box_width = min(max(xmax - xmin + 1, 256), width)
+    box_height = min(max(ymax - ymin + 1, 256), height)
     pad_x = min(max((width - box_width) // 2, 0), padding)
     pad_y = min(max((height - box_height) // 2, 0), padding)
     crop_width = min(_ceil16(min(box_width + 2 * pad_x, width)), width)
     crop_height = min(_ceil16(min(box_height + 2 * pad_y, height)), height)
     x0 = max(0, min(int(center_x - crop_width / 2), width - crop_width))
     y0 = max(0, min(int(center_y - crop_height / 2), height - crop_height))
+    # Inclusive bbox centers can round one pixel left/up when no padding remains.
+    # Preserve padded placement while guaranteeing exclusive ends cover all support.
+    x0 = max(x0, xmax + 1 - crop_width)
+    y0 = max(y0, ymax + 1 - crop_height)
 
     ratio = crop_width / crop_height
     if ratio > 1:

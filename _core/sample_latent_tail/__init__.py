@@ -291,9 +291,9 @@ def resolve_tail_sigmas(
     resolved_start = best[0]
     if resolved_start > START_SIGMA_WARN:
         warnings.append(
-            f"resolved start sigma {resolved_start:.3f} is above {START_SIGMA_WARN:.2f}; "
-            "the model rewrites "
-            "mid frequencies (wrinkles, blemishes, feature shape) from here"
+            f"resolved normalized-schedule start sigma {resolved_start:.3f} is above "
+            f"{START_SIGMA_WARN:.2f}; normalized flow schedules may increase "
+            "mid-frequency rewrite risk from here"
         )
     return TailSchedule(
         sigmas=best,
@@ -379,6 +379,11 @@ def latent_tail(
     run_sampler: Callable[..., torch.Tensor],
 ) -> dict[str, Any]:
     """Run one masked tail through the injected sampler seam and return a new LATENT."""
+    samples = _validate_latent(latent)
+    noise_mask = _noise_mask(mask, latent_batch=samples.shape[0], latent_ndim=samples.ndim)
+    if noise_mask is not None and torch.count_nonzero(noise_mask).item() == 0:
+        _LOG.info("latent tail skipped: exact-zero mask")
+        return latent
     if not isinstance(schedule, TailSchedule):
         raise TailValidationError("schedule must be a TailSchedule")
     if sampler_name not in CORE_SAMPLER_NAMES:
@@ -389,8 +394,6 @@ def latent_tail(
         raise TailValidationError("noise must be a NOISE object providing generate_noise")
     if not callable(run_sampler):
         raise TailValidationError("run_sampler must be callable")
-    samples = _validate_latent(latent)
-    noise_mask = _noise_mask(mask, latent_batch=samples.shape[0], latent_ndim=samples.ndim)
     # V2: never mutate the incoming container; drop an inherited mask so ours is the only one.
     payload = {key: value for key, value in latent.items() if key != "noise_mask"}
     sigmas = torch.tensor(schedule.sigmas, dtype=torch.float32)
@@ -452,6 +455,13 @@ def execute_utility_operation(item):
     missing = [name for name in required if name not in item]
     if missing:
         raise TailValidationError("missing latent tail input(s): " + ", ".join(missing))
+    samples = _validate_latent(item["latent"])
+    noise_mask = _noise_mask(
+        item.get("mask"), latent_batch=samples.shape[0], latent_ndim=samples.ndim
+    )
+    if noise_mask is not None and torch.count_nonzero(noise_mask).item() == 0:
+        _LOG.info("latent tail skipped: exact-zero mask")
+        return (item["latent"],)
     if _SCHEDULE_FACTORY is None or _RUN_SAMPLER is None:
         raise TailValidationError(
             "sample.latent-tail runtime adapters are not configured by the pack bootstrap"

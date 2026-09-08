@@ -1085,6 +1085,56 @@ function coerceValue(widget, raw) {
   return { accepted: true, value: String(raw) };
 }
 
+// A presentation policy only: keep backend names, values, order and links intact.
+function spectralFieldPresentation(node, widget) {
+  if ((node.comfyClass || node.type) !== "MATRIXSpectralSampler") return null;
+  const value = (name) => node.widgets?.find((item) => item.name === name)?.value;
+  const known = (name) => !linkedInput(node, name);
+  const scales = String(value("scales") ?? "").split(",").map((part) => Number(part.trim()));
+  const native = known("scales") && scales.length === 1 && scales[0] === 1;
+  const manual = known("mode") && value("mode") === "manual";
+  const automatic = known("mode") && value("mode") === "delta_optimal";
+  const named = known("model_preset") && value("model_preset") !== "custom";
+  const labels = {
+    base_sampler: "Base sampler", transform: "Transform", mode: "Transition timing",
+    model_preset: "Spectrum profile", scales: "Resolution path", delta: "Tolerance",
+    manual_sigmas: "Transition sigmas", spectrum_a: "Spectrum amplitude",
+    spectrum_beta: "Spectrum decay", spectral_seed: "Transition seed",
+  };
+  const hidden = !linkedInput(node, widget.name) && (
+    (native && !["base_sampler", "scales"].includes(widget.name)) ||
+    (manual && ["model_preset", "delta", "spectrum_a", "spectrum_beta"].includes(widget.name)) ||
+    (automatic && widget.name === "manual_sigmas") ||
+    (automatic && named && ["spectrum_a", "spectrum_beta"].includes(widget.name))
+  );
+  let choices = null;
+  if (widget.name === "mode") {
+    choices = [{ value: "delta_optimal", label: "Automatic" }, { value: "manual", label: "Manual" }];
+  } else if (widget.name === "scales") {
+    choices = [
+      { value: "1.0", label: "Full resolution" },
+      { value: "0.5,1.0", label: "Half to full" },
+    ];
+    const current = String(widget.value ?? "");
+    if (!choices.some((item) => item.value === current)) {
+      // Preserve custom/linked legacy schedules rather than silently rewriting them.
+      choices.push({ value: current, label: "Existing custom path", disabled: true });
+    }
+  } else if (widget.name === "base_sampler" && known("scales") && !native) {
+    choices = [
+      { value: "euler", label: "Euler" },
+      { value: "euler_ancestral", label: "Euler ancestral" },
+    ];
+    if (!choices.some((item) => item.value === widget.value)) {
+      choices.push({ value: String(widget.value), label: `${widget.value} — full resolution only`, disabled: true });
+    }
+  }
+  return { label: labels[widget.name], hidden, choices,
+    title: widget.name === "scales"
+      ? "Full resolution uses the native sampler. Half to full starts at half width and height, then finishes at the original size. Existing custom or linked paths are preserved."
+      : "" };
+}
+
 function createWidgetField(doc, node, widget, options) {
   const field = doc.createElement("div");
   field.className = "matrixlab-halo__field";
@@ -1094,6 +1144,8 @@ function createWidgetField(doc, node, widget, options) {
   label.htmlFor = inputId;
   let control;
   const choices = () => {
+    const presented = spectralFieldPresentation(node, widget)?.choices;
+    if (presented) return presented;
     const values = typeof widget.options?.values === "function"
       ? widget.options.values.call(widget) : widget.options?.values;
     return Array.isArray(values) ? values : Array.isArray(widget.options) ? widget.options : null;
@@ -1111,15 +1163,29 @@ function createWidgetField(doc, node, widget, options) {
   }
   control.id = inputId;
   const render = () => {
+    const presentation = spectralFieldPresentation(node, widget);
+    label.textContent = presentation?.label || widget.label || widget.name;
+    field.hidden = Boolean(presentation?.hidden);
+    // Explicit display handles host styles that override the HTML hidden rule.
+    field.style.display = field.hidden ? "none" : "";
+    control.title = presentation?.title || "";
     if (control.tagName === "SELECT") {
-      const values = (choices() || []).map(String);
-      if (!renderedChoices || values.length !== renderedChoices.length || values.some((value, index) => value !== renderedChoices[index])) {
-        control.replaceChildren(...values.map(value => {
+      if (presentation) {
+        control.style.width = "152px";
+        control.style.flexBasis = "152px";
+      }
+      const values = (choices() || []).map((value) => typeof value === "object"
+        ? value : { value: String(value), label: String(value) });
+      const signature = JSON.stringify(values);
+      if (signature !== renderedChoices) {
+        control.replaceChildren(...values.map(item => {
           const option = doc.createElement("option");
-          option.value = option.textContent = value;
+          option.value = item.value;
+          option.textContent = item.label;
+          option.disabled = Boolean(item.disabled);
           return option;
         }));
-        renderedChoices = values;
+        renderedChoices = signature;
       }
     }
     const linked = linkedInput(node, widget.name);
@@ -1130,8 +1196,10 @@ function createWidgetField(doc, node, widget, options) {
     marker.hidden = !linked;
   };
   const commit = (event) => {
-    if (linkedInput(node, widget.name)) { render(); return; }
+    if (linkedInput(node, widget.name) || spectralFieldPresentation(node, widget)?.hidden) { render(); return; }
     const raw = control.type === "checkbox" ? control.checked : control.value;
+    const allowed = spectralFieldPresentation(node, widget)?.choices;
+    if (allowed && !allowed.some((item) => item.value === raw && !item.disabled)) { render(); return; }
     const result = coerceValue(widget, raw);
     if (!result.accepted) { render(); return; }
     const next = result.value;
@@ -1268,7 +1336,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   if (savedImages) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
   const contentMinimum = () => savedImages
     ? Math.max(fields.length * 46 + 36, ...fields.map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + 188
-    : measureHaloContentHeight(root, fields.length * 46 + 36);
+    : measureHaloContentHeight(root, fields.filter(({ field }) => !field.hidden).length * 46 + 36);
   let presentation = null;
   let halo = null;
   let destroyed = false;

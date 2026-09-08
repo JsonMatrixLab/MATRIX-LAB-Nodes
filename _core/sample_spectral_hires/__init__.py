@@ -232,6 +232,34 @@ def _dwt_expand(
     return output
 
 
+def _fft_axis_embedding(
+    source_length: int, target_length: int, device: torch.device
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Map one real-DFT axis into a larger grid without losing Nyquist symmetry."""
+    if target_length < source_length:
+        raise SpectralValidationError(
+            "FFT expansion cannot shrink a spatial dimension"
+        )
+    source_indices = list(range(source_length))
+    target_indices = [
+        index if index <= source_length // 2 else target_length + index - source_length
+        for index in source_indices
+    ]
+    weights = [1.0] * source_length
+    if source_length % 2 == 0 and target_length > source_length:
+        nyquist = source_length // 2
+        source_indices.insert(nyquist + 1, nyquist)
+        target_indices[nyquist] = nyquist
+        target_indices.insert(nyquist + 1, target_length - nyquist)
+        weights[nyquist] = 0.5
+        weights.insert(nyquist + 1, 0.5)
+    return (
+        torch.tensor(source_indices, device=device, dtype=torch.long),
+        torch.tensor(target_indices, device=device, dtype=torch.long),
+        torch.tensor(weights, device=device, dtype=torch.float32),
+    )
+
+
 def _fft_expand(
     value: torch.Tensor,
     target_height: int,
@@ -241,28 +269,24 @@ def _fft_expand(
     interrupt_check: Callable[[], None],
 ) -> torch.Tensor:
     interrupt_check()
-    low = torch.fft.fftshift(
-        torch.fft.fft2(value.float(), norm="ortho"), dim=(-2, -1)
-    )
+    low = torch.fft.fft2(value.float(), norm="ortho")
     noise = _randn(
         (*value.shape[:-2], target_height, target_width),
         generator=generator,
         device=value.device,
     )
-    coefficients = torch.fft.fftshift(
-        torch.fft.fft2(noise, norm="ortho"), dim=(-2, -1)
-    ).mul_(sigma)
-    height_start = (target_height - value.shape[-2]) // 2
-    width_start = (target_width - value.shape[-1]) // 2
-    coefficients[
-        ...,
-        height_start : height_start + value.shape[-2],
-        width_start : width_start + value.shape[-1],
-    ] = low
+    coefficients = torch.fft.fft2(noise, norm="ortho").mul_(sigma)
+    source_h, target_h, weight_h = _fft_axis_embedding(
+        value.shape[-2], target_height, value.device
+    )
+    source_w, target_w, weight_w = _fft_axis_embedding(
+        value.shape[-1], target_width, value.device
+    )
+    retained = low[..., source_h[:, None], source_w[None, :]]
+    retained = retained * (weight_h[:, None] * weight_w[None, :])
+    coefficients[..., target_h[:, None], target_w[None, :]] = retained
     interrupt_check()
-    return torch.fft.ifft2(
-        torch.fft.ifftshift(coefficients, dim=(-2, -1)), norm="ortho"
-    ).real
+    return torch.fft.ifft2(coefficients, norm="ortho").real
 
 
 class SpectralHiresSampler:
@@ -314,29 +338,25 @@ class SpectralHiresSampler:
         if omega_max <= 0:
             raise SpectralValidationError("latent spatial dimensions must be positive")
         thresholds = []
-        fp32_log_min = math.log(torch.finfo(torch.float32).tiny)
         for scale in self.scales[:-1]:
             omega = scale * omega_max
             log_power = math.log(amplitude) - beta * math.log(omega)
-            if log_power <= fp32_log_min:
-                raise SpectralNumericError(
-                    "spectrum amplitude is not numerically positive at this resolution"
-                )
-            if log_power > 709.0:
-                log_denominator = 2.0 * log_power
-            else:
-                power = math.exp(log_power)
-                remainder = 1.0 + power - self.delta
-                if remainder <= 0 or not math.isfinite(remainder):
-                    raise SpectralNumericError("spectral threshold denominator is invalid")
-                log_denominator = log_power + math.log(remainder)
+            log_base = math.log1p(-self.delta)
+            maximum = max(log_power, log_base)
+            log_remainder = maximum + math.log1p(
+                math.exp(min(log_power, log_base) - maximum)
+            )
+            log_denominator = log_power + log_remainder
             exponent = 0.5 * (math.log(self.delta) - log_denominator)
-            if exponent > 709.0:
-                raise SpectralNumericError("spectral threshold calculation overflowed")
-            root = math.exp(exponent)
-            threshold = 1.0 / (1.0 + root)
-            if not math.isfinite(threshold):
-                raise SpectralNumericError("spectral threshold is non-finite")
+            if exponent >= 0.0:
+                inverse_root = math.exp(-exponent)
+                threshold = inverse_root / (1.0 + inverse_root)
+            else:
+                threshold = 1.0 / (1.0 + math.exp(exponent))
+            if not math.isfinite(threshold) or not 0.0 < threshold < 1.0:
+                raise SpectralNumericError(
+                    "spectral threshold is not representable strictly inside (0,1)"
+                )
             thresholds.append(threshold)
         return tuple(thresholds)
 
