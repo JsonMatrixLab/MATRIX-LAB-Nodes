@@ -235,6 +235,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
   let errorMessage = "";
   const thumbnailErrors = new Map();
   const thumbnailTokens = new Map();
+  const tiles = new Map();
   let state;
   try { state = parseGalleryState(canonicalWidget.value ?? EMPTY_GALLERY_STATE); }
   catch (error) { state = parseGalleryState(EMPTY_GALLERY_STATE); errorMessage = error.message; }
@@ -370,21 +371,25 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     });
     const dimensions = doc.createElement("div");
     dimensions.className = "matrixlab-gallery__name";
+    dimensions.style.minHeight = "13.5px";
     const name = doc.createElement("div");
     name.className = "matrixlab-gallery__name";
     name.textContent = filename;
     name.title = identity;
-    const thumbnailError = thumbnailErrors.get(identity);
-    const failure = thumbnailError ? Object.assign(doc.createElement("div"), {
+    const failure = Object.assign(doc.createElement("div"), {
       className: "matrixlab-gallery__thumbnail-error",
-      textContent: thumbnailError,
-    }) : null;
-    if (failure) failure.setAttribute("role", "alert");
-    if (isPending) { tile.append(image, name, dimensions); if (failure) tile.append(failure); return tile; }
+    });
+    failure.setAttribute("role", "alert");
+    const updateFailure = () => {
+      failure.textContent = thumbnailErrors.get(identity) || "";
+      if (failure.textContent) { if (!failure.parentNode) tile.appendChild(failure); }
+      else failure.remove();
+    };
+    if (isPending) { tile.append(image, name, dimensions, failure); updateFailure(); return { tile, update: updateFailure }; }
     tile.tabIndex = 0;
     tile.setAttribute("role", "option");
     tile.setAttribute("aria-selected", String(state.selected === index));
-    const select = (event) => commit({ ...state, selected: index }, event, true);
+    const select = (event) => { if (state.selected !== index) commit({ ...state, selected: index }, event, true); };
     tile.addEventListener("click", (event) => { if (!event.target.closest?.("button")) select(event); });
     tile.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(event); }
@@ -398,17 +403,27 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     actions.append(
       button("Remove image reference", "M5 5l14 14M19 5L5 19", isLinked(node, canonicalWidget), (event) => remove(index, event)),
     );
-    if (state.selected === index) {
-      const selected = doc.createElement("span");
-      selected.className = "matrixlab-gallery__selected";
-      selected.textContent = "✓ Preview";
-      selected.setAttribute("aria-hidden", "true");
-      name.appendChild(selected);
-    }
+    const selected = doc.createElement("span");
+    selected.className = "matrixlab-gallery__selected";
+    selected.textContent = "✓ Preview";
+    selected.setAttribute("aria-hidden", "true");
+    name.appendChild(selected);
     tile.append(image, name, dimensions);
-    if (failure) tile.append(failure);
+    tile.append(failure);
     tile.append(actions);
-    return tile;
+    const update = (nextIndex) => {
+      index = nextIndex;
+      const active = state.selected === index;
+      const linked = isLinked(node, canonicalWidget);
+      tile.dataset.selected = String(active);
+      tile.setAttribute("aria-selected", String(active));
+      tile.draggable = !linked;
+      selected.hidden = !active;
+      for (const action of actions.childNodes) action.disabled = linked;
+      updateFailure();
+    };
+    update(index);
+    return { tile, update };
   }
 
   function render() {
@@ -423,9 +438,25 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
     for (const identity of thumbnailTokens.keys()) {
       if (!activeThumbnailIdentities.has(identity)) thumbnailTokens.delete(identity);
     }
-    grid.replaceChildren();
-    state.items.forEach((item, index) => grid.appendChild(tileFor(item, index, viewUrl(api, item.image))));
-    pending.filter(Boolean).forEach((item) => grid.appendChild(tileFor(item.file, -1, item.url, true)));
+    const scrollTop = grid.scrollTop;
+    const entries = [
+      ...state.items.map((item, index) => ({ key: `saved:${item.image}`, item, index, source: viewUrl(api, item.image), pending: false })),
+      ...pending.filter(Boolean).map((item) => ({ key: `pending:${item.url}`, item: item.file, index: -1, source: item.url, pending: true })),
+    ];
+    const keys = new Set(entries.map((entry) => entry.key));
+    for (const [key, record] of tiles) {
+      if (!keys.has(key)) { record.tile.remove(); tiles.delete(key); }
+    }
+    entries.forEach((entry, position) => {
+      let record = tiles.get(entry.key);
+      if (!record) {
+        record = tileFor(entry.item, entry.index, entry.source, entry.pending);
+        tiles.set(entry.key, record);
+      }
+      record.update(entry.index);
+      if (grid.childNodes[position] !== record.tile) grid.insertBefore(record.tile, grid.childNodes[position] || null);
+    });
+    grid.scrollTop = scrollTop;
     const total = state.items.length;
     count.textContent = `${total} image${total === 1 ? "" : "s"}${state.selected == null ? " · no preview selected" : ` · preview ${state.selected + 1}`}`;
     const pendingCount = pending.filter(Boolean).length;
@@ -586,6 +617,7 @@ export function mountImageGallery(root, node, canonicalWidget, options = {}) {
       objectUrls.clear();
       thumbnailErrors.clear();
       thumbnailTokens.clear();
+      tiles.clear();
       halo?.destroy?.();
       for (const child of Array.from(root.childNodes || [])) if (!beforeChildren.has(child)) child.remove?.();
       root.className = beforeClassName;
