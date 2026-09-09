@@ -3,6 +3,7 @@
 from typing import Callable
 
 from .save_clean import (
+    _default_preview_directory,
     SaveClean,
     inspect_jpeg_privacy,
     inspect_png_privacy,
@@ -38,6 +39,7 @@ def execute_utility_operation(item):
         item.get("quality", 100),
         path_allocator=_FACTORY_PATH_ALLOCATOR,
         interrupt_checker=_FACTORY_INTERRUPT_CHECKER,
+        preview_dir=_default_preview_directory,
     )
 
 __all__ = [

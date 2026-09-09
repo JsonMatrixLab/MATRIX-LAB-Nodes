@@ -47,6 +47,8 @@ def _adapt_image_inputs(inputs):
             # Upload-backed IMAGE widgets carry a filename until their operation adapter.
             if not isinstance(value, torch.Tensor):
                 continue
+            if value.numel() == 0:
+                raise ValueError('IMAGE contract violation: empty tensor; batch and image dimensions must be positive')
             if not bool(torch.isfinite(value).all().item()):
                 raise ValueError('IMAGE contract violation: all values must be finite')
             minimum = value.amin().item()

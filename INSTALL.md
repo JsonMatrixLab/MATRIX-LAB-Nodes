@@ -1,6 +1,6 @@
 # Installation for people
 
-Install MATRIX LAB NODES package version 0.3.0 as one ComfyUI custom-node pack.
+Install MATRIX LAB NODES package version 0.3.1 as one ComfyUI custom-node pack.
 
 ## Before you begin
 
