@@ -90,7 +90,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        self.assertIn(imported_ids, (BASE_NODE_IDS, BASE_NODE_IDS | {ADDITIVE_NODE_ID}))
+        self.assertEqual(imported_ids, BASE_NODE_IDS | {ADDITIVE_NODE_ID, "MATRIX_Krea2CLIPLoader", "MATRIX_Krea2ModelGuard"})
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
         self.assertEqual(imported_ids, set(self.pack.NODE_DISPLAY_NAME_MAPPINGS))

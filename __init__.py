@@ -59,3 +59,12 @@ NODE_CLASS_MAPPINGS['MATRIX_AutoPrompter'] = MATRIX_AutoPrompter
 NODE_DISPLAY_NAME_MAPPINGS['MATRIX_AutoPrompter'] = 'MATRIX AUTO PROMPTER'
 from ._core.prompt_director.server_routes import register_routes as _register_prompt_director
 _register_prompt_director()
+
+# BEGIN generated Krea2 GPU guards
+from .krea2_clip_loader import NODE_CLASS_MAPPINGS as _gpu_krea2_clip_loader_c, NODE_DISPLAY_NAME_MAPPINGS as _gpu_krea2_clip_loader_d
+NODE_CLASS_MAPPINGS.update(_gpu_krea2_clip_loader_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_gpu_krea2_clip_loader_d)
+from .krea2_model_guard import NODE_CLASS_MAPPINGS as _gpu_krea2_model_guard_c, NODE_DISPLAY_NAME_MAPPINGS as _gpu_krea2_model_guard_d
+NODE_CLASS_MAPPINGS.update(_gpu_krea2_model_guard_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_gpu_krea2_model_guard_d)
+# END generated Krea2 GPU guards

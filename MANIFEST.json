@@ -130,7 +130,9 @@
     "MATRIX_Resolution": "MATRIX LAB/Resolution & Layout",
     "MATRIX_SkinMask": "MATRIX LAB/Masks & Detection",
     "MATRIX_SpectralSampler": "MATRIX LAB/Sampling & Detail",
-    "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
+    "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout",
+    "MATRIX_Krea2CLIPLoader": "MATRIX LAB/Prompting",
+    "MATRIX_Krea2ModelGuard": "MATRIX LAB/Sampling & Detail"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -167,6 +169,8 @@
     "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
     "MATRIX_ImageBatchLoader",
+    "MATRIX_Krea2CLIPLoader",
+    "MATRIX_Krea2ModelGuard",
     "MATRIX_LatentTail",
     "MATRIX_MetadataKiller",
     "MATRIX_OutputStage",
@@ -187,5 +191,13 @@
     "existing_node_implementation_policy": "fresh-canonical-base-build",
     "runtime_registry_policy": "owned-by-canonical-base-builder",
     "runtime_asset_proof_sha256": "917902e05bb4e0758e6ba9b264075f89edbc0b2b39580fb2cb55d6e9c76945f8"
+  },
+  "krea2_gpu_guard_overlay": {
+    "source_sha256": {
+      "MATRIX_Krea2CLIPLoader": "72133a443787f1470a8d4707035fbbed5abce44c6b9860ead7d75d08b4f4484f",
+      "MATRIX_Krea2ModelGuard": "ad0c657e5d147c0b14ca8359e1f56b34f8fcd92a770908ef12b96db7f1b34445"
+    },
+    "builder_sha256": "e95c93966773de4cc13c5207a8181b81eaa261b2ddd92d3e01594683447b9c14",
+    "support": "FP8 GPU; upstream corruption writer remains unidentified"
   }
 }
