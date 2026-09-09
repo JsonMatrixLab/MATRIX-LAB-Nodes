@@ -2,6 +2,11 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.3.2 - development candidate - 2026-09-09
+
+- Refresh Eye Mask SAM embeddings when the input image changes or its pixels are modified in place. Preserve reuse for repeated refinement of the same unchanged image.
+- Prevent Python object-identity reuse from selecting a previous image's embedding.
+
 ## 0.3.1 - development candidate - 2026-09-09
 
 - Metadata Killer displays a small, metadata-verified preview while keeping the verified full-resolution original for opening and downloading.
