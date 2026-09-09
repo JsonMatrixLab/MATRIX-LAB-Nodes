@@ -40,10 +40,50 @@
       "sha256": "ec2df62732614e57411cdcf32a23ffdf28910380d03139ee0f4fcbe91eb8c912",
       "stride": 16,
       "task": "segm"
+    },
+    "person-seg": {
+      "allowed_dtypes": [
+        "fp32"
+      ],
+      "byte_size": 175997641,
+      "capabilities": [
+        "person-seg"
+      ],
+      "folder_name": "onnx",
+      "labels": [
+        "person"
+      ],
+      "license": "not-declared-in-retained-live-proof",
+      "logical_id": "rembg/u2net_human_seg.onnx",
+      "relative_path": "rembg/u2net_human_seg.onnx",
+      "role": "person-seg",
+      "sha256": "01eb6a29a5c4d8edb30b56adad9bb3a2a0535338e480724a213e0acfd2d1c73c",
+      "stride": 1,
+      "task": "segm"
+    },
+    "skin-parts": {
+      "allowed_dtypes": [
+        "fp32"
+      ],
+      "byte_size": 47210581,
+      "capabilities": [
+        "skin-parts"
+      ],
+      "folder_name": "onnx",
+      "labels": [
+        "human-parts-20"
+      ],
+      "license": "not-declared-in-retained-live-proof",
+      "logical_id": "human-parts/deeplabv3p-resnet50-human.onnx",
+      "relative_path": "human-parts/deeplabv3p-resnet50-human.onnx",
+      "role": "skin-parts",
+      "sha256": "a6e823a82da10ba24c29adfb544130684568c46bfac865e215bbace3b4035a71",
+      "stride": 1,
+      "task": "segm"
     }
   },
   "proof": {
-    "sha256": "e9cd32a5c2b214f1570a3f9860144bbc0fec72d4a53734555752a8b4a3a34f91"
+    "sha256": "917902e05bb4e0758e6ba9b264075f89edbc0b2b39580fb2cb55d6e9c76945f8"
   },
   "schema": "matrix-lab.comfyui-runtime-assets/v1"
 }

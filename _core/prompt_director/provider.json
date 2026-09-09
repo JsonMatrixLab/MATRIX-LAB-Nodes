@@ -1,6 +1,5 @@
 {
   "fetched": "2026-09-07T16:49:38+02:00",
-  "generator": "nodes/factory/source/tools/fetch_routes.py",
   "lifecycle": {
     "completion": "POST {base_url}/v1/chat/completions",
     "date": "2026-07-29",

@@ -275,12 +275,17 @@ def execute_utility_operation(item: dict[str, Any]) -> tuple[torch.Tensor, torch
         raise SkinMaskValidationError("mask.skin-region requires an input mapping")
     if "image" not in item:
         raise SkinMaskValidationError("missing skin mask input: image")
+    image = _validate_image(item["image"])
+    toggles, feather, edge_radius, expand, use_gate = _validate_widgets(item)
+    if not any(toggles.values()):
+        output = torch.zeros(image.shape[:3], device=image.device, dtype=torch.float32)
+        for index in range(image.shape[0]):
+            _LOG.info("frame %d coverage=%.6f", index, 0.0)
+        return output, output[..., None].expand(-1, -1, -1, 3).clone()
     if _SEGMENT_PARTS is None or _SEGMENT_PERSON is None:
         raise SkinMaskValidationError(
             "mask.skin-region runtime segmenters are not configured by the pack bootstrap"
         )
-    image = _validate_image(item["image"])
-    toggles, feather, edge_radius, expand, use_gate = _validate_widgets(item)
     masks: list[torch.Tensor] = []
     for index, frame in enumerate(image):
         soft = _parts_mask(frame, toggles, _SEGMENT_PARTS)

@@ -1,38 +1,60 @@
 # MATRIX LAB NODES
 
-A unified ComfyUI custom-node pack with 14 nodes in six functional groups. Development version 0.1.0.
+MATRIX LAB NODES (package version 0.2.0) is a unified ComfyUI custom-node pack for image input, resolution planning, sampling, masks, finishing, output, and assisted prompting.
 
-| Group | Nodes |
+> [!IMPORTANT]
+> Version 0.2.0 is a development candidate. Offline package and ABI checks do not establish full live acceptance across ComfyUI renderers, GPU/model combinations, or production workflows.
+
+The package keeps fourteen classes in six stable menu groups under `MATRIX LAB`. The exact classes in a downloaded build are also listed in its `MANIFEST.json`.
+
+## What it does
+
+- Loads and crops ordered input images without silently resizing mixed dimensions.
+- Calculates model-independent 1K, 2K, and 4K pixel geometry.
+- Supplies sampling and masked detail helpers for ComfyUI workflows.
+- Builds skin and eye masks through separately supplied, identity-checked model assets.
+- Applies deterministic local photo finishing and saves clean JPEG or PNG output.
+- Returns a saved prompt locally; an explicit **Generate Prompt** action can call xAI after credential setup and paid-use approval.
+
+## Included groups
+
+| Group | Included nodes |
 | --- | --- |
 | [Input & Output](nodes/input_output/) | MATRIX METADATA KILLER, MATRIX IMAGE BATCH LOADER |
-| [Resolution & Layout](nodes/resolution_layout/) | MATRIX RESOLUTION, MATRIX AI INFLUENCER RESOLUTION |
+| [Resolution & Layout](nodes/resolution_layout/) | MATRIX RESOLUTION, MATRIX AI INFLUENCER RESOLUTION, MATRIX AI INFLUENCER RESOLUTION 2K/4K |
 | [Sampling & Detail](nodes/sampling_detail/) | MATRIX SPECTRAL SAMPLER, MATRIX LATENT TAIL, MATRIX CROP TAIL PASTE |
 | [Masks & Detection](nodes/masks_detection/) | MATRIX SKIN MASK, MATRIX EYE MASK |
-| [Image Processing](nodes/image_processing/) | MATRIX RENOISE, MATRIX CAMERA LOOK, MATRIX EASY CROP, MATRIX OUTPUT STAGE |
+| [Image Processing](nodes/image_processing/) | MATRIX PHOTO FINISHER, MATRIX EASY CROP, MATRIX OUTPUT STAGE |
 | [Prompting](nodes/prompting/) | MATRIX AUTO PROMPTER |
 
-## Installation
+See [NODES.md](NODES.md) for the class inventory and [the node guides](docs/nodes/) for inputs, outputs, and practical boundaries.
 
-Install this repository under your ComfyUI custom_nodes directory and install requirements.txt using ComfyUI's Python environment, then restart ComfyUI.
+## Install
 
-This pack preserves class IDs from MATRIXLAB-Nodes and MATRIXLAB-UI-Nodes. Disable those two older packs before enabling this one. Installing them together produces duplicate class registrations. Keep a backup of your workflows and previous installation before switching.
+- For a normal installation, follow [INSTALL.md](INSTALL.md).
+- For installation by a zero-context coding agent, provide the repository and require [AGENT-INSTALL.md](AGENT-INSTALL.md).
 
-The nodes use ComfyUI's existing torch installation; keep a torch build appropriate for your hardware. Detection and segmentation nodes also require their external model/provider dependencies. Eye Mask validates the model identities listed in _core/runtime-assets.json; model weights are not bundled. Provider-backed prompting requires a configured credential and an explicit generation action.
+Do not install this pack beside the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs. Shared class IDs would register twice. Back up workflows and the previous installation, disable the old packs, install this package as one folder under `custom_nodes`, restart ComfyUI, and confirm the expected classes in node search before opening an important workflow.
 
-## Resolution
+## Safe start
 
-Both Resolution controls output only width and height. 1K, 2K and 4K mean an exact longer edge of 1024, 2048 and 4096 pixels. The shorter edge follows the selected aspect ratio, rounded to the nearest integer. These are pixel dimensions, not a guarantee that a model supports direct generation at that size.
+1. Read the installed `MANIFEST.json` and confirm the class inventory.
+2. Add `MATRIXLAB_Resolution` and verify its two integer outputs.
+3. Load a copy of one workflow and resolve missing or changed classes using [the migration guide](docs/migration.md).
+4. Keep **Generate Prompt** unused until an xAI credential, model choice, and paid request are intentionally approved.
 
-General Resolution offers eight aspect presets plus Custom, with exact custom dimensions from 1 to 16384 pixels, Swap and Reset. AI Influencer Resolution offers 1:1, 9:16 and 3:4.
+For a local image-processing check, load [the Photo Finisher example](examples/README.md), choose your own PNG or JPEG, and preview the result. The example contains no photograph, model weights, or provider call.
 
-Old general Resolution workflows preserve their previous pixel dimensions as Custom where safe. Old connected AI Influencer nodes used a six-output render/delivery/sampler contract and require manual replacement; they are marked as legacy missing nodes instead of silently rewiring incompatible outputs. Review generation size, delivery size and sampler settings separately.
+## Dependencies and data
 
-Resolution Plan, Resolution 2K and Resolution 4K Progressive are not included. Workflows using those classes require migration.
+The pack uses the Python/Torch environment supplied by ComfyUI and declares Pillow, aiohttp, NumPy, SciPy, and Torch. Preserve a working host Torch/CUDA installation when resolving dependencies. Detection nodes need external model assets and compatible inference runtimes; model acquisition, licensing, and compatible runtime setup are not completed by installing this repository. Model weights are not bundled. Their hashes and logical identities are checked by the runtime registry, but this package does not grant rights to those files. The mask nodes are not ready to run merely because the pack imports.
 
-## Compatibility and status
+Most nodes run locally. `MATRIXLAB_PromptDirector` performs no network request during ordinary graph execution. Its explicit **Generate Prompt** action sends the selected local reference images and prompt fields to xAI. Credentials stay outside serialized workflows. Provider use may incur charges and remains subject to the provider's terms.
 
-The UI supports Classic and Nodes 2.0 through the shared MATRIX presentation. Offline geometry, serialization, lifecycle and package checks do not constitute full GPU/model or production acceptance. This unified distribution is a development build; confirm your intended workflow before production use.
+## Release boundary
 
-## License
+The repository is the source distribution channel. A GitHub Release, Comfy Registry entry, or ComfyUI Manager listing is a separate publication and must not be inferred from repository availability. Compatibility evidence and current limits are documented in [docs/compatibility.md](docs/compatibility.md).
 
-MATRIX LAB code remains subject to LICENSE. Bundled Cascadia Mono has its own license in web/assets/CascadiaMono-LICENSE.txt. External model weights and provider services retain their respective licenses and terms.
+## License and security
+
+MATRIX LAB code remains subject to [LICENSE](LICENSE). Bundled Cascadia Mono is covered separately in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Read [SECURITY.md](SECURITY.md) before sharing diagnostics that may contain private workflow or provider data.

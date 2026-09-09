@@ -1,4 +1,4 @@
-export const HALO_VERSION = "1.0.0";
+export const HALO_VERSION = "1.0.1";
 export const HALO_MOTION_SETTING_ID = "MATRIXLAB.HALO.Motion";
 
 export const HALO_GLYPHS =
@@ -12,8 +12,7 @@ export const HALO_EXECUTION_NODE_IDS = Object.freeze([
   "MATRIX_CropTailPaste",
   "MATRIX_SaveClean",
   "MATRIX_OutputStage",
-  "MATRIX_Renoise",
-  "MATRIX_CameraLook",
+  "MATRIX_PhotoFinisher",
 ]);
 
 function numericStyle(value) {
@@ -146,6 +145,14 @@ export function setHaloNodeSize(node, size) {
 export function measureHaloHorizontalChrome(root, currentWidth, suppliedChrome) {
   const ownedWidth = Number(root?.clientWidth || root?.offsetWidth);
   if (!(ownedWidth > 0)) return null;
+  const view = root.ownerDocument?.defaultView || globalThis;
+  const style = view.getComputedStyle?.(root);
+  const padding = numericStyle(style?.paddingLeft) + numericStyle(style?.paddingRight);
+  const border = root.clientWidth ? 0
+    : numericStyle(style?.borderLeftWidth) + numericStyle(style?.borderRightWidth);
+  // A collapsed host can leave only the surface's padding measurable. That is
+  // not a laid-out widget slot and must not be cached as renderer chrome.
+  if (!(ownedWidth - padding - border > 0)) return null;
   const measured = Math.max(0, (Number(currentWidth) || 0) - ownedWidth);
   const supplied = typeof suppliedChrome === "object"
     ? Number(suppliedChrome?.horizontal)
@@ -496,7 +503,7 @@ function installStyle(doc) {
 .matrixlab-halo-select{appearance:auto;box-sizing:border-box;min-width:0;max-width:100%;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};color-scheme:dark;accent-color:${HALO_TOKENS.green};direction:ltr;text-align:left;text-align-last:left}
 .matrixlab-halo-select option{background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};direction:ltr;text-align:left}
 .matrixlab-halo__field input{box-sizing:border-box;min-width:0;width:108px;flex:0 1 108px;max-width:100%;min-height:24px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};text-align:right}
-.matrixlab-halo__field .matrixlab-halo-select{width:108px;flex:0 1 108px;min-height:24px}
+.matrixlab-halo__field .matrixlab-halo-select{width:152px;flex:0 1 152px;min-height:24px}
 .matrixlab-halo__field input[type="checkbox"]{width:18px;flex:0 0 18px}
 .matrixlab-halo__field input:focus-visible,.matrixlab-halo-select:focus-visible,.matrixlab-halo__field button:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:4px}
 .matrixlab-halo__field input:disabled,.matrixlab-halo-select:disabled{color:${HALO_TOKENS.linkedText};opacity:1}
@@ -1152,12 +1159,26 @@ function parameterFieldPresentation(node, widget) {
       : "" };
 }
 
+const CONTROL_ID_STATE_KEY = Symbol.for("matrixlab.halo.control-id-state");
+
+function allocateControlId(doc) {
+  let state = doc[CONTROL_ID_STATE_KEY];
+  if (!state || typeof state !== "object") {
+    state = { next: 0 };
+    Object.defineProperty(doc, CONTROL_ID_STATE_KEY, { value: state, configurable: true });
+  }
+  state.next += 1;
+  return `matrixlab-halo-control-${state.next}`;
+}
+
 function createWidgetField(doc, node, widget, options) {
   const field = doc.createElement("div");
   field.className = "matrixlab-halo__field";
   const label = doc.createElement("label");
   label.textContent = widget.label || widget.name;
-  const inputId = `matrixlab-halo-${node.id ?? "node"}-${widget.name}`;
+  // Nodes can mount before ComfyUI replaces their shared temporary id (-1). Keep
+  // presentation identity document-local and shared across independently loaded packs.
+  const inputId = allocateControlId(doc);
   label.htmlFor = inputId;
   let control;
   const choices = () => {
@@ -1220,10 +1241,23 @@ function createWidgetField(doc, node, widget, options) {
     const result = coerceValue(widget, raw);
     if (!result.accepted) { render(); return; }
     const next = result.value;
-    widget.value = next;
+    if (Object.is(next, widget.value)) { render(); return; }
     const position = options.getCallbackPosition?.(event, node) ?? node.pos;
-    widget.callback?.call(widget, next, options.app?.canvas || options.canvas || null, node, position, event);
-    render();
+    const graph = node.graph;
+    const canvas = options.app?.canvas || options.canvas || null;
+    graph?.beforeChange?.();
+    // ComfyUI history listens to the canvas events, independently of graph hooks.
+    canvas?.emitBeforeChange?.();
+    try {
+      widget.value = next;
+      widget.callback?.call(widget, next, canvas, node, position, event);
+    } finally {
+      try { render(); }
+      finally {
+        try { graph?.afterChange?.(); }
+        finally { canvas?.emitAfterChange?.(); }
+      }
+    }
   };
   control.addEventListener("change", commit);
   const marker = doc.createElement("span");
@@ -1346,7 +1380,11 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   root.className = "matrixlab-halo__content";
   const host = createHaloWidgetHost(root, doc);
   if (!host) return null;
-  const presentationName = profile === "execution" ? "matrixlab_halo_execution_ui" : "matrixlab_halo_utility_ui";
+  // BaseWidget.widgetId is getter-only and derives from graph/node/widget name.
+  // A fresh non-serializing name therefore gives each reconstruction a supported
+  // Vue render identity without mutating ComfyUI's widget object.
+  const presentationBaseName = profile === "execution" ? "matrixlab_halo_execution_ui" : "matrixlab_halo_utility_ui";
+  const presentationName = `${presentationBaseName}_${allocateControlId(doc)}`;
   const fields = canonicalWidgets.filter((widget) => widget?.name).map((widget) => createWidgetField(doc, node, widget, options));
   for (const field of fields) root.appendChild(field.field);
   const savedImages = nodeType === "MATRIX_SaveClean" ? mountHaloSavedImages(node, root, options) : null;
@@ -1357,6 +1395,8 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   let presentation = null;
   let halo = null;
   let destroyed = false;
+  let presentationRemoval = null;
+  let presentationCleanupPending = false;
   let resizeTimer = null;
   let sizingObserver = null;
   let previousResize = node.onResize;
@@ -1374,6 +1414,11 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
         node.widgets.splice(index, 1);
       }
     }
+  };
+  const unregisterPresentation = () => {
+    if (!presentationCleanupPending) return;
+    presentationCleanupPending = false;
+    presentation?.onRemove?.();
   };
   const rollback = () => {
     clearTimeout(resizeTimer);
@@ -1398,6 +1443,10 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
       getHeight: () => haloWidgetLayoutHeight(contentMinimum(), presentation),
       afterResize: () => fields.forEach((field) => field.render()),
     });
+    // addDOMWidget installs its unregister callback in node.onRemoved. Capture it
+    // before checking the result or performing any other fallible setup.
+    presentationRemoval = node.onRemoved;
+    presentationCleanupPending = Boolean(presentation);
     if (!presentation) throw new Error("ComfyUI did not create the HALO DOM widget");
     presentation.serialize = false;
     presentation.options ||= {};
@@ -1406,7 +1455,9 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     if (!halo) throw new Error("HALO surface mount failed");
     hideWidgets(snapshots);
   } catch (error) {
+    unregisterPresentation();
     rollback();
+    if (node.onRemoved === presentationRemoval) node.onRemoved = previousRemoved;
     options.onError?.(error);
     return null;
   }
@@ -1426,7 +1477,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
       });
     }
     const horizontalChrome = measuredHorizontalChrome ?? 0;
-    const width = Math.max(
+    const width = measuredHorizontalChrome == null ? currentWidth : Math.max(
       currentWidth,
       minimumWidth + horizontalChrome,
     );
@@ -1496,9 +1547,10 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     halo,
     canonicalWidgets,
     render: () => fields.forEach((field) => field.render()),
-    destroy() {
+    destroy(fromNodeRemoval = false) {
       if (destroyed) return;
       destroyed = true;
+      if (!fromNodeRemoval) unregisterPresentation();
       rollback();
       if (node.onResize === wrappedResize) node.onResize = previousResize;
       if (node.onRemoved === wrappedRemoved) node.onRemoved = previousRemoved;
@@ -1507,8 +1559,12 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   };
   node[EXECUTION_KEY] = control;
   wrappedRemoved = function (...args) {
-    control.destroy();
-    return previousRemoved?.apply(this, args);
+    control.destroy(true);
+    try {
+      return (presentationRemoval || previousRemoved)?.apply(this, args);
+    } finally {
+      presentationCleanupPending = false;
+    }
   };
   node.onRemoved = wrappedRemoved;
   scheduleMinimum();
@@ -1521,4 +1577,11 @@ export function mountHaloExecutionNode(node, options = {}) {
 
 export function mountHaloUtilityNode(node, options = {}) {
   return mountHaloPrimitiveNode(node, options, UTILITY_IDS, "ui");
+}
+
+// Generated MATRIX profiles pass their exact declaration IDs; unrelated nodes stay untouched.
+export function mountHaloParameterNode(node, nodeIds = [], options = {}) {
+  if (!Array.isArray(nodeIds) || !nodeIds.length ||
+      nodeIds.some(id => typeof id !== "string" || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(id))) return null;
+  return mountHaloPrimitiveNode(node, options, new Set(nodeIds), "execution");
 }

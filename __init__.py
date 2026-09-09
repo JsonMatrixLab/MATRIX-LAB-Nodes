@@ -6,12 +6,11 @@ from .nodes.masks_detection.matrix_eyemask import NODE_CLASS_MAPPINGS as _c3, NO
 from .nodes.sampling_detail.matrix_croptailpaste import NODE_CLASS_MAPPINGS as _c4, NODE_DISPLAY_NAME_MAPPINGS as _d4
 from .nodes.input_output.matrix_saveclean import NODE_CLASS_MAPPINGS as _c5, NODE_DISPLAY_NAME_MAPPINGS as _d5
 from .nodes.image_processing.matrix_outputstage import NODE_CLASS_MAPPINGS as _c6, NODE_DISPLAY_NAME_MAPPINGS as _d6
-from .nodes.image_processing.matrix_renoise import NODE_CLASS_MAPPINGS as _c7, NODE_DISPLAY_NAME_MAPPINGS as _d7
-from .nodes.image_processing.matrix_cameralook import NODE_CLASS_MAPPINGS as _c8, NODE_DISPLAY_NAME_MAPPINGS as _d8
-from .nodes.resolution_layout.matrixlab_resolution import NODE_CLASS_MAPPINGS as _c9, NODE_DISPLAY_NAME_MAPPINGS as _d9
-from .nodes.resolution_layout.matrixlab_aiinfluencerresolution import NODE_CLASS_MAPPINGS as _c10, NODE_DISPLAY_NAME_MAPPINGS as _d10
-from .nodes.image_processing.matrixlab_easycrop import NODE_CLASS_MAPPINGS as _c11, NODE_DISPLAY_NAME_MAPPINGS as _d11
-from .nodes.input_output.matrixlab_imagebatchloader import NODE_CLASS_MAPPINGS as _c12, NODE_DISPLAY_NAME_MAPPINGS as _d12
+from .nodes.image_processing.matrix_photofinisher import NODE_CLASS_MAPPINGS as _c7, NODE_DISPLAY_NAME_MAPPINGS as _d7
+from .nodes.resolution_layout.matrixlab_resolution import NODE_CLASS_MAPPINGS as _c8, NODE_DISPLAY_NAME_MAPPINGS as _d8
+from .nodes.resolution_layout.matrixlab_aiinfluencerresolution import NODE_CLASS_MAPPINGS as _c9, NODE_DISPLAY_NAME_MAPPINGS as _d9
+from .nodes.image_processing.matrixlab_easycrop import NODE_CLASS_MAPPINGS as _c10, NODE_DISPLAY_NAME_MAPPINGS as _d10
+from .nodes.input_output.matrixlab_imagebatchloader import NODE_CLASS_MAPPINGS as _c11, NODE_DISPLAY_NAME_MAPPINGS as _d11
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
@@ -39,8 +38,10 @@ NODE_CLASS_MAPPINGS.update(_c10)
 NODE_DISPLAY_NAME_MAPPINGS.update(_d10)
 NODE_CLASS_MAPPINGS.update(_c11)
 NODE_DISPLAY_NAME_MAPPINGS.update(_d11)
-NODE_CLASS_MAPPINGS.update(_c12)
-NODE_DISPLAY_NAME_MAPPINGS.update(_d12)
+
+from .nodes.resolution_layout.matrixlab_aiinfluencerresolution2k4k import NODE_CLASS_MAPPINGS as _resolution_2k4k_c, NODE_DISPLAY_NAME_MAPPINGS as _resolution_2k4k_d
+NODE_CLASS_MAPPINGS.update(_resolution_2k4k_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_resolution_2k4k_d)
 
 try:
     import folder_paths as _matrix_folder_paths
