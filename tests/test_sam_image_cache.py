@@ -13,7 +13,7 @@ import unittest
 from unittest import mock
 import weakref
 import threading
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 
 import numpy as np
 
@@ -132,7 +132,7 @@ class SamImageCacheTests(unittest.TestCase):
             result_b = b.submit(second_call)
             self.assertTrue(second_started.wait(3))
             try:
-                with self.assertRaises(TimeoutError):
+                with self.assertRaises(FutureTimeoutError):
                     result_b.result(timeout=0.05)
             finally:
                 allow_first.set()
