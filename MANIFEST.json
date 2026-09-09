@@ -132,7 +132,7 @@
     "MATRIX_SpectralSampler": "MATRIX LAB/Sampling & Detail",
     "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
   },
-  "compiler_sha256": "fcc055cedd826ac4f38f1da2ae7097472f029b7fcc52d7a075b53bbbf7d8ed53",
+  "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
     "MATRIX_AIInfluencerResolution": "9dd100da79f07f132edda489d044fc2389017ac74ec7401f33d63f0f2ece3ce7",
     "MATRIX_AutoPrompter": "1f9b62b8c5b9d5eba5596aeb3493b1d62b7978b5a989a904f09f5bf1af9006b9",
@@ -178,11 +178,11 @@
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "development",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
-    "compiler_sha256": "fcc055cedd826ac4f38f1da2ae7097472f029b7fcc52d7a075b53bbbf7d8ed53",
+    "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
     "builder_sha256": "f60506d9d5a1597c860f08d6b8a8119a265b4e50ef42e4930defc60e9bc55ab3",
     "existing_node_implementation_policy": "fresh-canonical-base-build",
     "runtime_registry_policy": "owned-by-canonical-base-builder",

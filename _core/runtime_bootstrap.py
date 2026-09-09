@@ -610,7 +610,10 @@ def _skin_adapters(folder_paths):
 
 def _eye_mask_adapters(folder_paths, model_management):
     """Own ultralytics call and SAM refinement for mask.eye-region (no Impact code path)."""
-    state = {}
+    import threading
+    import weakref
+
+    state = {"predictor_lock": threading.RLock()}
 
     def _models():
         if "yolo" not in state:
@@ -634,7 +637,8 @@ def _eye_mask_adapters(folder_paths, model_management):
             state["yolo"] = YOLO(str(bbox_path))
             state["predictor"] = SamPredictor(sam)
             state["device"] = device
-            state["image_key"] = None
+            state["image_ref"] = None
+            state["image_snapshot"] = None
         return state
 
     def detect(detector_id, image_rgb_uint8, *, conf, imgsz):
@@ -664,16 +668,27 @@ def _eye_mask_adapters(folder_paths, model_management):
         import numpy as np
         models = _models()
         pixels = np.ascontiguousarray(image_rgb_uint8)
-        key = (id(image_rgb_uint8), pixels.shape)
-        if models["image_key"] != key:
-            models["predictor"].set_image(pixels)
-            models["image_key"] = key
-        masks, scores, _ = models["predictor"].predict(
-            point_coords=np.asarray([point_xy], dtype=np.float32),
-            point_labels=np.asarray([1], dtype=np.int64),
-            box=np.asarray(box_xyxy, dtype=np.float32),
-            multimask_output=True,
-        )
+        with models["predictor_lock"]:
+            image_ref = models["image_ref"]
+            cached_image = image_ref() if image_ref is not None else None
+            snapshot = models["image_snapshot"]
+            unchanged = (
+                cached_image is image_rgb_uint8
+                and snapshot is not None
+                and snapshot.shape == pixels.shape
+                and snapshot.dtype == pixels.dtype
+                and np.array_equal(snapshot, pixels)
+            )
+            if not unchanged:
+                models["predictor"].set_image(pixels)
+                models["image_ref"] = weakref.ref(image_rgb_uint8)
+                models["image_snapshot"] = pixels.copy()
+            masks, scores, _ = models["predictor"].predict(
+                point_coords=np.asarray([point_xy], dtype=np.float32),
+                point_labels=np.asarray([1], dtype=np.int64),
+                box=np.asarray(box_xyxy, dtype=np.float32),
+                multimask_output=True,
+            )
         if len(masks) == 0:
             return np.zeros(pixels.shape[:2], dtype=np.float32)
         return masks[int(np.argmax(scores))].astype(np.float32)
