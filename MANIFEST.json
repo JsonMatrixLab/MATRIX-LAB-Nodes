@@ -21,9 +21,9 @@
       "version": "1.0.0"
     },
     {
-      "content_hash": "9bbf3d99167453c45d8473b8f1207865fcd9bba369d7066b71289cf41a21219d",
+      "content_hash": "dcaf1a3ae2fc7ac78413342300aea580751b42ca019414b5cbb3c205a43d1611",
       "id": "ui.appearance",
-      "version": "0.5.0"
+      "version": "0.5.1"
     },
     {
       "content_hash": "fb98f796fea73106cfafb443d725f4db92bfacc3232b6fb00fd6807610a4ef12",
@@ -36,9 +36,9 @@
       "version": "0.2.3"
     },
     {
-      "content_hash": "01840c9fa972d067a24c93f20cff73eaff08e18b833f54c1cb23c6faefe4b725",
+      "content_hash": "4fda8c8c1fbce41aac7b6c4670aa7efd87a60adcaf4604a6af808b20f0c9195a",
       "id": "mask.skin-region",
-      "version": "0.3.0"
+      "version": "0.3.1"
     },
     {
       "content_hash": "7af6afab2008c90d1396302c3efd948ea6087369602db065a5918547f0d73d15",
@@ -61,14 +61,9 @@
       "version": "0.1.1"
     },
     {
-      "content_hash": "b0e2bc157eca2086faf3d5b57bf7ae685490c4ec34a7a4cfb3d00925391b112d",
-      "id": "image.renoise",
-      "version": "0.2.2"
-    },
-    {
-      "content_hash": "12c4b225fcff2a1028b361003f5c6b741aa1f3a109f86f8d23055f5237417432",
-      "id": "color.camera-look",
-      "version": "0.1.1"
+      "content_hash": "4e161007e22a23373d85333840fe9d8235cf8beb385633f775679840346613c7",
+      "id": "image.photo-finisher",
+      "version": "0.1.0"
     },
     {
       "content_hash": "869da644f94fb10c804e477bb2bd8062ffdab3545855f52f56580dbf5ad4f47f",
@@ -86,7 +81,7 @@
       "version": "0.1.0"
     },
     {
-      "content_hash": "5bb59338cab04e21642c98f1d7de92be6e90245531472960d16347ee245f0716",
+      "content_hash": "4e67bd73efebed6140e3531e5cf8a95f06d60d174f66afbbeb91e2c3c4e34e03",
       "id": "io.image-collection",
       "version": "0.2.1"
     },
@@ -113,8 +108,14 @@
     {
       "id": "prompt.director",
       "version": "0.2.1"
+    },
+    {
+      "content_hash": "a7cb4cc08e46e4a1603c4473221207e1db8b49ff959f9be6a0d312e5299d3648",
+      "id": "resolution.ai-influencer-2k4k",
+      "version": "1.0.0"
     }
   ],
+  "builder_sha256": "c2716a4a31e0f380576ebccccf3844353a379e0c7fd58af85f665084c1c3f87f",
   "categories": {
     "MATRIXLAB_AIInfluencerResolution": "MATRIX LAB/Resolution & Layout",
     "MATRIXLAB_EasyCrop": "MATRIX LAB/Image Processing",
@@ -122,58 +123,69 @@
     "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
     "MATRIXLAB_Resolution": "MATRIX LAB/Resolution & Layout",
     "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
-    "MATRIX_CameraLook": "MATRIX LAB/Image Processing",
     "MATRIX_CropTailPaste": "MATRIX LAB/Sampling & Detail",
     "MATRIX_EyeMask": "MATRIX LAB/Masks & Detection",
     "MATRIX_LatentTail": "MATRIX LAB/Sampling & Detail",
     "MATRIX_OutputStage": "MATRIX LAB/Image Processing",
-    "MATRIX_Renoise": "MATRIX LAB/Image Processing",
+    "MATRIX_PhotoFinisher": "MATRIX LAB/Image Processing",
     "MATRIX_SaveClean": "MATRIX LAB/Input & Output",
-    "MATRIX_SkinMask": "MATRIX LAB/Masks & Detection"
+    "MATRIX_SkinMask": "MATRIX LAB/Masks & Detection",
+    "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
   },
+  "compiler_sha256": "b1ff75cd7cefd07caaf7fc224d2b4518d7a65954c89e3bdee770d867a37e1e07",
   "declaration_hashes": {
     "MATRIXLAB_AIInfluencerResolution": "8f6737741244227d88ed8a411548fd788fe311f776ca9aba68b67f34bf9695d9",
     "MATRIXLAB_EasyCrop": "e3e4d55649ba8fd8d1d5fb2abc526af8ca98b3b7a5b62665965eed080b0f3c2a",
     "MATRIXLAB_ImageBatchLoader": "bd6b56231c6d2842fb044ff7c5a2c775ca2043837a5879eff9a397569b153319",
-    "MATRIXLAB_PromptDirector": "4084dad0bdfe8b49430049245f4f8cc041a409d217b9e55394754f705249c0bc",
+    "MATRIXLAB_PromptDirector": "bbebce94b066143c8879239fa0003fc934207bebed40c6352d9d9bba882e54e4",
     "MATRIXLAB_Resolution": "38fea06eda599cb3c78a029b8e0478b3625bc1cd281019caec6cd9612a3ff521",
     "MATRIXSpectralSampler": "767c07ee23b36895169d5039756f8f425ef0aa0e70ca639d616b5af75c829306",
-    "MATRIX_CameraLook": "8c2132f6975da7120cb9fd51e883ba475651a9f2b31ad2365c90944f482f2541",
     "MATRIX_CropTailPaste": "7c0a5e925c00a9a08d445e9b8c9315909f17084d9279c37f3841cbce9c2670c7",
     "MATRIX_EyeMask": "c507e7a4ca5c6b959ab503b4229ec929856576567bc28a82b06e8f5cabebd7ef",
     "MATRIX_LatentTail": "8677264027158b709269b0ffe22c4ce7a9b81862f78d5d9057f964a0f362f83e",
     "MATRIX_OutputStage": "6ec9c264ab82dfd9b8c0e8640007a26db25818b3bf7a934db34e7403ba441bbc",
-    "MATRIX_Renoise": "78806798d0a4dcd256098631d76eb761898abf11d5a2d15a7530ebb2738ea713",
+    "MATRIX_PhotoFinisher": "eadad3bc1712edec30fa52fff0a929e4807a77b17b60fd5e51b4c4403d7bf809",
     "MATRIX_SaveClean": "3aaeea9d3b5b246e909df9a21ae9f2883bf251c055dcc9f8e89714beae65a3ce",
-    "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2"
+    "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2",
+    "MATRIXLAB_AIInfluencerResolution2K4K": "589e6e5dc7c7eb7ee22943b13729bf2012350baec8c4b35b0320badcbfd6b22c"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.ebb32f136a6a4294.js",
-    "web/easy_crop.3cd2d4db9e4387a9.js",
-    "web/halo_execution.41a5414872870fdf.js",
-    "web/image_collection.8677fd9cc9c550ba.js",
-    "web/prompt_director.b4c0409b1a3bd876.js",
-    "web/resolution_control_deck.355f138d9de085d8.js"
+    "web/ai_influencer_resolution.bd473fd081a9ee32.js",
+    "web/ai_influencer_resolution_2k4k.5a6f0a9d0be56983.js",
+    "web/easy_crop.e448d80a597cbf32.js",
+    "web/halo_execution.9c05a384226d4180.js",
+    "web/image_collection.57c26c1112198635.js",
+    "web/prompt_director.47d51c1218485744.js",
+    "web/resolution_control_deck.83ec2d2da93e1ef9.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution",
+    "MATRIXLAB_AIInfluencerResolution2K4K",
     "MATRIXLAB_EasyCrop",
     "MATRIXLAB_ImageBatchLoader",
     "MATRIXLAB_PromptDirector",
     "MATRIXLAB_Resolution",
     "MATRIXSpectralSampler",
-    "MATRIX_CameraLook",
     "MATRIX_CropTailPaste",
     "MATRIX_EyeMask",
     "MATRIX_LatentTail",
     "MATRIX_OutputStage",
-    "MATRIX_Renoise",
+    "MATRIX_PhotoFinisher",
     "MATRIX_SaveClean",
     "MATRIX_SkinMask"
   ],
   "pack_id": "matrix-lab-nodes",
-  "runtime_asset_registry_sha256": "ba2964519d538b65fafbbe2fbad5a9e7d16940334f49fcc517ddab041c59a5c4",
+  "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "development",
-  "version": "0.1.0"
+  "version": "0.2.0",
+  "candidate_provenance": {
+    "strategy": "current-canonical-base-plus-additive-factory-node",
+    "base_builder_sha256": "c2716a4a31e0f380576ebccccf3844353a379e0c7fd58af85f665084c1c3f87f",
+    "compiler_sha256": "b1ff75cd7cefd07caaf7fc224d2b4518d7a65954c89e3bdee770d867a37e1e07",
+    "builder_sha256": "7df54e744e3aff1b58fd9699f5e1564e3f0c71d8370fe8b50b07aedf74dbeca9",
+    "existing_node_implementation_policy": "fresh-canonical-base-build",
+    "runtime_registry_policy": "owned-by-canonical-base-builder",
+    "runtime_asset_proof_sha256": "917902e05bb4e0758e6ba9b264075f89edbc0b2b39580fb2cb55d6e9c76945f8"
+  }
 }

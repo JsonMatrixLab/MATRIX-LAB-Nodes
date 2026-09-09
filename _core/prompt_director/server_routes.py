@@ -23,8 +23,15 @@ from urllib.parse import urlsplit
 from ..auth_provider_key import ProviderKeyStore
 from ..io_image_collection import MAX_IMAGES, input_digest, load_ordered_records, parse_collection_state
 from ..spend_tokens import TokenLedger, TokenPrices, TokenUsage
-from ..text_refusal import finish_completion
-from ..errors_taxonomy import failure_from_http
+from ..text_refusal import TextRefusal, finish_completion
+from ..errors_taxonomy import (
+    AuthError,
+    IndeterminateSubmitError,
+    ProviderFailure,
+    TimeoutOrInterruptedError,
+    TransientTransportOrServerError,
+    failure_from_http,
+)
 from .credential_sessions import CredentialSessionError, CredentialSessions
 
 
@@ -99,6 +106,33 @@ def _authorize_origin(request, *, credential: bool) -> None:
 
 class PromptDirectorError(RuntimeError):
     pass
+
+
+class CredentialConnectError(CredentialSessionError):
+    def __init__(self, kind: str, message: str, *, status: int):
+        super().__init__(message)
+        self.kind = kind
+        self.status = status
+
+
+def _submission_failure(exc: BaseException, phase: str) -> tuple[str, str]:
+    """Return durable state/category without persisting provider or secret detail."""
+    if phase == "local_persistence":
+        return "uncertain", "local_persistence"
+    if isinstance(exc, IndeterminateSubmitError):
+        return "uncertain", "indeterminate_submit"
+    if isinstance(exc, ProviderFailure):
+        return "failed", exc.kind
+    if phase == "awaiting_response":
+        return "uncertain", "indeterminate_submit"
+    error_class = getattr(exc, "error_class", "")
+    if error_class:
+        return "failed", str(error_class)
+    if phase == "response_received":
+        return "failed", "empty_or_malformed_success"
+    if isinstance(exc, (TimeoutError, asyncio.CancelledError, TimeoutOrInterruptedError)):
+        return "uncertain", "indeterminate_submit"
+    return "failed", "local_failure"
 
 
 @dataclass(frozen=True)
@@ -388,13 +422,32 @@ class PromptDirectorService:
                 self._refuse_unresolved_credential_change(prior.fingerprint)
         try:
             allowed, catalogue_fingerprint = await self._fetch_catalogue(key)
-        except Exception as exc:
-            raise CredentialSessionError("xAI rejected the credential")
+        except AuthError as exc:
+            raise CredentialConnectError(
+                "invalid_credential", "xAI rejected the credential.", status=401
+            ) from exc
+        except (TransientTransportOrServerError, TimeoutOrInterruptedError) as exc:
+            raise CredentialConnectError(
+                "provider_unavailable", "xAI credential verification is temporarily unavailable.", status=503
+            ) from exc
+        except ProviderFailure as exc:
+            raise CredentialConnectError(
+                "provider_rejected", "xAI refused credential verification.", status=502
+            ) from exc
+        except PromptDirectorError as exc:
+            raise CredentialConnectError(
+                "provider_response_invalid", "xAI returned an invalid credential verification response.", status=502
+            ) from exc
         with self._lock:
             prior = self.credential_sessions.resolve(prior_session)
             if prior.fingerprint:
                 self._refuse_unresolved_credential_change(prior.fingerprint)
-            resolved = self.credential_sessions.connect(key, prior_session=prior_session)
+            try:
+                resolved = self.credential_sessions.connect(key, prior_session=prior_session)
+            except (OSError, CredentialSessionError) as exc:
+                raise CredentialConnectError(
+                    "local_persistence", "The verified credential could not be saved locally.", status=500
+                ) from exc
             if prior_session:
                 self._catalogues.pop(prior.fingerprint, None)
             self._catalogues[resolved.fingerprint] = (catalogue_fingerprint, allowed)
@@ -468,30 +521,32 @@ class PromptDirectorService:
             )
             db.commit()
 
-        config = self.models[payload["model"]]
-        prices = TokenPrices(
-            provider="xai-grok", model=payload["model"], pricing_version=config.pricing_version,
-            input_usd_per_million=config.input_usd_per_million,
-            output_usd_per_million=config.output_usd_per_million,
-            cached_input_usd_per_million=config.cached_input_usd_per_million,
-        )
-        exposure = (
-            Decimal(config.input_token_upper_bound) * max(
-                config.input_usd_per_million,
-                config.cached_input_usd_per_million or config.input_usd_per_million,
-            )
-            + Decimal(payload["max_output_tokens"]) * config.output_usd_per_million
-        ) / Decimal(1_000_000)
-        ledger = TokenLedger(run_id=payload["request_id"], account="xai-grok", ceiling_usd=exposure)
-        reservation = ledger.reserve(
-            prices=prices, input_token_upper_bound=config.input_token_upper_bound,
-            max_output_tokens=payload["max_output_tokens"],
-        )
+        phase = "before_submit"
         try:
+            config = self.models[payload["model"]]
+            prices = TokenPrices(
+                provider="xai-grok", model=payload["model"], pricing_version=config.pricing_version,
+                input_usd_per_million=config.input_usd_per_million,
+                output_usd_per_million=config.output_usd_per_million,
+                cached_input_usd_per_million=config.cached_input_usd_per_million,
+            )
+            exposure = (
+                Decimal(config.input_token_upper_bound) * max(
+                    config.input_usd_per_million,
+                    config.cached_input_usd_per_million or config.input_usd_per_million,
+                )
+                + Decimal(payload["max_output_tokens"]) * config.output_usd_per_million
+            ) / Decimal(1_000_000)
+            ledger = TokenLedger(run_id=payload["request_id"], account="xai-grok", ceiling_usd=exposure)
+            reservation = ledger.reserve(
+                prices=prices, input_token_upper_bound=config.input_token_upper_bound,
+                max_output_tokens=payload["max_output_tokens"],
+            )
             request_text = (payload["instructions"] if payload["instructions"].strip()
                             else "Describe these references as one coherent image prompt.")
             with self._connect() as db:
                 db.execute("UPDATE prompt_requests SET state='submitted',updated_at=? WHERE request_id=?", (time.time(), payload["request_id"]))
+            phase = "awaiting_response"
             response = await self.transport(
                 "POST", self.base_url + "/v1/responses", deadline=time.monotonic() + self.deadline_seconds,
                 request_timeout=self.request_timeout, headers={"Authorization": "Bearer " + credential.key},
@@ -510,15 +565,18 @@ class PromptDirectorService:
             )
             if not isinstance(getattr(response, "status", None), int) or not isinstance(getattr(response, "body", None), bytes):
                 raise PromptDirectorError("xAI returned no terminal HTTP response")
+            phase = "response_received"
             if not 200 <= response.status < 300:
                 raise failure_from_http(response.status, response.body.decode("utf-8", "replace"))
             decoded = json.loads(response.body)
+            if decoded.get("status") in {"queued", "in_progress"}:
+                raise IndeterminateSubmitError("xAI has not returned a terminal outcome")
             if decoded.get("status") != "completed":
                 raise PromptDirectorError("xAI response did not complete")
             content = [item for output in decoded.get("output", []) if output.get("type") == "message" for item in output.get("content", [])]
             refusal = next((item.get("refusal") for item in content if item.get("type") == "refusal"), None)
             if refusal:
-                finish_completion(text="", finish_state="refusal", model=payload["model"], detail=str(refusal))
+                raise TextRefusal("xAI refused to generate a prompt")
             text = "".join(str(item.get("text", "")) for item in content if item.get("type") == "output_text")
             usage = decoded["usage"]
             if not isinstance(text, str) or not text.strip():
@@ -535,6 +593,7 @@ class PromptDirectorService:
             raw_output_tokens = int(usage["output_tokens"])
             total_tokens = int(usage.get("total_tokens", input_tokens + raw_output_tokens))
             effective_output_tokens = max(raw_output_tokens, max(0, total_tokens - input_tokens))
+            phase = "local_persistence"
             reservation.settle(TokenUsage(
                 input_tokens=input_tokens, output_tokens=effective_output_tokens,
                 cached_input_tokens=int(usage.get("input_tokens_details", {}).get("cached_tokens", 0)),
@@ -547,12 +606,9 @@ class PromptDirectorService:
                 db.execute("UPDATE prompt_requests SET state='completed',result=?,updated_at=? WHERE request_id=?", (final_prompt, time.time(), payload["request_id"]))
             return {"request_id": payload["request_id"], "fingerprint": payload_sha, "state": "completed", "prompt": final_prompt, "final_prompt": final_prompt}
         except BaseException as exc:
-            # Failures before the transport boundary are definitely not billed. Once the
-            # POST begins, ambiguity is retained and the same UUID is never submitted again.
+            failure_state, failure_category = _submission_failure(exc, phase)
             with self._connect() as db:
-                row = db.execute("SELECT state FROM prompt_requests WHERE request_id=?", (payload["request_id"],)).fetchone()
-                failure_state = "uncertain" if row and row["state"] == "submitted" else "failed"
-                db.execute("UPDATE prompt_requests SET state=?,error=?,updated_at=? WHERE request_id=?", (failure_state, type(exc).__name__, time.time(), payload["request_id"]))
+                db.execute("UPDATE prompt_requests SET state=?,error=?,updated_at=? WHERE request_id=?", (failure_state, failure_category, time.time(), payload["request_id"]))
             raise
 
 
@@ -641,8 +697,14 @@ def register_routes(*, models: Mapping[str, ModelConfig] | None = None, service:
             return web.json_response(await backend.connect_credential(
                 body["key"], prior_session=request.headers.get(SESSION_HEADER, "")
             ))
+        except CredentialConnectError as exc:
+            return web.json_response({"error": str(exc), "category": exc.kind}, status=exc.status)
+        except (UnicodeDecodeError, json.JSONDecodeError, PromptDirectorError):
+            return web.json_response({"error": "Credential request is invalid.", "category": "invalid_request"}, status=400)
+        except CredentialSessionError:
+            return web.json_response({"error": "Credential session is unavailable.", "category": "credential_session"}, status=409)
         except Exception:
-            return web.json_response({"error": "Credential verification failed."}, status=401)
+            return web.json_response({"error": "Credential verification failed.", "category": "local_failure"}, status=500)
 
     @routes.post(CREDENTIAL_DISCONNECT_PATH)
     async def credential_disconnect(request):
@@ -657,4 +719,4 @@ def register_routes(*, models: Mapping[str, ModelConfig] | None = None, service:
             return web.json_response({"error": "Credential disconnect failed."}, status=409)
 
 
-__all__ = ["CREDENTIAL_DISCONNECT_PATH", "CREDENTIAL_PATH", "GET_PATH", "MODELS_PATH", "ModelConfig", "POST_PATH", "PromptDirectorError", "PromptDirectorService", "load_model_configs", "register_routes"]
+__all__ = ["CREDENTIAL_DISCONNECT_PATH", "CREDENTIAL_PATH", "CredentialConnectError", "GET_PATH", "MODELS_PATH", "ModelConfig", "POST_PATH", "PromptDirectorError", "PromptDirectorService", "load_model_configs", "register_routes"]

@@ -1,5 +1,5 @@
-import { mountImageGallery } from "./gallery.f348860f4f6a4200.mjs";
-import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.640a7993d6ac30a9.mjs";
+import { mountImageGallery } from "./gallery.e7ba3b92bd70c1e5.mjs";
+import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.3bc35993e091e5c5.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
@@ -39,7 +39,7 @@ function restoreWidget(snapshot) {
   const { widget } = snapshot;
   widget.draw = snapshot.draw;
   widget.computeSize = snapshot.computeSize;
-  widget.callback = snapshot.callback;
+  if (widget.callback === snapshot.ownedCallback) widget.callback = snapshot.callback;
   if (snapshot.hadOptions) {
     widget.options = snapshot.options;
     if (widget.options) widget.options.hidden = snapshot.hidden;
@@ -160,13 +160,14 @@ function install(node) {
       document,
     });
     if (!gallery) throw new Error("Image collection gallery mount failed");
-    collection.callback = function (...args) {
+    snapshot.ownedCallback = function (...args) {
       try {
         return snapshot.callback?.apply(this, args);
       } finally {
         control.syncFromWidget(collection.value);
       }
     };
+    collection.callback = snapshot.ownedCallback;
     hideWidget(snapshot);
     node[CONTROL] = control;
     node.onResize = wrappedResize;

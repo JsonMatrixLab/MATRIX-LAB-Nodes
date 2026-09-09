@@ -6,7 +6,7 @@ import {
   measureHaloContentHeight,
   mountHaloSurface,
   setHaloNodeSize,
-} from "./halo.640a7993d6ac30a9.mjs";
+} from "./halo.3bc35993e091e5c5.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
@@ -607,7 +607,7 @@ export function mountPromptDirector(node, options = {}) {
       !credentialReady || !modelReady;
     recover.hidden = !state.request_id || !["submitting", "pending", "indeterminate"].includes(state.state);
     recover.disabled = busy || isWidgetLinked(node, "final_prompt") || isWidgetLinked(node, "generation_state");
-    status.dataset.error = String(Boolean(collectionError || actionError || state.state === "indeterminate"));
+    status.dataset.error = String(Boolean(collectionError || actionError || ["failed", "indeterminate"].includes(state.state)));
     status.dataset.stale = String(state.state === "stale");
     if (collectionError) status.textContent = collectionError;
     else if (credentialError) status.textContent = credentialError;
@@ -616,6 +616,7 @@ export function mountPromptDirector(node, options = {}) {
     else if (busy) status.textContent = pending.kind === "recover" ? "Checking saved request…" : "Generating prompt…";
     else if (state.state === "complete") status.textContent = state.manual_edit_preserved ? "Complete · manual prompt preserved" : "Prompt ready";
     else if (state.state === "stale") status.textContent = state.reason || "Prompt is stale; generate when ready.";
+    else if (state.state === "failed") status.textContent = state.error || "The provider definitively rejected or could not complete the request.";
     else if (state.state === "indeterminate") status.textContent = state.error || "Request outcome is uncertain. Recover it explicitly.";
     else if (state.state === "pending" || state.state === "submitting") status.textContent = "Request may still be pending. Recover it explicitly.";
     else status.textContent = "A normal graph run reuses the saved final prompt.";
@@ -980,6 +981,10 @@ export function mountPromptDirector(node, options = {}) {
       if (["complete", "completed"].includes(payload?.state)) await applyCompleted(payload, requestId, requestMeta, event);
       else if (["pending", "claimed", "submitted"].includes(payload?.state)) {
         writeState({ version: 1, request_id: requestId, state: "pending", ...requestMeta }, event);
+      }
+      else if (payload?.state === "failed") {
+        writeState({ version: 1, request_id: requestId, state: "failed", ...requestMeta,
+          error: typeof payload?.error === "string" ? payload.error : "Request failed definitively." }, event);
       }
       else writeState({ version: 1, request_id: requestId, state: "indeterminate",
         ...requestMeta, error: typeof payload?.error === "string" ? payload.error :

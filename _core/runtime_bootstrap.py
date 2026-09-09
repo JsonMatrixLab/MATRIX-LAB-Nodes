@@ -7,7 +7,7 @@ from pathlib import Path
 import threading
 
 
-_EXPECTED_REGISTRY_SHA256 = 'ba2964519d538b65fafbbe2fbad5a9e7d16940334f49fcc517ddab041c59a5c4'
+_EXPECTED_REGISTRY_SHA256 = 'ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8'
 _HAS_EYE = False
 _HAS_DETAIL = False
 _HAS_SPECTRAL = True

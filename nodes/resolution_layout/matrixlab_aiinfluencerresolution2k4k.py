@@ -1,23 +1,22 @@
-"""Compiled declaration for MATRIX_Renoise; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIXLAB_AIInfluencerResolution2K4K; regenerate instead of hand-editing."""
 from __future__ import annotations
 
+from ..._core import resolution_ai_influencer_2k4k as _operation_block
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_Renoise'
-OPERATION_BLOCK = 'image.renoise'
+NODE_ID = 'MATRIXLAB_AIInfluencerResolution2K4K'
+OPERATION_BLOCK = 'resolution.ai-influencer-2k4k'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'tooltip': 'BHWC image batch.', 'forceInput': True}),
-    'grain_seed': ('INT', {'default': 0, 'min': 0, 'max': 18446744073709551615}),
-    'iso_preset': (['ISO 0 (Off)', 'ISO 50', 'ISO 100 (Clean)', 'ISO 200', 'ISO 400', 'ISO 800', 'ISO 1600', 'Night Mode'], {'default': 'ISO 400'}),
-    'strength': ('FLOAT', {'default': 1.0, 'min': 0.0, 'max': 2.0, 'step': 0.05}),
+    'aspect_ratio': (['1:1', '9:16', '3:4'], {'default': '3:4', 'tooltip': 'AI-influencer delivery aspect ratio.'}),
+    'resolution_tier': (['2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 2048 or 4096 pixels.'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'grain_seed': 'INT', 'iso_preset': 'STRING', 'strength': 'FLOAT'}
-REQUIRED_INPUT_NAMES = ('image',)
-OUTPUT_SOCKET_TYPES = ('IMAGE',)
+INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING'}
+REQUIRED_INPUT_NAMES = ('aspect_ratio', 'resolution_tier')
+OUTPUT_SOCKET_TYPES = ('INT', 'INT')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (False,)
+OUTPUT_IS_LIST = (False, False)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -140,31 +139,28 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXRenoise:
+class MATRIXLABAIInfluencerResolution2K4K:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'image': _input_widget('image'),
+                'aspect_ratio': _input_widget('aspect_ratio'),
+                'resolution_tier': _input_widget('resolution_tier'),
             },
             "optional": {
-                'grain_seed': _input_widget('grain_seed'),
-                'iso_preset': _input_widget('iso_preset'),
-                'strength': _input_widget('strength'),
             },
         }
 
-    RETURN_TYPES = ('IMAGE',)
-    RETURN_NAMES = ('image',)
+    RETURN_TYPES = ('INT', 'INT')
+    RETURN_NAMES = ('width', 'height')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Image Processing'
-    DESCRIPTION = 'Generated from operation block image.renoise.'
+    CATEGORY = 'MATRIX LAB/Resolution & Layout'
+    DESCRIPTION = 'Generated from operation block resolution.ai-influencer-2k4k.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from ..._core import image_renoise as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -177,5 +173,5 @@ class MATRIXRenoise:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXRenoise}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX RENOISE'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABAIInfluencerResolution2K4K}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX AI INFLUENCER RESOLUTION 2K/4K'}

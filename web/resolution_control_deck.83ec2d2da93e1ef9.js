@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.f5554171d9d043a1.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.3078c6fb7c5009a2.mjs";
 
 const NODE_IDS = new Set("MATRIXLAB_Resolution".split(",").filter(Boolean));
 const RATIOS = {

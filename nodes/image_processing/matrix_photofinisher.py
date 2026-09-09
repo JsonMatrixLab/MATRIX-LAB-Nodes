@@ -1,22 +1,24 @@
-"""Compiled declaration for MATRIX_CameraLook; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_PhotoFinisher; regenerate instead of hand-editing."""
 from __future__ import annotations
 
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIX_CameraLook'
-OPERATION_BLOCK = 'color.camera-look'
+NODE_ID = 'MATRIX_PhotoFinisher'
+OPERATION_BLOCK = 'image.photo-finisher'
 SCHEMA_WIDGETS = {
-    'image': ('IMAGE', {'forceInput': True}),
-    'enabled': ('BOOLEAN', {'default': True}),
-    'chromatic_aberration': ('FLOAT', {'default': 0.35, 'min': 0.0, 'max': 10.0}),
-    'demosaic_pixel_blur': ('BOOLEAN', {'default': True}),
-    'noise_strength': ('FLOAT', {'default': 1.9, 'min': 0.0, 'max': 5.0}),
-    'kernel_motion_blur': ('INT', {'default': 1, 'min': 1, 'max': 51}),
-    'jpeg_compression': ('INT', {'default': 98, 'min': 85, 'max': 100}),
-    'look_seed': ('INT', {'default': 0, 'min': 0, 'max': 18446744073709551615}),
+    'image': ('IMAGE', {'tooltip': 'BHWC RGB or RGBA image batch.', 'forceInput': True}),
+    'mask': ('MASK', {'tooltip': 'Optional BHW application mask; 0 preserves and 1 applies.', 'forceInput': True}),
+    'profile': (['Clean Digital', 'Everyday Capture', 'Low Light'], {'default': 'Everyday Capture'}),
+    'mix': ('FLOAT', {'default': 1.0, 'min': 0.0, 'max': 1.0, 'step': 0.01}),
+    'texture': ('FLOAT', {'default': 1.0, 'min': 0.0, 'max': 2.0, 'step': 0.05}),
+    'detail': ('FLOAT', {'default': 1.0, 'tooltip': 'Trim profile detail: negative reduces it and can soften; positive sharpens.', 'min': -1.0, 'max': 1.0, 'step': 0.05}),
+    'contrast': ('FLOAT', {'default': 0.0, 'min': -1.0, 'max': 1.0, 'step': 0.05}),
+    'warmth': ('FLOAT', {'default': 0.0, 'min': -1.0, 'max': 1.0, 'step': 0.05}),
+    'saturation': ('FLOAT', {'default': 1.0, 'min': 0.0, 'max': 2.0, 'step': 0.05}),
+    'seed': ('INT', {'default': 42, 'control_after_generate': False, 'min': 0, 'max': 4294967295}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'enabled': 'BOOLEAN', 'chromatic_aberration': 'FLOAT', 'demosaic_pixel_blur': 'BOOLEAN', 'noise_strength': 'FLOAT', 'kernel_motion_blur': 'INT', 'jpeg_compression': 'INT', 'look_seed': 'INT'}
+INPUT_SOCKET_TYPES = {'image': 'IMAGE', 'mask': 'MASK', 'profile': 'STRING', 'mix': 'FLOAT', 'texture': 'FLOAT', 'detail': 'FLOAT', 'contrast': 'FLOAT', 'warmth': 'FLOAT', 'saturation': 'FLOAT', 'seed': 'INT'}
 REQUIRED_INPUT_NAMES = ('image',)
 OUTPUT_SOCKET_TYPES = ('IMAGE',)
 BATCH_POLICY = 'exactly-one'
@@ -144,7 +146,7 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXCameraLook:
+class MATRIXPhotoFinisher:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -152,13 +154,15 @@ class MATRIXCameraLook:
                 'image': _input_widget('image'),
             },
             "optional": {
-                'enabled': _input_widget('enabled'),
-                'chromatic_aberration': _input_widget('chromatic_aberration'),
-                'demosaic_pixel_blur': _input_widget('demosaic_pixel_blur'),
-                'noise_strength': _input_widget('noise_strength'),
-                'kernel_motion_blur': _input_widget('kernel_motion_blur'),
-                'jpeg_compression': _input_widget('jpeg_compression'),
-                'look_seed': _input_widget('look_seed'),
+                'mask': _input_widget('mask'),
+                'profile': _input_widget('profile'),
+                'mix': _input_widget('mix'),
+                'texture': _input_widget('texture'),
+                'detail': _input_widget('detail'),
+                'contrast': _input_widget('contrast'),
+                'warmth': _input_widget('warmth'),
+                'saturation': _input_widget('saturation'),
+                'seed': _input_widget('seed'),
             },
         }
 
@@ -166,13 +170,13 @@ class MATRIXCameraLook:
     RETURN_NAMES = ('image',)
     FUNCTION = "execute"
     CATEGORY = 'MATRIX LAB/Image Processing'
-    DESCRIPTION = 'Generated from operation block color.camera-look.'
+    DESCRIPTION = 'Applies a deterministic photographic finish with profile, texture, detail, tone, color, and optional mask controls.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from ..._core import color_camera_look as _operation_block
+        from ..._core import image_photo_finisher as _operation_block
         inputs['__flow_runtime__'] = {
             'resolved_blocks': {OPERATION_BLOCK: _operation_block},
             'input_socket_types': INPUT_SOCKET_TYPES,
@@ -185,5 +189,5 @@ class MATRIXCameraLook:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXCameraLook}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX CAMERA LOOK'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXPhotoFinisher}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX PHOTO FINISHER'}

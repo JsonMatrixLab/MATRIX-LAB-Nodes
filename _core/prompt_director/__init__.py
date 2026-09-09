@@ -25,7 +25,7 @@ class MATRIXLAB_PromptDirector:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("prompt",)
     FUNCTION = "execute"
-    CATEGORY = "MATRIX LAB UI NODES/Prompting"
+    CATEGORY = "MATRIX LAB/Prompting"
     DESCRIPTION = "Explicitly generate once, edit the saved prompt, then reuse it for free."
 
     def check_lazy_status(self, **_inputs):
