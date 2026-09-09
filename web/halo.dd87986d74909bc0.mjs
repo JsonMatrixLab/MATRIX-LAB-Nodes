@@ -446,8 +446,8 @@ export function registerHaloMotionSetting(app, options = {}) {
   host[SETTING_KEY] = state;
   const definition = {
     id: HALO_MOTION_SETTING_ID,
-    name: "MATRIXLAB HALO motion",
-    tooltip: "Animate MATRIXLAB HALO rain and perimeter effects.",
+    name: "MATRIX LAB HALO motion",
+    tooltip: "Animate MATRIX LAB HALO rain and perimeter effects.",
     type: "boolean",
     defaultValue: true,
     onChange(value) {
@@ -1094,6 +1094,9 @@ function coerceValue(widget, raw) {
 
 // A presentation policy only: keep backend names, values, order and links intact.
 function parameterFieldPresentation(node, widget) {
+  if ((node.comfyClass || node.type) === "MATRIX_MetadataKiller") {
+    return { label: ({ filename_prefix: "Name", format: "Format", quality: "Quality" })[widget.name] };
+  }
   if ((node.comfyClass || node.type) === "MATRIX_CropTailPaste" && widget.name === "mask_mode") {
     return { label: "Mask behavior", hidden: false,
       choices: [
@@ -1265,7 +1268,75 @@ function createWidgetField(doc, node, widget, options) {
   marker.textContent = "LINKED";
   field.append(label, control, marker);
   render();
-  return { field, render, destroy: () => control.removeEventListener("change", commit) };
+  return { field, control, render, destroy: () => control.removeEventListener("change", commit) };
+}
+
+// Export is a projection of the existing format/quality pair, never a saved widget.
+function createMetadataFields(doc, node, widgets, options) {
+  const format = widgets.find(widget => widget.name === "format");
+  const quality = widgets.find(widget => widget.name === "quality");
+  if (!format || !quality) return widgets.map(widget => createWidgetField(doc, node, widget, options));
+  const native = widgets.map(widget => createWidgetField(doc, node, widget, options));
+  const nativeRenderers = native.map(entry => entry.render);
+  const byName = new Map(widgets.map((widget, index) => [widget.name, native[index]]));
+  const field = doc.createElement("div"); field.className = "matrixlab-halo__field";
+  field.style.flexWrap = "nowrap";
+  const label = doc.createElement("label"); label.textContent = "Export";
+  label.style.flex = "0 0 auto";
+  const select = doc.createElement("select"); applyHaloSelect(select);
+  select.id = allocateControlId(doc); label.htmlFor = select.id;
+  Object.assign(select.style, { width: "auto", flex: "1 1 180px", minWidth: "0" });
+  for (const [value, title] of [["high", "JPEG · High quality"], ["small", "JPEG · Smaller file"], ["png", "PNG · Lossless"], ["custom", "JPEG · Custom"]]) {
+    const item = doc.createElement("option"); item.value = value; item.textContent = title; select.appendChild(item);
+  }
+  field.append(label, select);
+  // Editor-open intent is disposable. Restored tuples always derive their preset.
+  const isCustomTuple = () => format.value === "JPEG" && ![95, 85].includes(quality.value);
+  let customEditorOpen = isCustomTuple();
+  const linked = () => linkedInput(node, "format") || linkedInput(node, "quality");
+  const preset = () => format.value === "PNG" ? "png"
+    : customEditorOpen ? "custom"
+    : quality.value === 95 ? "high" : quality.value === 85 ? "small" : "custom";
+  const visible = (entry, show) => { entry.field.hidden = !show; entry.field.style.display = show ? "" : "none"; };
+  const render = () => {
+    nativeRenderers.forEach(renderNative => renderNative());
+    select.value = preset(); select.disabled = linked(); field.dataset.linked = String(linked());
+    visible(byName.get("format"), linked());
+    visible(byName.get("quality"), linked() || preset() === "custom");
+    const name = byName.get("filename_prefix");
+    if (name) {
+      name.field.style.flexWrap = "nowrap"; name.field.children[0].style.flex = "0 0 auto";
+      Object.assign(name.control.style, { width: "auto", flex: "1 1 180px", textAlign: "left" });
+    }
+  };
+  const commit = event => {
+    if (linked() || !["high", "small", "png", "custom"].includes(select.value)) { render(); return; }
+    const choice = select.value;
+    const nextFormat = choice === "png" ? "PNG" : "JPEG";
+    const nextQuality = choice === "high" ? 95 : choice === "small" ? 85 : quality.value;
+    const changed = [[format, nextFormat], [quality, nextQuality]].filter(([widget, value]) => !Object.is(widget.value, value));
+    customEditorOpen = choice === "custom";
+    if (!changed.length) { render(); options.onMetadataLayoutChange?.(); return; }
+    const canvas = options.app?.canvas || options.canvas || null;
+    node.graph?.beforeChange?.(); canvas?.emitBeforeChange?.();
+    try {
+      // Both values are authoritative before either native callback observes them.
+      changed.forEach(([widget, value]) => { widget.value = value; });
+      changed.forEach(([widget, value]) => widget.callback?.call(widget, value, canvas, node,
+        options.getCallbackPosition?.(event, node) ?? node.pos, event));
+    } finally {
+      try { render(); options.onMetadataLayoutChange?.(); }
+      finally { try { node.graph?.afterChange?.(); } finally { canvas?.emitAfterChange?.(); } }
+    }
+  };
+  select.addEventListener("change", commit);
+  const exportField = { field, render, reset() { customEditorOpen = isCustomTuple(); render(); },
+    destroy() { select.removeEventListener("change", commit); } };
+  native.forEach(entry => { entry.render = render; });
+  render();
+  const nameIndex = widgets.findIndex(widget => widget.name === "filename_prefix");
+  const fields = [...native]; fields.splice(nameIndex < 0 ? 0 : nameIndex + 1, 0, exportField);
+  return fields;
 }
 
 // Keep output history in ComfyUI; own only the presentation of this node's saved images.
@@ -1278,19 +1349,35 @@ export function mountHaloSavedImages(node, root, options = {}) {
   Object.assign(viewport.style, { position: "relative", flex: "1 1 auto", minHeight: "130px", overflow: "hidden", borderRadius: "9px", background: "rgba(0,0,0,0.25)" });
   const status = doc.createElement("span");
   status.textContent = "Saved image appears here";
+  status.setAttribute("aria-live", "polite");
+  const savedStatus = doc.createElement("span");
+  savedStatus.className = "matrixlab-halo__saved-status";
+  Object.assign(savedStatus.style, { minWidth: "0", overflowWrap: "anywhere" });
+  const stale = doc.createElement("span"); stale.textContent = "Previous preview · loading selected image";
+  Object.assign(stale.style, { position: "absolute", inset: "auto 0 0", zIndex: "1", padding: "8px", background: HALO_TOKENS.linkedSurface, color: HALO_TOKENS.primaryText });
+  stale.hidden = true;
   const toolbar = doc.createElement("div");
   Object.assign(toolbar.style, { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" });
   const previous = doc.createElement("button"); previous.type = "button"; previous.textContent = "Previous";
   const next = doc.createElement("button"); next.type = "button"; next.textContent = "Next";
-  const open = doc.createElement("a"); open.textContent = "Open image"; open.target = "_blank"; open.rel = "noopener noreferrer";
-  const download = doc.createElement("a"); download.textContent = "Download";
-  toolbar.append(previous, status, next, open, download);
-  section.append(viewport, toolbar); root.appendChild(section);
-  let descriptors = [], selected = 0, pendingImage = null, revision = 0, destroyed = false;
-  let lastImages = null;
+  const open = doc.createElement("a"); open.textContent = "Open original";
+  open.setAttribute("aria-haspopup", "dialog");
+  const download = doc.createElement("a"); download.textContent = "Download original";
+  const retry = doc.createElement("button"); retry.type = "button"; retry.textContent = "Retry preview"; retry.hidden = true;
+  toolbar.append(previous, status, next, open, download, retry);
+  section.append(viewport, toolbar, savedStatus); root.appendChild(section);
+  let descriptors = [], selected = 0, pendingImage = null, displayedImage = null, revision = 0, destroyed = false;
+  let lastSignature = null;
+  let originalViewer = null;
+  // At most three decoded thumbnails per node, independent of batch length.
+  const cache = new Map();
   const previousHidden = node.hideOutputImages;
+  const nativeIdentity = new Map(["images", "preview"].map(name => [name,
+    { own: Object.prototype.hasOwnProperty.call(node, name), value: node[name], assigned: undefined }]));
   let ownsHidden = false;
   const nativeWidgets = new Map();
+  const outputKey = () => node.graph?.isRootGraph === false ? `${node.graph.id}:${node.id}` : String(node.id);
+  const storedOutput = () => options.app?.nodeOutputs?.[outputKey()];
   const syncNativeWidgets = () => {
     for (const widget of node.widgets || []) {
       if (widget.name !== "$$canvas-image-preview") continue;
@@ -1307,63 +1394,221 @@ export function mountHaloSavedImages(node, root, options = {}) {
   };
   const originalBackground = node.onDrawBackground;
   const background = function (...args) {
+    prepareNative(storedOutput());
+    update(storedOutput());
     try { return originalBackground?.apply(this, args); }
-    finally { update(options.app?.nodeOutputs?.[node.id]); syncNativeWidgets(); }
+    finally { syncNativeWidgets(); }
   };
   node.onDrawBackground = background;
   const hideNative = (hidden) => {
+    const changed = hidden ? node.hideOutputImages !== true : ownsHidden;
     if (hidden) { node.hideOutputImages = true; ownsHidden = true; }
     else { if (ownsHidden && node.hideOutputImages === true) node.hideOutputImages = previousHidden; ownsHidden = false; }
     syncNativeWidgets();
-    node.setDirtyCanvas?.(true, true);
+    if (changed) node.setDirtyCanvas?.(true, true);
   };
   const cancelLoad = () => {
-    if (pendingImage) { pendingImage.onload = null; pendingImage.onerror = null; pendingImage = null; }
+    if (pendingImage) {
+      const image = pendingImage; pendingImage = null;
+      image.onload = null; image.onerror = null;
+      // Removing the actual browser source cancels the in-flight image fetch.
+      image.removeAttribute?.("src");
+    }
+  };
+  const prepareNative = output => {
+    if (destroyed) return;
+    hideNative(true);
+    // Classic updatePreviews compares these exact references before requesting
+    // URLs. Acknowledge its store without removing output/history descriptors.
+    const stored = storedOutput() || output;
+    if (stored && Object.prototype.hasOwnProperty.call(stored, "images")) {
+      node.images = stored.images; nativeIdentity.get("images").assigned = stored.images;
+    }
+    const previews = options.app?.nodePreviewImages?.[outputKey()];
+    if (previews) {
+      node.preview = previews; nativeIdentity.get("preview").assigned = previews;
+    }
+  };
+  const urlFor = (descriptor, thumbnail = false) => {
+    const query = new URLSearchParams({ filename: descriptor.filename, subfolder: descriptor.subfolder || "", type: descriptor.type || "output" });
+    if (thumbnail) query.set("preview", "webp;90");
+    return options.imageURL?.(query) ?? `${options.app?.api?.apiURL?.("/view") || "./view"}?${query}`;
+  };
+  const closeOriginal = () => {
+    const viewer = originalViewer;
+    if (!viewer) return;
+    originalViewer = null;
+    viewer.image.onload = null; viewer.image.onerror = null;
+    viewer.image.removeAttribute?.("src");
+    viewer.close.removeEventListener("click", viewer.dismiss);
+    viewer.dialog.removeEventListener("cancel", viewer.dismiss);
+    viewer.dialog.removeEventListener("close", viewer.dismiss);
+    viewer.dialog.removeEventListener("keydown", viewer.keydown);
+    doc.removeEventListener?.("keydown", viewer.keydown, true);
+    doc.removeEventListener?.("keyup", viewer.isolateKeyboard, true);
+    if (viewer.dialog.open) viewer.dialog.close?.();
+    viewer.dialog.remove();
+    if (!destroyed && open.isConnected) open.focus?.();
+  };
+  const openOriginal = event => {
+    if (destroyed || open.hidden || !descriptors[selected]) { event?.preventDefault?.(); return; }
+    // Attach to the document, outside ComfyUI's scaled canvas DOM. The original
+    // has no source until this explicit action successfully opens a native modal.
+    const descriptor = descriptors[selected];
+    const dialog = doc.createElement("dialog");
+    const parent = doc.body || doc.documentElement;
+    if (typeof dialog.showModal !== "function" || !parent?.appendChild) {
+      return; // Preserve the original href as a normal link on older frontends.
+    }
+    event?.preventDefault?.(); event?.stopPropagation?.();
+    closeOriginal();
+    dialog.className = "matrixlab-halo matrixlab-halo__original-dialog";
+    Object.assign(dialog.style, { position: "fixed", margin: "auto", boxSizing: "border-box", padding: "16px",
+      width: "min(1100px, 94vw)", maxWidth: "94vw", maxHeight: "94vh", overflow: "auto",
+      border: `1px solid ${HALO_TOKENS.fieldBorder}`, borderRadius: "12px",
+      background: HALO_TOKENS.body, color: HALO_TOKENS.primaryText });
+    const heading = doc.createElement("div");
+    Object.assign(heading.style, { display: "flex", gap: "12px", alignItems: "center", justifyContent: "space-between" });
+    const title = doc.createElement("h2"); title.id = allocateControlId(doc);
+    title.textContent = `Original · ${descriptor.filename}`;
+    Object.assign(title.style, { margin: "0", fontSize: "14px", overflowWrap: "anywhere", minWidth: "0" });
+    dialog.setAttribute("aria-labelledby", title.id);
+    const close = doc.createElement("button"); close.type = "button"; close.textContent = "Close"; close.autofocus = true;
+    Object.assign(close.style, { flex: "0 0 auto", padding: "6px 12px", border: `1px solid ${HALO_TOKENS.fieldBorder}`,
+      borderRadius: "6px", background: HALO_TOKENS.parameterField, color: HALO_TOKENS.primaryText });
+    const feedback = doc.createElement("p"); feedback.setAttribute("role", "status"); feedback.textContent = "Loading original…";
+    const image = doc.createElement("img"); image.alt = descriptor.filename;
+    Object.assign(image.style, { display: "block", width: "100%", height: "min(72vh, 900px)", objectFit: "contain" });
+    heading.append(title, close); dialog.append(heading, feedback, image);
+    const dismiss = event => { event?.preventDefault?.(); event?.stopPropagation?.(); closeOriginal(); };
+    const isolateKeyboard = event => {
+      if (destroyed || originalViewer !== viewer || !dialog.open) return false;
+      event.stopImmediatePropagation?.(); event.stopPropagation?.();
+      return true;
+    };
+    const keydown = event => {
+      if (!isolateKeyboard(event)) return;
+      if (event.key === "Escape") dismiss(event);
+      else if (event.key === "Tab") {
+        // The viewer has one interactive control. Native traversal can escape
+        // to BODY in the embedded host, so cycle explicitly in both directions.
+        event.preventDefault?.(); close.focus?.();
+      }
+    };
+    const viewer = { dialog, close, image, dismiss, keydown, isolateKeyboard };
+    originalViewer = viewer;
+    close.addEventListener("click", dismiss); dialog.addEventListener("cancel", dismiss);
+    dialog.addEventListener("close", dismiss); dialog.addEventListener("keydown", keydown);
+    // Capture outside the canvas also handles Escape after host focus escapes.
+    // Keep native button activation/scroll defaults; isolate graph shortcuts.
+    doc.addEventListener?.("keydown", keydown, true);
+    doc.addEventListener?.("keyup", isolateKeyboard, true);
+    image.onload = () => {
+      if (destroyed || originalViewer !== viewer) return;
+      feedback.textContent = "Original loaded";
+    };
+    image.onerror = () => {
+      if (destroyed || originalViewer !== viewer) return;
+      feedback.textContent = "Original could not be loaded. Close and try again, or use Download original.";
+      image.hidden = true; image.style.display = "none";
+    };
+    try {
+      parent.appendChild(dialog); dialog.showModal(); close.focus?.();
+      image.src = urlFor(descriptor);
+    } catch {
+      closeOriginal(); status.textContent = "Original viewer unavailable. Use Download original.";
+    }
+  };
+  const keyFor = descriptor => JSON.stringify([descriptor.filename, descriptor.subfolder || "", descriptor.type || "output",
+    descriptor.matrix_preview?.filename || "", descriptor.matrix_preview?.subfolder || "", descriptor.matrix_preview?.type || ""]);
+  const setStale = message => {
+    stale.hidden = !displayedImage; stale.textContent = message;
+    if (displayedImage) viewport.replaceChildren(displayedImage, stale);
   };
   const show = () => {
     cancelLoad();
     const token = ++revision;
     previous.disabled = selected <= 0; next.disabled = selected >= descriptors.length - 1;
+    previous.hidden = next.hidden = descriptors.length <= 1;
+    retry.hidden = true;
     open.hidden = download.hidden = true;
-    viewport.replaceChildren();
-    if (!descriptors.length) { status.textContent = "Saved image appears here"; hideNative(false); return; }
+    if (!descriptors.length) {
+      viewport.replaceChildren(); displayedImage = null; stale.hidden = true;
+      status.textContent = "Saved image appears here"; savedStatus.textContent = ""; return;
+    }
     const descriptor = descriptors[selected];
-    const query = new URLSearchParams({ filename: descriptor.filename, subfolder: descriptor.subfolder || "", type: descriptor.type || "output" });
-    const url = options.imageURL?.(query) ?? `${options.app?.api?.apiURL?.("/view") || "./view"}?${query}`;
+    const originalURL = urlFor(descriptor);
+    const preview = descriptor.matrix_preview;
+    const url = preview?.filename && preview.type === "temp" ? urlFor(preview) : urlFor(descriptor, true);
     hideNative(true);
-    open.href = download.href = url; download.download = descriptor.filename;
+    open.href = download.href = originalURL; download.download = descriptor.filename;
     open.hidden = download.hidden = false;
+    open.title = download.title = `Selected saved original: ${descriptor.filename}`;
+    savedStatus.textContent = `Saved: ${descriptor.filename}${descriptor.matrix_metadata_verified === true ? " · Metadata verified" : ""}`;
+    const key = keyFor(descriptor);
+    const showReady = image => {
+      displayedImage = image; stale.hidden = true; viewport.replaceChildren(image);
+      status.textContent = `Preview ${selected + 1} / ${descriptors.length}`;
+    };
+    if (cache.has(key)) {
+      const cached = cache.get(key); cache.delete(key); cache.set(key, cached); showReady(cached); return;
+    }
     const image = doc.createElement("img"); pendingImage = image;
     image.alt = descriptor.filename;
     Object.assign(image.style, { position: "absolute", inset: "0", width: "100%", height: "100%", objectFit: "contain" });
-    status.textContent = `Loading ${selected + 1} / ${descriptors.length}`;
+    status.textContent = `Loading preview ${selected + 1} / ${descriptors.length}`;
+    setStale("Previous preview · loading selected image");
     image.onload = () => {
       if (destroyed || revision !== token) return;
-      cancelLoad(); viewport.replaceChildren(image);
-      status.textContent = `${selected + 1} / ${descriptors.length}`;
-
+      pendingImage = null; image.onload = null; image.onerror = null;
+      cache.set(key, image);
+      while (cache.size > 3) cache.delete(cache.keys().next().value);
+      showReady(image);
     };
     image.onerror = () => {
       if (destroyed || revision !== token) return;
-      cancelLoad(); status.textContent = "Preview unavailable";
+      cancelLoad(); status.textContent = "Preview unavailable"; retry.hidden = false;
+      setStale("Previous preview · selected preview unavailable");
     };
     image.src = url;
   };
   const update = (output) => {
     if (destroyed || !output || !Object.prototype.hasOwnProperty.call(output, "images")) return;
-    if (output.images === lastImages) return;
-    lastImages = output.images;
-    descriptors = Array.isArray(output.images) ? output.images.filter(item => item && typeof item.filename === "string" && item.filename) : [];
-    selected = 0; show();
+    prepareNative(output);
+    const incoming = Array.isArray(output.images) ? output.images.filter(item => item && typeof item.filename === "string" && item.filename) : [];
+    const signature = JSON.stringify(incoming.map(item => [keyFor(item), item.matrix_metadata_verified === true]));
+    if (signature === lastSignature) return;
+    const selectedKey = descriptors[selected] && keyFor(descriptors[selected]);
+    lastSignature = signature; descriptors = incoming;
+    const retained = descriptors.findIndex(item => keyFor(item) === selectedKey);
+    selected = retained < 0 ? 0 : retained;
+    const keep = new Set(descriptors.map(keyFor));
+    for (const key of cache.keys()) if (!keep.has(key)) cache.delete(key);
+    show();
   };
   const goPrevious = () => { if (selected > 0) { selected--; show(); } };
   const goNext = () => { if (selected + 1 < descriptors.length) { selected++; show(); } };
+  const retryPreview = () => { if (!destroyed && descriptors.length && !retry.hidden) show(); };
   previous.addEventListener("click", goPrevious); next.addEventListener("click", goNext);
-  show();
-  return { section, update, destroy() {
-    destroyed = true; revision++; cancelLoad(); hideNative(false);
+  open.addEventListener("click", openOriginal);
+  retry.addEventListener("click", retryPreview);
+  prepareNative(storedOutput()); show();
+  return { section, update, prepareNative, storedOutput,
+    minimumHeight: () => 130 + (Number(toolbar.offsetHeight) || 64) + (Number(savedStatus.offsetHeight) || 32) + 16,
+    destroy() {
+    destroyed = true; revision++; closeOriginal(); cancelLoad(); hideNative(false);
+    for (const image of cache.values()) image.removeAttribute?.("src");
+    displayedImage?.removeAttribute?.("src"); viewport.replaceChildren();
+    cache.clear(); displayedImage = null;
+    for (const [name, state] of nativeIdentity) {
+      if (state.assigned !== undefined && node[name] === state.assigned) {
+        if (state.own) node[name] = state.value; else delete node[name];
+      }
+    }
     if (node.onDrawBackground === background) node.onDrawBackground = originalBackground;
-    previous.removeEventListener("click", goPrevious); next.removeEventListener("click", goNext); section.remove();
+    previous.removeEventListener("click", goPrevious); next.removeEventListener("click", goNext);
+    open.removeEventListener("click", openOriginal);
+    retry.removeEventListener("click", retryPreview); section.remove();
   } };
 }
 
@@ -1385,12 +1630,17 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   // Vue render identity without mutating ComfyUI's widget object.
   const presentationBaseName = profile === "execution" ? "matrixlab_halo_execution_ui" : "matrixlab_halo_utility_ui";
   const presentationName = `${presentationBaseName}_${allocateControlId(doc)}`;
-  const fields = canonicalWidgets.filter((widget) => widget?.name).map((widget) => createWidgetField(doc, node, widget, options));
+  const namedWidgets = canonicalWidgets.filter(widget => widget?.name);
+  const fieldOptions = { ...options, onMetadataLayoutChange: () => scheduleMinimum() };
+  const fields = nodeType === "MATRIX_MetadataKiller"
+    ? createMetadataFields(doc, node, namedWidgets, fieldOptions)
+    : namedWidgets.map(widget => createWidgetField(doc, node, widget, options));
   for (const field of fields) root.appendChild(field.field);
   const savedImages = nodeType === "MATRIX_MetadataKiller" ? mountHaloSavedImages(node, root, options) : null;
   if (savedImages) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
   const contentMinimum = () => savedImages
-    ? Math.max(fields.length * 46 + 36, ...fields.map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + 188
+    ? Math.max(fields.filter(({ field }) => !field.hidden).length * 46 + 36,
+      ...fields.filter(({ field }) => !field.hidden).map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + savedImages.minimumHeight()
     : measureHaloContentHeight(root, fields.filter(({ field }) => !field.hidden).length * 46 + 36);
   let presentation = null;
   let halo = null;
@@ -1492,7 +1742,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   const scheduleMinimum = () => {
     if (destroyed) return;
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { resizeTimer = null; savedImages?.update(options.app?.nodeOutputs?.[node.id]); minimumSize(); fields.forEach((field) => field.render()); halo.renderStatic(); }, 0);
+    resizeTimer = setTimeout(() => { resizeTimer = null; savedImages?.update(savedImages.storedOutput()); fields.forEach((field) => field.render()); minimumSize(); halo.renderStatic(); }, 0);
   };
   // Canonical callbacks own state; the DOM is refreshed only after they finish.
   const refresh = () => {
@@ -1511,7 +1761,10 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     const previous = node[name];
     const wrapped = function (...args) {
       try { return previous?.apply(this, args); }
-      finally { savedImages?.update(options.app?.nodeOutputs?.[node.id]); refresh(); }
+      finally {
+        if (name === "onConfigure") fields.forEach(field => field.reset?.());
+        savedImages?.update(savedImages.storedOutput()); refresh();
+      }
     };
     refreshHooks.push({ name, previous, wrapped });
     node[name] = wrapped;
@@ -1519,12 +1772,13 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   if (savedImages) {
     const previous = node.onExecuted;
     const wrapped = function (output, ...args) {
+      savedImages.prepareNative(output);
       try { return previous?.call(this, output, ...args); }
-      finally { savedImages.update(output); refresh(); }
+      finally { savedImages.update(savedImages.storedOutput() || output); refresh(); }
     };
     refreshHooks.push({ name: "onExecuted", previous, wrapped });
     node.onExecuted = wrapped;
-    savedImages.update(options.app?.nodeOutputs?.[node.id]);
+    savedImages.update(savedImages.storedOutput());
   }
   wrappedResize = function (...args) {
     const result = previousResize?.apply(this, args);

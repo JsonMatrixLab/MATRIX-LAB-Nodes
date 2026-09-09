@@ -1,5 +1,5 @@
-import { mountImageGallery } from "./gallery.1b81fe83387a60e1.mjs";
-import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.d64a9a13ccfeb9ce.mjs";
+import { mountImageGallery } from "./gallery.2fa7e326ff4dc0d0.mjs";
+import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.dd87986d74909bc0.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};

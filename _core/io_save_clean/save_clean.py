@@ -7,9 +7,10 @@ import re
 import struct
 import tempfile
 import unicodedata
+import uuid
 import zlib
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Any
 
 import torch
 from PIL import Image
@@ -19,6 +20,7 @@ PathAllocator = Callable[[str, int, int], tuple[str, str, int, str, str]]
 InterruptChecker = Callable[[], None]
 Encoder = Callable[[Image.Image, str | os.PathLike[str], int], None]
 Verifier = Callable[[str | os.PathLike[str]], bool]
+MAX_COLLISION_RETRIES = 1000
 
 
 def _default_path_allocator(prefix: str, width: int, height: int):
@@ -33,6 +35,12 @@ def _default_interrupt_checker() -> None:
     from comfy.model_management import throw_exception_if_processing_interrupted
 
     throw_exception_if_processing_interrupted()
+
+
+def _default_preview_directory() -> str:
+    import folder_paths
+
+    return folder_paths.get_temp_directory()
 
 
 def _encode_jpeg(image: Image.Image, path: str | os.PathLike[str], quality: int) -> None:
@@ -59,6 +67,13 @@ def _validate_prefix(filename_prefix: object) -> str:
         raise ValueError("filename_prefix must be non-empty after trimming")
     if len(prefix) > 128:
         raise ValueError("filename_prefix must contain at most 128 characters")
+    if filename_prefix.endswith((".", " ")):
+        raise ValueError("filename_prefix may not end with a dot or space")
+    if any(ch in '<>:"/\\|?*' for ch in prefix):
+        raise ValueError("filename_prefix contains a character forbidden in portable filenames")
+    stem = prefix.split(".", 1)[0].rstrip(" .").upper()
+    if stem in {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"} or re.fullmatch(r"(?:COM|LPT)[1-9¹²³]", stem):
+        raise ValueError("filename_prefix may not use a reserved Windows device name")
     if prefix in {".", ".."}:
         raise ValueError("filename_prefix may not be a path component")
     if "/" in prefix or "\\" in prefix or re.match(r"^[A-Za-z]:", prefix):
@@ -96,8 +111,10 @@ def _validate_inputs(
         raise ValueError("IMAGE batch must contain at least one frame")
     if height < 1 or width < 1:
         raise ValueError(f"IMAGE dimensions must be positive, received {list(images.shape)}")
-    if channels not in (1, 3):
+    if channels not in (1, 3, 4):
         raise ValueError(f"unsupported IMAGE channel count, received {list(images.shape)}")
+    if channels == 4 and format == "JPEG":
+        raise ValueError("JPEG cannot preserve alpha channels; select PNG for RGBA images")
     if images.dtype not in _supported_dtypes():
         raise TypeError(f"unsupported IMAGE dtype: {images.dtype}")
 
@@ -122,6 +139,8 @@ def _to_pillow(frame: torch.Tensor) -> Image.Image:
     pixels = _frame_to_uint8(frame).numpy()
     if pixels.shape[2] == 1:
         return Image.fromarray(pixels[:, :, 0], mode="L")
+    if pixels.shape[2] == 4:
+        return Image.fromarray(pixels, mode="RGBA")
     return Image.fromarray(pixels, mode="RGB")
 
 
@@ -246,7 +265,88 @@ def verify_clean_png(path: str | os.PathLike[str]) -> bool:
 def _publish_without_overwrite(temp_path: Path, final_path: Path) -> None:
     # A same-directory hard link is atomic and fails if the destination exists.
     os.link(temp_path, final_path)
-    temp_path.unlink()
+
+
+def _verify_clean_preview(path: Path) -> bool:
+    """Accept only static WebP pixel chunks, with an exact RIFF boundary."""
+    payload = path.read_bytes()
+    if len(payload) < 12 or payload[:4] != b"RIFF" or payload[8:12] != b"WEBP":
+        return False
+    if int.from_bytes(payload[4:8], "little") + 8 != len(payload):
+        return False
+    position = 12
+    while position < len(payload):
+        if position + 8 > len(payload):
+            return False
+        kind = payload[position:position + 4]
+        length = int.from_bytes(payload[position + 4:position + 8], "little")
+        if kind not in {b"VP8 ", b"VP8L", b"VP8X", b"ALPH"}:
+            return False
+        end = position + 8 + length
+        if end > len(payload):
+            return False
+        if kind == b"VP8X" and (length != 10 or payload[position + 8] & ~0x10):
+            return False
+        position = end + (length & 1)
+    if position != len(payload):
+        return False
+    with Image.open(path) as image:
+        image.load()
+        return (image.format == "WEBP" and not image.is_animated
+                and max(image.size) <= 1024 and min(image.size) > 0
+                and not any(key in image.info for key in ("exif", "xmp", "icc_profile", "comment"))
+                and not image.getexif())
+
+
+def _save_preview(original: Path, preview_dir: str | os.PathLike[str]) -> dict[str, str]:
+    # Decode the verified saved original, including JPEG encoding changes. The
+    # preview therefore represents the delivered file rather than pre-encode pixels.
+    with Image.open(original) as saved:
+        saved.load()
+        pixels = saved.convert("RGBA" if "A" in saved.getbands() else "RGB")
+        pixels.info.clear()
+        pixels.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
+        directory = Path(preview_dir)
+        filename = f"matrix-preview-{uuid.uuid4().hex}.webp"
+        handle, name = tempfile.mkstemp(prefix=".matrix-preview-", suffix=".tmp", dir=directory)
+        os.close(handle)
+        temporary = Path(name)
+        try:
+            pixels.save(temporary, format="WEBP", quality=85, method=2)
+            if not _verify_clean_preview(temporary):
+                raise RuntimeError("Preview metadata verification failed")
+            _publish_without_overwrite(temporary, directory / filename)
+        finally:
+            temporary.unlink(missing_ok=True)
+    return {"filename": filename, "subfolder": "", "type": "temp"}
+
+
+def _report_partial_failure(error: BaseException, descriptors: list[dict[str, Any]], total: int) -> None:
+    filenames = [item["filename"] for item in descriptors]
+    message = f"Metadata Killer saved {len(filenames)} of {total} files before stopping"
+    if filenames:
+        message += ": " + ", ".join(filenames)
+    # Python 3.10 has no BaseException.add_note. Diagnostic enrichment must
+    # never replace the real save/cancellation failure on any supported runtime.
+    add_note = getattr(error, "add_note", None)
+    if callable(add_note):
+        try:
+            add_note(message)
+        except Exception:
+            pass
+    try:
+        error.matrix_published_files = tuple(filenames)
+    except Exception:
+        pass
+    # Preserve the exception class (especially ComfyUI cancellation), while making
+    # the ordinary runtime error message truthful about already published files.
+    try:
+        if isinstance(error, OSError) and isinstance(error.strerror, str):
+            error.strerror = error.strerror + "; " + message
+        elif len(error.args) == 1 and isinstance(error.args[0], str):
+            error.args = (error.args[0] + "; " + message,)
+    except Exception:
+        pass
 
 
 def save_clean_images(
@@ -260,7 +360,8 @@ def save_clean_images(
     jpeg_verifier: Verifier | None = None,
     png_verifier: Verifier | None = None,
     encoder: Encoder | None = None,
-) -> dict[str, dict[str, list[dict[str, str]]]]:
+    preview_dir: str | os.PathLike[str] | Callable[[], str] | None = None,
+) -> dict[str, dict[str, list[dict[str, Any]]]]:
     allocator = path_allocator or _default_path_allocator
     check_interrupted = interrupt_checker or _default_interrupt_checker
     images, prefix, output_format, quality = _validate_inputs(
@@ -279,14 +380,14 @@ def save_clean_images(
     _, height, width, _ = images.shape
     output_folder, basename, counter, subfolder, _ = allocator(prefix, width, height)
     output_dir = Path(output_folder)
-    descriptors: list[dict[str, str]] = []
+    descriptors: list[dict[str, Any]] = []
 
-    for index, frame in enumerate(images):
-        check_interrupted()
-        filename = f"{basename}_{counter + index:05}_.{extension}"
+    for frame in images:
+        filename = f"{basename}_{counter:05}_.{extension}"
         final_path = output_dir / filename
         temp_path: Path | None = None
         try:
+            check_interrupted()
             handle, raw_temp_path = tempfile.mkstemp(
                 prefix=f".{filename}.", suffix=".tmp", dir=output_dir
             )
@@ -298,17 +399,41 @@ def save_clean_images(
                     f"{output_format} metadata verification failed closed"
                 )
             check_interrupted()
-            _publish_without_overwrite(temp_path, final_path)
-            temp_path = None
+            for attempt in range(MAX_COLLISION_RETRIES):
+                try:
+                    _publish_without_overwrite(temp_path, final_path)
+                    break
+                except FileExistsError:
+                    check_interrupted()
+                    counter += 1
+                    filename = f"{basename}_{counter:05}_.{extension}"
+                    final_path = output_dir / filename
+            else:
+                raise FileExistsError("Output name collision retry limit reached; existing files preserved")
+        except BaseException as error:
+            _report_partial_failure(error, descriptors, len(images))
+            raise
         finally:
             if temp_path is not None:
                 try:
                     temp_path.unlink(missing_ok=True)
                 except OSError:
                     pass
-        descriptors.append(
-            {"filename": filename, "subfolder": subfolder, "type": "output"}
-        )
+        descriptor = {"filename": filename, "subfolder": subfolder, "type": "output", "matrix_metadata_verified": True}
+        descriptors.append(descriptor)
+        counter += 1
+        if preview_dir is not None:
+            try:
+                try:
+                    directory = preview_dir() if callable(preview_dir) else preview_dir
+                    descriptor["matrix_preview"] = _save_preview(final_path, directory)
+                except Exception:
+                    # Preview is optional, and must not downgrade a verified original.
+                    descriptor["matrix_preview_error"] = "Preview unavailable; original saved and verified."
+                check_interrupted()
+            except BaseException as error:
+                _report_partial_failure(error, descriptors, len(images))
+                raise
     return {"ui": {"images": descriptors}}
 
 
@@ -335,4 +460,7 @@ class SaveClean:
         }
 
     def save(self, images, filename_prefix, format, quality):
-        return save_clean_images(images, filename_prefix, format, quality)
+        return save_clean_images(
+            images, filename_prefix, format, quality,
+            preview_dir=_default_preview_directory,
+        )

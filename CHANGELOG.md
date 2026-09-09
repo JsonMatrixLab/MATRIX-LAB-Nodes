@@ -2,6 +2,16 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.3.1 - development candidate - 2026-09-09
+
+- Metadata Killer displays a small, metadata-verified preview while keeping the verified full-resolution original for opening and downloading.
+- Added a contained original-image dialog and preview retry without saving another output file.
+- Simplified controls to Name and Export with JPEG quality presets, PNG lossless output and persistent custom quality. Existing filename, format and quality inputs and defaults remain compatible.
+- Preserve PNG alpha; reject JPEG alpha with a clear explanation. Validate portable filenames and avoid overwriting outputs when concurrent saves select the same counter.
+- Report files already saved when a batch fails or is interrupted, and reject empty image tensors clearly.
+
+Local Metadata Killer checks cover Classic and Nodes 2.0 on the recorded test environment. This update does not claim complete live acceptance of every node or cloud environment.
+
 ## 0.3.0 - development candidate - 2026-09-09
 
 - Standardized eight public class IDs: `MATRIX_MetadataKiller`, `MATRIX_AutoPrompter`, `MATRIX_ImageBatchLoader`, `MATRIX_Resolution`, `MATRIX_AIInfluencerResolution`, `MATRIX_AIInfluencerResolution2K4K`, `MATRIX_EasyCrop`, and `MATRIX_SpectralSampler`.

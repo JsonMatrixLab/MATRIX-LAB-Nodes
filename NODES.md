@@ -1,6 +1,6 @@
 # Node reference
 
-Package version 0.3.0 contains the fourteen classes below in six `MATRIX LAB` groups. The installed `MANIFEST.json` is authoritative for a particular artifact.
+Package version 0.3.1 contains the fourteen classes below in six `MATRIX LAB` groups. The installed `MANIFEST.json` is authoritative for a particular artifact.
 
 | Display name | Class ID | Inputs | Outputs | Guide |
 | --- | --- | --- | --- | --- |

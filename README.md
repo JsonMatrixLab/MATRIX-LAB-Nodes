@@ -4,7 +4,7 @@
 
 Fourteen focused ComfyUI nodes for image input, resolution, sampling, masks, finishing, output, and assisted prompting—organized in six consistent `MATRIX LAB` categories.
 
-> **Development candidate 0.3.0.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
+> **Development candidate 0.3.1.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
 
 ## Installation
 
