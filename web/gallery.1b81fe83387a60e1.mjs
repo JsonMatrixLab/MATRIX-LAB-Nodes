@@ -1,4 +1,4 @@
-import { haloMinimumNodeHeight, measureHaloContentHeight, mountHaloSurface, setHaloNodeSize } from "./halo.3bc35993e091e5c5.mjs";
+import { haloMinimumNodeHeight, measureHaloContentHeight, mountHaloSurface, setHaloNodeSize } from "./halo.d64a9a13ccfeb9ce.mjs";
 
 export const GALLERY_STATE_VERSION = 1;
 export const MAX_GALLERY_IMAGES = 10;
@@ -10,7 +10,7 @@ const MAX_GRID_HEIGHT = 320;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg"]);
 
 function refuse(message) {
-  throw new Error(`MATRIXLAB image collection: ${message}`);
+  throw new Error(`MATRIX image collection: ${message}`);
 }
 
 function rejectDuplicateFields(text) {
@@ -97,7 +97,7 @@ export function parseGalleryState(value) {
     rejectDuplicateFields(value);
     data = JSON.parse(value);
   } catch (error) {
-    if (error instanceof Error && error.message.startsWith("MATRIXLAB image collection:")) throw error;
+    if (error instanceof Error && error.message.startsWith("MATRIX image collection:")) throw error;
     refuse("state is not valid JSON");
   }
   if (!data || Array.isArray(data) || typeof data !== "object") refuse("state must be an object");

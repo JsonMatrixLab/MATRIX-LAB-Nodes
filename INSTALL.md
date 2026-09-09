@@ -1,6 +1,6 @@
 # Installation for people
 
-Install MATRIX LAB NODES package version 0.2.0 as one ComfyUI custom-node pack.
+Install MATRIX LAB NODES package version 0.3.0 as one ComfyUI custom-node pack.
 
 ## Before you begin
 
@@ -38,7 +38,7 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 1. Start ComfyUI through its normal launcher and inspect startup output for import errors.
 2. Open node search and find `MATRIX RESOLUTION`, `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
 3. Compare the installed classes with `MANIFEST.json`. The menu should retain six `MATRIX LAB` category groups.
-4. Add `MATRIXLAB_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
+4. Add `MATRIX_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
 5. Open a copy of an existing workflow and follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
 
 This verification proves discovery and the local geometry path only. It does not prove every model, detector, sampler, GPU, or frontend renderer.
@@ -47,7 +47,7 @@ This verification proves discovery and the local geometry path only. It does not
 
 Model weights are not bundled. Installing the pack does not acquire them, establish redistribution rights, or complete compatible inference-runtime setup. `MATRIX_SkinMask` and `MATRIX_EyeMask` fail when their registered assets or compatible runtimes are unavailable; do not bypass identity checks with a similarly named file. A successful package import is not proof that either mask node is ready to execute. Follow [the detector and segmentation setup guide](docs/detector-setup.md) for exact paths, hashes, source evidence, runtime boundaries, and unresolved license questions.
 
-`MATRIXLAB_PromptDirector` returns saved text during normal execution. Its explicit **Generate Prompt** control uses xAI and may incur charges. Configure credentials through its masked control or the documented server environment, never inside a workflow. Make the first provider call only after reviewing the selected model, reference images, request text, and cost boundary.
+`MATRIX_AutoPrompter` returns saved text during normal execution. Its explicit **Generate Prompt** control uses xAI and may incur charges. Configure credentials through its masked control or the documented server environment, never inside a workflow. Make the first provider call only after reviewing the selected model, reference images, request text, and cost boundary.
 
 ## Update
 

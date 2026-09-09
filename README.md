@@ -4,7 +4,7 @@
 
 Fourteen focused ComfyUI nodes for image input, resolution, sampling, masks, finishing, output, and assisted prompting—organized in six consistent `MATRIX LAB` categories.
 
-> **Development candidate 0.2.0.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
+> **Development candidate 0.3.0.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not e
 ## Input & Output (2)
 
 - [**MATRIX IMAGE BATCH LOADER**](docs/nodes/image-batch-loader.md) — load and reorder one to ten static input images while preserving each image's dimensions.
-- [**MATRIX METADATA KILLER**](docs/nodes/matrix-save-clean.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
+- [**MATRIX METADATA KILLER**](docs/nodes/metadata-killer.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
 
 ## Resolution & Layout (3)
 

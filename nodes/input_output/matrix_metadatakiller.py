@@ -1,20 +1,23 @@
-"""Compiled declaration for MATRIXLAB_ImageBatchLoader; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_MetadataKiller; regenerate instead of hand-editing."""
 from __future__ import annotations
 
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIXLAB_ImageBatchLoader'
-OPERATION_BLOCK = 'io.image-collection'
+NODE_ID = 'MATRIX_MetadataKiller'
+OPERATION_BLOCK = 'io.save-clean'
 SCHEMA_WIDGETS = {
-    'collection': ('STRING', {'default': '{"version":1,"items":[],"selected":null}'}),
+    'images': ('IMAGE', {'forceInput': True}),
+    'filename_prefix': ('STRING', {'default': 'MATRIX'}),
+    'format': (['JPEG', 'PNG'], {'default': 'JPEG'}),
+    'quality': ('INT', {'default': 100, 'min': 1, 'max': 100}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'collection': 'STRING'}
-REQUIRED_INPUT_NAMES = ('collection',)
-OUTPUT_SOCKET_TYPES = ('IMAGE', 'MASK')
+INPUT_SOCKET_TYPES = {'images': 'IMAGE', 'filename_prefix': 'STRING', 'format': 'STRING', 'quality': 'INT'}
+REQUIRED_INPUT_NAMES = ('images',)
+OUTPUT_SOCKET_TYPES = ()
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (True, True)
+OUTPUT_IS_LIST = ()
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -137,40 +140,33 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLABImageBatchLoader:
+class MATRIXMetadataKiller:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'collection': _input_widget('collection'),
+                'images': _input_widget('images'),
             },
             "optional": {
+                'filename_prefix': _input_widget('filename_prefix'),
+                'format': _input_widget('format'),
+                'quality': _input_widget('quality'),
             },
         }
 
-    RETURN_TYPES = ('IMAGE', 'MASK')
-    RETURN_NAMES = ('images', 'masks')
+    RETURN_TYPES = ()
+    RETURN_NAMES = ()
     FUNCTION = "execute"
     CATEGORY = 'MATRIX LAB/Input & Output'
-    DESCRIPTION = 'Generated from operation block io.image-collection.'
+    DESCRIPTION = 'Generated from operation block io.save-clean.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
-
-    @classmethod
-    def VALIDATE_INPUTS(cls, collection):
-        from ..._core import io_image_collection as _operation_block
-        return _operation_block.validate_collection_input(collection, execution=False)
-
-    @classmethod
-    def IS_CHANGED(cls, collection):
-        from ..._core import io_image_collection as _operation_block
-        return _operation_block.input_digest(collection)
+    OUTPUT_NODE = True
 
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        from ..._core import io_image_collection as _operation_block
-        import asyncio
-        return await asyncio.to_thread(_operation_block.execute_utility_operation, inputs)
+        from ..._core import io_save_clean as _operation_block
+        return _operation_block.execute_utility_operation(inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABImageBatchLoader}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX IMAGE BATCH LOADER'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXMetadataKiller}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX METADATA KILLER'}

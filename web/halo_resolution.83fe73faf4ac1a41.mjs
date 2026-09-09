@@ -1,4 +1,4 @@
-import { HALO_TOKENS, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.3bc35993e091e5c5.mjs";
+import { HALO_TOKENS, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.d64a9a13ccfeb9ce.mjs";
 
 export { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, setHaloNodeSize };
 
@@ -103,7 +103,7 @@ export function createHaloResolutionDeck(options) {
   const root = doc.createElement("div");
   root.className = "matrixlab-halo-resolution";
   root.setAttribute("role", "group");
-  root.setAttribute("aria-label", options.ariaLabel || "MATRIXLAB Resolution controls");
+  root.setAttribute("aria-label", options.ariaLabel || "MATRIX Resolution controls");
   const tier = doc.createElement("div");
   tier.className = "matrixlab-halo-resolution__tier";
   const tierText = doc.createElement("span");
@@ -193,7 +193,7 @@ export function createHaloResolutionDeck(options) {
     const width = Number(root.clientWidth) || Math.max(HALO_TOKENS.uiMinWidth, Number(node.size?.[0]) || HALO_TOKENS.uiMinWidth);
     root.dataset.layout = width >= 560 ? "wide" : "narrow";
     tierText.textContent = state.tier || "RESOLUTION";
-    profile.textContent = state.profile ?? "MATRIXLAB";
+    profile.textContent = state.profile ?? "MATRIX";
     profile.style.display = profile.textContent ? "" : "none";
     for (const group of groups) {
       group.grid.style.gridTemplateColumns = `repeat(${Math.min(group.items.length, width >= 560 ? 6 : 3)},minmax(0,1fr))`;
@@ -267,9 +267,9 @@ export function calculateTierResolution(aspectRatio, resolutionTier) {
 export function migrateResolutionGraph(graph) {
   for (const node of graph?.nodes || []) {
     const values = node.widgets_values;
-    const general = node.type === "MATRIXLAB_Resolution"
+    const general = node.type === "MATRIX_Resolution"
       && Array.isArray(values) && values.length >= 5 && typeof values[1] === "number";
-    const influencer = node.type === "MATRIXLAB_AIInfluencerResolution"
+    const influencer = node.type === "MATRIX_AIInfluencerResolution"
       && node.outputs?.some(output => output.name === "render_width");
     if (!general && !influencer) continue;
     const linkedInputs = node.inputs?.some(input => input.link != null);

@@ -25,21 +25,21 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_NAME = "matrixlab_public_distribution_under_test"
 RETIRED_NODE_IDS = {"MATRIX_CameraLook", "MATRIX_Renoise"}
 BASE_NODE_IDS = {
-    "MATRIXLAB_AIInfluencerResolution",
-    "MATRIXLAB_EasyCrop",
-    "MATRIXLAB_ImageBatchLoader",
-    "MATRIXLAB_PromptDirector",
-    "MATRIXLAB_Resolution",
-    "MATRIXSpectralSampler",
+    "MATRIX_AIInfluencerResolution",
+    "MATRIX_EasyCrop",
+    "MATRIX_ImageBatchLoader",
+    "MATRIX_AutoPrompter",
+    "MATRIX_Resolution",
+    "MATRIX_SpectralSampler",
     "MATRIX_CropTailPaste",
     "MATRIX_EyeMask",
     "MATRIX_LatentTail",
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
-    "MATRIX_SaveClean",
+    "MATRIX_MetadataKiller",
     "MATRIX_SkinMask",
 }
-ADDITIVE_NODE_ID = "MATRIXLAB_AIInfluencerResolution2K4K"
+ADDITIVE_NODE_ID = "MATRIX_AIInfluencerResolution2K4K"
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -104,6 +104,14 @@ class DistributionStructureTests(unittest.TestCase):
         match = re.search(r'^version\s*=\s*"([^"]+)"\s*$', pyproject, flags=re.MULTILINE)
         self.assertIsNotNone(match, "pyproject.toml must declare a project version")
         self.assertEqual(match.group(1), self.manifest["version"])
+
+    def test_class_ids_match_public_product_names(self):
+        for node_id, display in self.pack.NODE_DISPLAY_NAME_MAPPINGS.items():
+            with self.subTest(node_id=node_id):
+                self.assertRegex(node_id, r"^MATRIX_[A-Z][A-Za-z0-9]*$")
+                self.assertTrue(display.startswith("MATRIX "))
+                self.assertEqual(node_id[len("MATRIX_"):].upper(),
+                                 re.sub(r"[^A-Z0-9]", "", display[len("MATRIX "):]))
 
     def test_distribution_has_exactly_the_six_public_node_directories(self):
         actual = {
@@ -252,7 +260,7 @@ class OfflineNodeTests(unittest.TestCase):
         cls.pack = _load_pack()
 
     def test_prompt_director_manual_execution_returns_saved_text(self):
-        node = self.pack.NODE_CLASS_MAPPINGS["MATRIXLAB_PromptDirector"]()
+        node = self.pack.NODE_CLASS_MAPPINGS["MATRIX_AutoPrompter"]()
         saved = "  a manually edited prompt; no provider call  "
         with mock.patch.object(socket.socket, "connect", side_effect=AssertionError("network attempted")):
             self.assertEqual(node.execute(final_prompt=saved), (saved,))

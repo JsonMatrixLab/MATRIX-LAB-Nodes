@@ -6,13 +6,13 @@ import {
   measureHaloContentHeight,
   mountHaloSurface,
   setHaloNodeSize,
-} from "./halo.3bc35993e091e5c5.mjs";
+} from "./halo.d64a9a13ccfeb9ce.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
 
-const NODE_TYPE = "MATRIXLAB_PromptDirector";
-const LOADER_TYPE = "MATRIXLAB_ImageBatchLoader";
+const NODE_TYPE = "MATRIX_AutoPrompter";
+const LOADER_TYPE = "MATRIX_ImageBatchLoader";
 const PRESENTATION_WIDGET = "matrixlab_prompt_director_ui";
 const CREDENTIAL_PATH = "/matrixlab/prompt-director/v1/credential";
 const MODELS_PATH = "/matrixlab/prompt-director/v1/models";
@@ -882,7 +882,7 @@ export function mountPromptDirector(node, options = {}) {
       collection = currentCollection();
       if (!collection.items.length) throw new Error("Add 1–10 reference images before generating.");
       if (REQUIRED_WIDGETS.some((name) => isWidgetLinked(node, name))) {
-        throw new Error("Disconnect linked Prompt Director fields before generating.");
+        throw new Error("Disconnect linked Auto Prompter fields before generating.");
       }
       requestId = uuid(options.randomUUID);
     }
@@ -1076,7 +1076,7 @@ export function mountPromptDirector(node, options = {}) {
     presentation = node.addDOMWidget(PRESENTATION_WIDGET, "matrixlab-prompt-director", host, {
       serialize: false, hideOnZoom: false, getMinHeight: measuredHeight, getHeight: measuredHeight,
     });
-    if (!presentation) throw new Error("ComfyUI did not create the Prompt Director DOM widget");
+    if (!presentation) throw new Error("ComfyUI did not create the Auto Prompter DOM widget");
     presentation.serialize = false;
     presentation.options ||= {};
     presentation.options.serialize = false;

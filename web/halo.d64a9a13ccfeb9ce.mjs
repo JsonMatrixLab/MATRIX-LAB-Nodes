@@ -5,12 +5,12 @@ export const HALO_GLYPHS =
   "アカサタナハマヤラワイキシチニヒミリヰウクスツヌフムユルエケセテネヘメレヱオコソトノホモヨロヲ0123456789";
 
 export const HALO_EXECUTION_NODE_IDS = Object.freeze([
-  "MATRIXSpectralSampler",
+  "MATRIX_SpectralSampler",
   "MATRIX_LatentTail",
   "MATRIX_SkinMask",
   "MATRIX_EyeMask",
   "MATRIX_CropTailPaste",
-  "MATRIX_SaveClean",
+  "MATRIX_MetadataKiller",
   "MATRIX_OutputStage",
   "MATRIX_PhotoFinisher",
 ]);
@@ -1111,7 +1111,7 @@ function parameterFieldPresentation(node, widget) {
         : widget.name === "feather_px" ? "Feather radius in working-resolution pixels. Set zero for exact original-mask paste in Soft mask mode."
         : "" };
   }
-  if ((node.comfyClass || node.type) !== "MATRIXSpectralSampler") return null;
+  if ((node.comfyClass || node.type) !== "MATRIX_SpectralSampler") return null;
   const value = (name) => node.widgets?.find((item) => item.name === name)?.value;
   const known = (name) => !linkedInput(node, name);
   const scales = String(value("scales") ?? "").split(",").map((part) => Number(part.trim()));
@@ -1387,7 +1387,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   const presentationName = `${presentationBaseName}_${allocateControlId(doc)}`;
   const fields = canonicalWidgets.filter((widget) => widget?.name).map((widget) => createWidgetField(doc, node, widget, options));
   for (const field of fields) root.appendChild(field.field);
-  const savedImages = nodeType === "MATRIX_SaveClean" ? mountHaloSavedImages(node, root, options) : null;
+  const savedImages = nodeType === "MATRIX_MetadataKiller" ? mountHaloSavedImages(node, root, options) : null;
   if (savedImages) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
   const contentMinimum = () => savedImages
     ? Math.max(fields.length * 46 + 36, ...fields.map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + 188

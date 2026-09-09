@@ -1,22 +1,20 @@
-"""Compiled declaration for MATRIXLAB_AIInfluencerResolution; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_ImageBatchLoader; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from ..._core import resolution_ai_influencer as _operation_block
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIXLAB_AIInfluencerResolution'
-OPERATION_BLOCK = 'resolution.ai-influencer'
+NODE_ID = 'MATRIX_ImageBatchLoader'
+OPERATION_BLOCK = 'io.image-collection'
 SCHEMA_WIDGETS = {
-    'aspect_ratio': (['1:1', '9:16', '3:4'], {'default': '3:4', 'tooltip': 'AI-influencer delivery aspect ratio.'}),
-    'resolution_tier': (['1K', '2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 1024, 2048, or 4096 pixels.'}),
+    'collection': ('STRING', {'default': '{"version":1,"items":[],"selected":null}'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
-INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING'}
-REQUIRED_INPUT_NAMES = ('aspect_ratio', 'resolution_tier')
-OUTPUT_SOCKET_TYPES = ('INT', 'INT')
+INPUT_SOCKET_TYPES = {'collection': 'STRING'}
+REQUIRED_INPUT_NAMES = ('collection',)
+OUTPUT_SOCKET_TYPES = ('IMAGE', 'MASK')
 BATCH_POLICY = 'exactly-one'
 INPUT_IS_LIST = False
-OUTPUT_IS_LIST = (False, False)
+OUTPUT_IS_LIST = (True, True)
 ROUTE_FIELD_NAMES = tuple(SCHEMA_WIDGETS)
 FRAMEWORK_FIELD_NAMES = ()
 # Socket labels whose values carry a leading batch dimension.
@@ -139,39 +137,40 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLABAIInfluencerResolution:
+class MATRIXImageBatchLoader:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                'aspect_ratio': _input_widget('aspect_ratio'),
-                'resolution_tier': _input_widget('resolution_tier'),
+                'collection': _input_widget('collection'),
             },
             "optional": {
             },
         }
 
-    RETURN_TYPES = ('INT', 'INT')
-    RETURN_NAMES = ('width', 'height')
+    RETURN_TYPES = ('IMAGE', 'MASK')
+    RETURN_NAMES = ('images', 'masks')
     FUNCTION = "execute"
-    CATEGORY = 'MATRIX LAB/Resolution & Layout'
-    DESCRIPTION = 'Generated from operation block resolution.ai-influencer.'
+    CATEGORY = 'MATRIX LAB/Input & Output'
+    DESCRIPTION = 'Generated from operation block io.image-collection.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
+    @classmethod
+    def VALIDATE_INPUTS(cls, collection):
+        from ..._core import io_image_collection as _operation_block
+        return _operation_block.validate_collection_input(collection, execution=False)
+
+    @classmethod
+    def IS_CHANGED(cls, collection):
+        from ..._core import io_image_collection as _operation_block
+        return _operation_block.input_digest(collection)
+
     async def execute(self, **inputs):
         inputs = _adapt_image_inputs(_fill_widget_defaults(inputs))
-        inputs['__flow_runtime__'] = {
-            'resolved_blocks': {OPERATION_BLOCK: _operation_block},
-            'input_socket_types': INPUT_SOCKET_TYPES,
-            'required_input_names': REQUIRED_INPUT_NAMES,
-            'output_socket_types': OUTPUT_SOCKET_TYPES,
-            'batch_policy': BATCH_POLICY,
-            'payload_items': _payload_items(inputs),
-            'input_is_list': INPUT_IS_LIST,
-            'output_is_list': OUTPUT_IS_LIST,
-        }
-        return await execute_compiled_node(NODE_ID, '', '', inputs)
+        from ..._core import io_image_collection as _operation_block
+        import asyncio
+        return await asyncio.to_thread(_operation_block.execute_utility_operation, inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABAIInfluencerResolution}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX AI INFLUENCER RESOLUTION'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXImageBatchLoader}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX IMAGE BATCH LOADER'}

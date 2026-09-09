@@ -1,14 +1,14 @@
-"""Compiled declaration for MATRIXLAB_AIInfluencerResolution2K4K; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_AIInfluencerResolution; regenerate instead of hand-editing."""
 from __future__ import annotations
 
-from ..._core import resolution_ai_influencer_2k4k as _operation_block
+from ..._core import resolution_ai_influencer as _operation_block
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIXLAB_AIInfluencerResolution2K4K'
-OPERATION_BLOCK = 'resolution.ai-influencer-2k4k'
+NODE_ID = 'MATRIX_AIInfluencerResolution'
+OPERATION_BLOCK = 'resolution.ai-influencer'
 SCHEMA_WIDGETS = {
     'aspect_ratio': (['1:1', '9:16', '3:4'], {'default': '3:4', 'tooltip': 'AI-influencer delivery aspect ratio.'}),
-    'resolution_tier': (['2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 2048 or 4096 pixels.'}),
+    'resolution_tier': (['1K', '2K', '4K'], {'default': '2K', 'tooltip': 'Exact longest side: 1024, 2048, or 4096 pixels.'}),
 }
 IMAGE_UPLOAD_FIELDS = ()
 INPUT_SOCKET_TYPES = {'aspect_ratio': 'STRING', 'resolution_tier': 'STRING'}
@@ -139,7 +139,7 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLABAIInfluencerResolution2K4K:
+class MATRIXAIInfluencerResolution:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -155,7 +155,7 @@ class MATRIXLABAIInfluencerResolution2K4K:
     RETURN_NAMES = ('width', 'height')
     FUNCTION = "execute"
     CATEGORY = 'MATRIX LAB/Resolution & Layout'
-    DESCRIPTION = 'Generated from operation block resolution.ai-influencer-2k4k.'
+    DESCRIPTION = 'Generated from operation block resolution.ai-influencer.'
     INPUT_IS_LIST = INPUT_IS_LIST
     OUTPUT_IS_LIST = OUTPUT_IS_LIST
 
@@ -173,5 +173,5 @@ class MATRIXLABAIInfluencerResolution2K4K:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABAIInfluencerResolution2K4K}
-NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX AI INFLUENCER RESOLUTION 2K/4K'}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXAIInfluencerResolution}
+NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX AI INFLUENCER RESOLUTION'}

@@ -1,8 +1,8 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.3bc35993e091e5c5.mjs";
+import { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.d64a9a13ccfeb9ce.mjs";
 
-const NODE_IDS = new Set(["MATRIXLAB_EasyCrop"]);
+const NODE_IDS = new Set(["MATRIX_EasyCrop"]);
 export const CONTROL = Symbol.for("matrixlab.easy-crop.control");
 export const ASPECTS = Object.freeze(["Free", "1:1", "16:9", "9:16", "Custom"]);
 export const DEFAULT_STATE = Object.freeze({
@@ -160,7 +160,7 @@ function writeState(node, control, next) {
     try {
       widget.callback?.call(widget, value, app.canvas, node, undefined, undefined);
     } catch (error) {
-      console.warn("MATRIXLAB Easy Crop widget callback failed", error);
+      console.warn("MATRIX Easy Crop widget callback failed", error);
     }
   }
   control.render?.();
@@ -276,7 +276,7 @@ export function imageViewURL(value) {
 function createRoot(node, control) {
   const root = document.createElement("div");
   root.setAttribute("role", "group");
-  root.setAttribute("aria-label", "MATRIXLAB Easy Crop controls");
+  root.setAttribute("aria-label", "MATRIX Easy Crop controls");
   Object.assign(root.style, {
     boxSizing: "border-box", width: "100%", minWidth: "0", padding: "18px 16px",
     display: "grid", gridAutoRows: "max-content", alignContent: "start", gap: "12px",
@@ -653,7 +653,7 @@ function install(node) {
   try {
     root = createRoot(node, control);
     const host = createHaloWidgetHost(root, document);
-    if (!host) throw new Error("MATRIXLAB Easy Crop HALO host unavailable");
+    if (!host) throw new Error("MATRIX Easy Crop HALO host unavailable");
     control.host = host;
     const presentation = node.addDOMWidget(CORE_PREVIEW_WIDGET, "matrixlab-easy-crop", host, {serialize: false, hideOnZoom: false});
     if (!presentation) throw new Error("ComfyUI did not create the DOM widget");
@@ -668,7 +668,7 @@ function install(node) {
     };
     control.presentation = presentation;
     control.halo = mountHaloSurface(root, node, {profile: "ui", app});
-    if (!control.halo) throw new Error("MATRIXLAB Easy Crop HALO surface unavailable");
+    if (!control.halo) throw new Error("MATRIX Easy Crop HALO surface unavailable");
     claimNativeImagePreview(node, control);
     hidePresentationWidgets(node, control);
     node[CONTROL] = control;
@@ -682,7 +682,7 @@ function install(node) {
       if (!widgetsBeforeMount.has(node.widgets[index])) node.widgets.splice(index, 1);
     }
     control.host?.remove();
-    console.warn("MATRIXLAB Easy Crop UI unavailable; native widgets remain active", error);
+    console.warn("MATRIX Easy Crop UI unavailable; native widgets remain active", error);
     return null;
   }
 

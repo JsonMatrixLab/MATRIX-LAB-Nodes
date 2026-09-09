@@ -1,10 +1,10 @@
-"""Compiled declaration for MATRIXLAB_Resolution; regenerate instead of hand-editing."""
+"""Compiled declaration for MATRIX_Resolution; regenerate instead of hand-editing."""
 from __future__ import annotations
 
 from ..._core import resolution_dimensions as _operation_block
 from ..._core.flow_utility import execute_compiled_node
 
-NODE_ID = 'MATRIXLAB_Resolution'
+NODE_ID = 'MATRIX_Resolution'
 OPERATION_BLOCK = 'resolution.dimensions'
 SCHEMA_WIDGETS = {
     'aspect_ratio': (['1:1', '16:9', '9:16', '4:3', '3:4', '3:2', '2:3', '4:5', 'Custom'], {'default': '3:4', 'tooltip': 'Preset aspect ratio, or exact custom pixel dimensions.'}),
@@ -141,7 +141,7 @@ def _payload_items(inputs):
         for index in range(count)
     )
 
-class MATRIXLABResolution:
+class MATRIXResolution:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -177,5 +177,5 @@ class MATRIXLABResolution:
         }
         return await execute_compiled_node(NODE_ID, '', '', inputs)
 
-NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXLABResolution}
+NODE_CLASS_MAPPINGS = {NODE_ID: MATRIXResolution}
 NODE_DISPLAY_NAME_MAPPINGS = {NODE_ID: 'MATRIX RESOLUTION'}
