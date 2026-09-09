@@ -1,60 +1,62 @@
 # MATRIX LAB NODES
 
-MATRIX LAB NODES (package version 0.2.0) is a unified ComfyUI custom-node pack for image input, resolution planning, sampling, masks, finishing, output, and assisted prompting.
+[![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
-> [!IMPORTANT]
-> Version 0.2.0 is a development candidate. Offline package and ABI checks do not establish full live acceptance across ComfyUI renderers, GPU/model combinations, or production workflows.
+Fourteen focused ComfyUI nodes for image input, resolution, sampling, masks, finishing, output, and assisted prompting—organized in six consistent `MATRIX LAB` categories.
 
-The package keeps fourteen classes in six stable menu groups under `MATRIX LAB`. The exact classes in a downloaded build are also listed in its `MANIFEST.json`.
+> **Development candidate 0.2.0.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
 
-## What it does
+## Installation
 
-- Loads and crops ordered input images without silently resizing mixed dimensions.
-- Calculates model-independent 1K, 2K, and 4K pixel geometry.
-- Supplies sampling and masked detail helpers for ComfyUI workflows.
-- Builds skin and eye masks through separately supplied, identity-checked model assets.
-- Applies deterministic local photo finishing and saves clean JPEG or PNG output.
-- Returns a saved prompt locally; an explicit **Generate Prompt** action can call xAI after credential setup and paid-use approval.
+- **Install it yourself:** follow [INSTALL.md](INSTALL.md).
+- **Ask a coding agent to install it:** provide the repository and require [AGENT-INSTALL.md](AGENT-INSTALL.md).
 
-## Included groups
+Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable it beside the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs: retained class IDs would register twice. Back up workflows and review the [migration guide](docs/migration.md) before switching.
 
-| Group | Included nodes |
-| --- | --- |
-| [Input & Output](nodes/input_output/) | MATRIX METADATA KILLER, MATRIX IMAGE BATCH LOADER |
-| [Resolution & Layout](nodes/resolution_layout/) | MATRIX RESOLUTION, MATRIX AI INFLUENCER RESOLUTION, MATRIX AI INFLUENCER RESOLUTION 2K/4K |
-| [Sampling & Detail](nodes/sampling_detail/) | MATRIX SPECTRAL SAMPLER, MATRIX LATENT TAIL, MATRIX CROP TAIL PASTE |
-| [Masks & Detection](nodes/masks_detection/) | MATRIX SKIN MASK, MATRIX EYE MASK |
-| [Image Processing](nodes/image_processing/) | MATRIX PHOTO FINISHER, MATRIX EASY CROP, MATRIX OUTPUT STAGE |
-| [Prompting](nodes/prompting/) | MATRIX AUTO PROMPTER |
+## Input & Output (2)
 
-See [NODES.md](NODES.md) for the class inventory and [the node guides](docs/nodes/) for inputs, outputs, and practical boundaries.
+- [**MATRIX IMAGE BATCH LOADER**](docs/nodes/image-batch-loader.md) — load and reorder one to ten static input images while preserving each image's dimensions.
+- [**MATRIX METADATA KILLER**](docs/nodes/matrix-save-clean.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
 
-## Install
+## Resolution & Layout (3)
 
-- For a normal installation, follow [INSTALL.md](INSTALL.md).
-- For installation by a zero-context coding agent, provide the repository and require [AGENT-INSTALL.md](AGENT-INSTALL.md).
+- [**MATRIX RESOLUTION**](docs/nodes/resolution.md) — calculate 1K, 2K, 4K, or exact custom pixel dimensions across common aspect ratios.
+- [**MATRIX AI INFLUENCER RESOLUTION**](docs/nodes/ai-influencer-resolution.md) — select 1:1, 9:16, or 3:4 geometry at 1K, 2K, or 4K.
+- [**MATRIX AI INFLUENCER RESOLUTION 2K/4K**](docs/nodes/ai-influencer-resolution-2k4k.md) — use the focused two-tier geometry selector required by current Krea 2 graphs.
 
-Do not install this pack beside the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs. Shared class IDs would register twice. Back up workflows and the previous installation, disable the old packs, install this package as one folder under `custom_nodes`, restart ComfyUI, and confirm the expected classes in node search before opening an important workflow.
+Resolution nodes return integer geometry. They do not certify that a model supports the selected dimensions.
 
-## Safe start
+## Sampling & Detail (3)
 
-1. Read the installed `MANIFEST.json` and confirm the class inventory.
-2. Add `MATRIXLAB_Resolution` and verify its two integer outputs.
-3. Load a copy of one workflow and resolve missing or changed classes using [the migration guide](docs/migration.md).
-4. Keep **Generate Prompt** unused until an xAI credential, model choice, and paid request are intentionally approved.
+- [**MATRIX SPECTRAL SAMPLER**](docs/nodes/spectral-sampler.md) — provide a native or spectral progressive ComfyUI sampler from explicit transform and scale controls.
+- [**MATRIX LATENT TAIL**](docs/nodes/latent-tail.md) — run a short latent finishing pass, optionally restricted by a mask.
+- [**MATRIX CROP TAIL PASTE**](docs/nodes/crop-tail-paste.md) — sample a small masked region at crop scale and paste it back into the source image.
 
-For a local image-processing check, load [the Photo Finisher example](examples/README.md), choose your own PNG or JPEG, and preview the result. The example contains no photograph, model weights, or provider call.
+## Masks & Detection (2)
 
-## Dependencies and data
+- [**MATRIX SKIN MASK**](docs/nodes/skin-mask.md) — build selected human-part masks with an optional person gate and controlled edge finishing.
+- [**MATRIX EYE MASK**](docs/nodes/eye-mask.md) — detect eye boxes and optionally refine them into individual and union masks with SAM.
 
-The pack uses the Python/Torch environment supplied by ComfyUI and declares Pillow, aiohttp, NumPy, SciPy, and Torch. Preserve a working host Torch/CUDA installation when resolving dependencies. Detection nodes need external model assets and compatible inference runtimes; model acquisition, licensing, and compatible runtime setup are not completed by installing this repository. Model weights are not bundled. Their hashes and logical identities are checked by the runtime registry, but this package does not grant rights to those files. The mask nodes are not ready to run merely because the pack imports.
+Model weights are not bundled or downloaded. Both mask nodes require separately acquired, hash-matched assets and compatible runtimes; follow [detector and segmentation setup](docs/detector-setup.md).
 
-Most nodes run locally. `MATRIXLAB_PromptDirector` performs no network request during ordinary graph execution. Its explicit **Generate Prompt** action sends the selected local reference images and prompt fields to xAI. Credentials stay outside serialized workflows. Provider use may incur charges and remains subject to the provider's terms.
+## Image Processing (3)
 
-## Release boundary
+- [**MATRIX PHOTO FINISHER**](docs/nodes/photo-finisher.md) — apply deterministic local tone, color, detail, and texture with profile, trim, seed, and optional mask controls.
+- [**MATRIX EASY CROP**](docs/nodes/easy-crop.md) — crop one static ComfyUI input image through visible normalized geometry and return its alpha-derived mask.
+- [**MATRIX OUTPUT STAGE**](docs/nodes/output-stage.md) — resolve an image toward explicit target dimensions through connected model, sampling, VAE, and optional upscale inputs.
 
-The repository is the source distribution channel. A GitHub Release, Comfy Registry entry, or ComfyUI Manager listing is a separate publication and must not be inferred from repository availability. Compatibility evidence and current limits are documented in [docs/compatibility.md](docs/compatibility.md).
+Try Photo Finisher without a model or provider using the [included example workflow](examples/README.md).
 
-## License and security
+## Prompting (1)
 
-MATRIX LAB code remains subject to [LICENSE](LICENSE). Bundled Cascadia Mono is covered separately in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Read [SECURITY.md](SECURITY.md) before sharing diagnostics that may contain private workflow or provider data.
+- [**MATRIX AUTO PROMPTER**](docs/nodes/auto-prompter.md) — return an editable saved prompt locally, with an explicit action for assisted prompting from ordered reference images.
+
+Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
+
+## Package boundary
+
+The installed `MANIFEST.json` is the machine-readable inventory for the exact artifact. Offline CI checks package registration, public schemas, assets, and syntax; complete live renderer, GPU, model, and workflow acceptance remains a separate release gate.
+
+## License
+
+MATRIX LAB code is distributed under the repository's [proprietary license](LICENSE). The bundled Cascadia Mono font has its own [SIL Open Font License 1.1](web/assets/CascadiaMono-LICENSE.txt).

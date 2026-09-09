@@ -115,7 +115,7 @@
       "version": "1.0.0"
     }
   ],
-  "builder_sha256": "c2716a4a31e0f380576ebccccf3844353a379e0c7fd58af85f665084c1c3f87f",
+  "builder_sha256": "5bc6cffaa3575a987e2e2204aff80bbad20307fdad130c9f83562bd902bee220",
   "categories": {
     "MATRIXLAB_AIInfluencerResolution": "MATRIX LAB/Resolution & Layout",
     "MATRIXLAB_EasyCrop": "MATRIX LAB/Image Processing",
@@ -181,7 +181,7 @@
   "version": "0.2.0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
-    "base_builder_sha256": "c2716a4a31e0f380576ebccccf3844353a379e0c7fd58af85f665084c1c3f87f",
+    "base_builder_sha256": "5bc6cffaa3575a987e2e2204aff80bbad20307fdad130c9f83562bd902bee220",
     "compiler_sha256": "b1ff75cd7cefd07caaf7fc224d2b4518d7a65954c89e3bdee770d867a37e1e07",
     "builder_sha256": "7df54e744e3aff1b58fd9699f5e1564e3f0c71d8370fe8b50b07aedf74dbeca9",
     "existing_node_implementation_policy": "fresh-canonical-base-build",
