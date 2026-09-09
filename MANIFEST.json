@@ -21,7 +21,7 @@
       "version": "1.0.0"
     },
     {
-      "content_hash": "dcaf1a3ae2fc7ac78413342300aea580751b42ca019414b5cbb3c205a43d1611",
+      "content_hash": "177c945bf563a1adeb831a8b87d268725fc9dd10bb423b51e1f16704d9fe3f2f",
       "id": "ui.appearance",
       "version": "0.5.1"
     },
@@ -31,7 +31,7 @@
       "version": "0.3.1"
     },
     {
-      "content_hash": "f07c6307623d28a8e8ba43307d254f53809a40af5da1556a762747248e64cd3f",
+      "content_hash": "46dd2a9579be353e12d69cb725bb76c5aa2298032d06fc05801f6e14e4189305",
       "id": "sample.latent-tail",
       "version": "0.2.3"
     },
@@ -66,7 +66,7 @@
       "version": "0.1.0"
     },
     {
-      "content_hash": "869da644f94fb10c804e477bb2bd8062ffdab3545855f52f56580dbf5ad4f47f",
+      "content_hash": "cdb207f60ea7c8722de257b0f418dad81bc634df8e679aa4efd460708570a9d7",
       "id": "resolution.dimensions",
       "version": "1.0.0"
     },
@@ -76,12 +76,12 @@
       "version": "1.0.0"
     },
     {
-      "content_hash": "8b9ef9d731c147c5b9491e28f26c5fc5a6d2e4e2be86596b80e16d16d662e999",
+      "content_hash": "86190b4be8b5080a8db60f030c7da5173b45cce0fd8ad72f22966355934cfc0f",
       "id": "easy.crop",
       "version": "0.1.0"
     },
     {
-      "content_hash": "4e67bd73efebed6140e3531e5cf8a95f06d60d174f66afbbeb91e2c3c4e34e03",
+      "content_hash": "befa0b792f813d347f69cdaa1711760faa5cbf9e5e0011b893d534d17c34866d",
       "id": "io.image-collection",
       "version": "0.2.1"
     },
@@ -115,75 +115,75 @@
       "version": "1.0.0"
     }
   ],
-  "builder_sha256": "5bc6cffaa3575a987e2e2204aff80bbad20307fdad130c9f83562bd902bee220",
+  "builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
   "categories": {
-    "MATRIXLAB_AIInfluencerResolution": "MATRIX LAB/Resolution & Layout",
-    "MATRIXLAB_EasyCrop": "MATRIX LAB/Image Processing",
-    "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
-    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
-    "MATRIXLAB_Resolution": "MATRIX LAB/Resolution & Layout",
-    "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_AIInfluencerResolution": "MATRIX LAB/Resolution & Layout",
+    "MATRIX_AutoPrompter": "MATRIX LAB/Prompting",
     "MATRIX_CropTailPaste": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_EasyCrop": "MATRIX LAB/Image Processing",
     "MATRIX_EyeMask": "MATRIX LAB/Masks & Detection",
+    "MATRIX_ImageBatchLoader": "MATRIX LAB/Input & Output",
     "MATRIX_LatentTail": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_MetadataKiller": "MATRIX LAB/Input & Output",
     "MATRIX_OutputStage": "MATRIX LAB/Image Processing",
     "MATRIX_PhotoFinisher": "MATRIX LAB/Image Processing",
-    "MATRIX_SaveClean": "MATRIX LAB/Input & Output",
+    "MATRIX_Resolution": "MATRIX LAB/Resolution & Layout",
     "MATRIX_SkinMask": "MATRIX LAB/Masks & Detection",
-    "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
+    "MATRIX_SpectralSampler": "MATRIX LAB/Sampling & Detail",
+    "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
   },
-  "compiler_sha256": "b1ff75cd7cefd07caaf7fc224d2b4518d7a65954c89e3bdee770d867a37e1e07",
+  "compiler_sha256": "deb114d7e9674a9c2ec2a24b9d7c95e008eeee17fc74e7da808805db8fb76469",
   "declaration_hashes": {
-    "MATRIXLAB_AIInfluencerResolution": "8f6737741244227d88ed8a411548fd788fe311f776ca9aba68b67f34bf9695d9",
-    "MATRIXLAB_EasyCrop": "e3e4d55649ba8fd8d1d5fb2abc526af8ca98b3b7a5b62665965eed080b0f3c2a",
-    "MATRIXLAB_ImageBatchLoader": "bd6b56231c6d2842fb044ff7c5a2c775ca2043837a5879eff9a397569b153319",
-    "MATRIXLAB_PromptDirector": "bbebce94b066143c8879239fa0003fc934207bebed40c6352d9d9bba882e54e4",
-    "MATRIXLAB_Resolution": "38fea06eda599cb3c78a029b8e0478b3625bc1cd281019caec6cd9612a3ff521",
-    "MATRIXSpectralSampler": "767c07ee23b36895169d5039756f8f425ef0aa0e70ca639d616b5af75c829306",
+    "MATRIX_AIInfluencerResolution": "9dd100da79f07f132edda489d044fc2389017ac74ec7401f33d63f0f2ece3ce7",
+    "MATRIX_AutoPrompter": "1f9b62b8c5b9d5eba5596aeb3493b1d62b7978b5a989a904f09f5bf1af9006b9",
     "MATRIX_CropTailPaste": "7c0a5e925c00a9a08d445e9b8c9315909f17084d9279c37f3841cbce9c2670c7",
+    "MATRIX_EasyCrop": "4a14271978355ecc30a172361893f3fdacf5c62276b8440bb0be2e59fbb1c3bf",
     "MATRIX_EyeMask": "c507e7a4ca5c6b959ab503b4229ec929856576567bc28a82b06e8f5cabebd7ef",
+    "MATRIX_ImageBatchLoader": "ba73458404c99b072fc42e28cdfae304066657c63ca3e729bae5d5fd6bc60ffb",
     "MATRIX_LatentTail": "8677264027158b709269b0ffe22c4ce7a9b81862f78d5d9057f964a0f362f83e",
+    "MATRIX_MetadataKiller": "2a96e38815d0f863aa777546231a8ca78640240f7478f523316aaf19d5e210b2",
     "MATRIX_OutputStage": "6ec9c264ab82dfd9b8c0e8640007a26db25818b3bf7a934db34e7403ba441bbc",
     "MATRIX_PhotoFinisher": "eadad3bc1712edec30fa52fff0a929e4807a77b17b60fd5e51b4c4403d7bf809",
-    "MATRIX_SaveClean": "3aaeea9d3b5b246e909df9a21ae9f2883bf251c055dcc9f8e89714beae65a3ce",
+    "MATRIX_Resolution": "7227bb19186a7f307e05928b4f997b70ff41434003c63795510204cd5c7eb948",
     "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2",
-    "MATRIXLAB_AIInfluencerResolution2K4K": "589e6e5dc7c7eb7ee22943b13729bf2012350baec8c4b35b0320badcbfd6b22c"
+    "MATRIX_SpectralSampler": "065dea25f4f05c00f0bc920da0655b493a111378cef5e897f1b91ded7d463a43",
+    "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.bd473fd081a9ee32.js",
-    "web/ai_influencer_resolution_2k4k.5a6f0a9d0be56983.js",
-    "web/easy_crop.e448d80a597cbf32.js",
-    "web/halo_execution.9c05a384226d4180.js",
-    "web/image_collection.57c26c1112198635.js",
-    "web/prompt_director.47d51c1218485744.js",
-    "web/resolution_control_deck.83ec2d2da93e1ef9.js"
+    "web/ai_influencer_resolution.d47e945783aa6298.js",
+    "web/ai_influencer_resolution_2k4k.203f0bdb857d180d.js",
+    "web/easy_crop.4fae2e79d5ac41d4.js",
+    "web/halo_execution.615447e8edacbd1a.js",
+    "web/image_collection.4a857a26ffb9735e.js",
+    "web/prompt_director.402dd6f04f072edf.js",
+    "web/resolution_control_deck.11b94ed50b65d983.js"
   ],
   "nodes": [
-    "MATRIXLAB_AIInfluencerResolution",
-    "MATRIXLAB_AIInfluencerResolution2K4K",
-    "MATRIXLAB_EasyCrop",
-    "MATRIXLAB_ImageBatchLoader",
-    "MATRIXLAB_PromptDirector",
-    "MATRIXLAB_Resolution",
-    "MATRIXSpectralSampler",
+    "MATRIX_AIInfluencerResolution",
+    "MATRIX_AIInfluencerResolution2K4K",
+    "MATRIX_AutoPrompter",
     "MATRIX_CropTailPaste",
+    "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
+    "MATRIX_ImageBatchLoader",
     "MATRIX_LatentTail",
+    "MATRIX_MetadataKiller",
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
-    "MATRIX_SaveClean",
-    "MATRIX_SkinMask"
+    "MATRIX_Resolution",
+    "MATRIX_SkinMask",
+    "MATRIX_SpectralSampler"
   ],
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "development",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
-    "base_builder_sha256": "5bc6cffaa3575a987e2e2204aff80bbad20307fdad130c9f83562bd902bee220",
-    "compiler_sha256": "b1ff75cd7cefd07caaf7fc224d2b4518d7a65954c89e3bdee770d867a37e1e07",
-    "builder_sha256": "7df54e744e3aff1b58fd9699f5e1564e3f0c71d8370fe8b50b07aedf74dbeca9",
+    "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
+    "compiler_sha256": "deb114d7e9674a9c2ec2a24b9d7c95e008eeee17fc74e7da808805db8fb76469",
+    "builder_sha256": "f60506d9d5a1597c860f08d6b8a8119a265b4e50ef42e4930defc60e9bc55ab3",
     "existing_node_implementation_policy": "fresh-canonical-base-build",
     "runtime_registry_policy": "owned-by-canonical-base-builder",
     "runtime_asset_proof_sha256": "917902e05bb4e0758e6ba9b264075f89edbc0b2b39580fb2cb55d6e9c76945f8"

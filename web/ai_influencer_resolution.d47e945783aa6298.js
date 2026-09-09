@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.3078c6fb7c5009a2.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.83fe73faf4ac1a41.mjs";
 const ASPECT_RATIOS = ["1:1", "9:16", "3:4"];
 const RESOLUTION_TIERS = ["1K", "2K", "4K"];
 export function calculateResolution(state) {
@@ -8,7 +8,7 @@ export function calculateResolution(state) {
 }
 
 const NODE_IDS = new Set(
-  "MATRIXLAB_AIInfluencerResolution".split(",").filter(Boolean),
+  "MATRIX_AIInfluencerResolution".split(",").filter(Boolean),
 );
 const DEFAULT_STATE = Object.freeze({ aspect_ratio: "3:4", resolution_tier: "2K" });
 const MIN_SURFACE_WIDTH = 420;

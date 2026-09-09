@@ -2,7 +2,7 @@
 
 ## Current status
 
-Version 0.2.0 is a development candidate. Offline checks cover package registration, schemas, category layout, deterministic builds, runtime registry integrity, and frontend syntax. Those checks do not establish complete live acceptance for Classic and Nodes 2.0 renderers, every interaction, every GPU/model combination, or production use.
+Version 0.3.0 is a development candidate. Offline checks cover package registration, schemas, category layout, deterministic builds, runtime registry integrity, and frontend syntax. Those checks do not establish complete live acceptance for Classic and Nodes 2.0 renderers, every interaction, every GPU/model combination, or production use.
 
 | Area | Current boundary |
 | --- | --- |
@@ -14,7 +14,7 @@ Version 0.2.0 is a development candidate. Offline checks cover package registrat
 | Skin Mask | Needs separately acquired, licensed, and configured segmentation assets plus compatible runtimes. Installation does not complete this setup. An all-parts-off run can return an empty mask without inference. |
 | Eye Mask | Needs the registered eye detector and, when enabled, SAM refinement assets/runtime. Model weights are not bundled; installation does not complete this setup. |
 | Sampling/detail | Requires compatible ComfyUI MODEL, NOISE, CONDITIONING, LATENT, VAE, SAMPLER, or UPSCALE_MODEL inputs as documented per node. Sampler availability follows the host ComfyUI contract. |
-| Prompt Director | Ordinary graph execution is local. Explicit Generate Prompt requires a supported xAI credential/model and may be paid. |
+| Auto Prompter | Ordinary graph execution is local. Explicit Generate Prompt requires a supported xAI credential/model and may be paid. |
 | Platforms | No broad Windows, Linux, macOS, cloud, or portable-build support claim is made until each environment is accepted with the exact release bytes. |
 
 ## External assets

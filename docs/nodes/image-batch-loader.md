@@ -1,6 +1,7 @@
 # MATRIX IMAGE BATCH LOADER
 
-Class ID: `MATRIXLAB_ImageBatchLoader`
+Class ID: `MATRIX_ImageBatchLoader`
+
 
 Category: `MATRIX LAB/Input & Output`
 

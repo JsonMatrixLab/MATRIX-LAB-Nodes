@@ -40,7 +40,7 @@ __all__ = [
 
 _LOG = logging.getLogger("MATRIX.LatentTail")
 
-# Pinned ComfyUI Core inventory (0.33 line); the same list MATRIXSpectralSampler ships.
+# Pinned ComfyUI Core inventory (0.33 line); the same list MATRIX_SpectralSampler ships.
 CORE_SAMPLER_NAMES = (
     "euler",
     "euler_cfg_pp",

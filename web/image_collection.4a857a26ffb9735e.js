@@ -1,10 +1,10 @@
-import { mountImageGallery } from "./gallery.e7ba3b92bd70c1e5.mjs";
-import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.3bc35993e091e5c5.mjs";
+import { mountImageGallery } from "./gallery.1b81fe83387a60e1.mjs";
+import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.d64a9a13ccfeb9ce.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
 
-const NODE_TYPE = "MATRIXLAB_ImageBatchLoader";
+const NODE_TYPE = "MATRIX_ImageBatchLoader";
 const COLLECTION_WIDGET = "collection";
 const PRESENTATION_WIDGET = "matrixlab_image_collection_ui";
 const MIN_WIDTH = 420;

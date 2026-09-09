@@ -1,6 +1,7 @@
 # MATRIX AI INFLUENCER RESOLUTION
 
-Class ID: `MATRIXLAB_AIInfluencerResolution`
+Class ID: `MATRIX_AIInfluencerResolution`
+
 
 Category: `MATRIX LAB/Resolution & Layout`
 

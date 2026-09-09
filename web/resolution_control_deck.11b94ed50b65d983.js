@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.3078c6fb7c5009a2.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.83fe73faf4ac1a41.mjs";
 
-const NODE_IDS = new Set("MATRIXLAB_Resolution".split(",").filter(Boolean));
+const NODE_IDS = new Set("MATRIX_Resolution".split(",").filter(Boolean));
 const RATIOS = {
   "1:1": [1, 1], "16:9": [16, 9], "9:16": [9, 16], "4:3": [4, 3],
   "3:4": [3, 4], "3:2": [3, 2], "2:3": [2, 3], "4:5": [4, 5],
@@ -112,7 +112,7 @@ function writeState(node, next) {
     try {
       widget.callback?.call(widget, value, app.canvas, node, undefined, undefined);
     } catch (error) {
-      console.warn("MATRIXLAB Resolution widget callback failed", error);
+      console.warn("MATRIX Resolution widget callback failed", error);
     }
   }
   node.setDirtyCanvas?.(true, true);
@@ -353,7 +353,7 @@ function createDeckElement(node, control) {
     document,
     node,
     control,
-    ariaLabel: "MATRIXLAB Resolution controls",
+    ariaLabel: "MATRIX Resolution controls",
     haloOptions: { app },
     groups: [
       { id: "ratio", label: "ASPECT", items: ratioItems },
@@ -429,7 +429,7 @@ function install(node) {
         this.errorMessage = "";
       } catch (error) {
         this.errorMessage = String(error?.message || error);
-        console.warn("MATRIXLAB Resolution action was refused", error);
+        console.warn("MATRIX Resolution action was refused", error);
         this.render?.();
         return false;
       }
@@ -445,7 +445,7 @@ function install(node) {
   try {
     element = createDeckElement(node, control);
     host = createHaloWidgetHost(element, document);
-    if (!host) throw new Error("MATRIXLAB Resolution HALO host unavailable");
+    if (!host) throw new Error("MATRIX Resolution HALO host unavailable");
     control.host = host;
     domWidget = node.addDOMWidget("matrixlab_resolution_ui", "matrixlab-prism", host, {
       serialize: false,
@@ -459,7 +459,7 @@ function install(node) {
     domWidget.serialize = false;
     domWidget.options ||= {};
     domWidget.options.serialize = false;
-    if (!control.mountHalo?.()) throw new Error("MATRIXLAB Resolution HALO surface unavailable");
+    if (!control.mountHalo?.()) throw new Error("MATRIX Resolution HALO surface unavailable");
     hideCanonicalWidgets(node, control);
     node[CONTROL] = control;
   } catch (error) {
@@ -479,7 +479,7 @@ function install(node) {
     }
     element?.remove();
     host?.remove();
-    console.warn("MATRIXLAB Resolution DOM UI unavailable; native widgets remain active", error);
+    console.warn("MATRIX Resolution DOM UI unavailable; native widgets remain active", error);
     return null;
   }
 

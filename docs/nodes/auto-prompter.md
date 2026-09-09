@@ -1,6 +1,7 @@
 # MATRIX AUTO PROMPTER
 
-Class ID: `MATRIXLAB_PromptDirector`
+Class ID: `MATRIX_AutoPrompter`
+
 
 Category: `MATRIX LAB/Prompting`
 

@@ -2,6 +2,15 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.3.0 - development candidate - 2026-09-09
+
+- Standardized eight public class IDs: `MATRIX_MetadataKiller`, `MATRIX_AutoPrompter`, `MATRIX_ImageBatchLoader`, `MATRIX_Resolution`, `MATRIX_AIInfluencerResolution`, `MATRIX_AIInfluencerResolution2K4K`, `MATRIX_EasyCrop`, and `MATRIX_SpectralSampler`.
+- Kept the package at fourteen registered nodes; the eight old IDs are not registered as aliases.
+- Added an offline workflow migration path that writes a separate copy and changes only the eight class IDs.
+- Standardized the user-facing name as Auto Prompter.
+
+This is a breaking workflow-identity change. Read [docs/migration.md](docs/migration.md) before opening 0.2.0 workflows with the new package.
+
 ## 0.2.0 - development candidate - 2026-09-09
 
 - Unified the surviving execution and UI nodes into one package with six stable category directories.
@@ -9,7 +18,7 @@ User-visible changes are recorded here. This file describes package content; pub
 - Replaced the retired finishing pair with `MATRIX_PhotoFinisher`, a local deterministic Torch node with `Clean Digital`, `Everyday Capture`, and `Low Light` creative profiles.
 - Set new Photo Finisher defaults to `Everyday Capture`, mix `1`, texture `1`, detail `1`, contrast `0`, warmth `0`, saturation `1`, and seed `42`.
 - Simplified the general and AI-influencer resolution nodes to two integer outputs and included `MATRIXLAB_AIInfluencerResolution2K4K` for current Krea 2 geometry selection.
-- Kept Prompt Director provider generation behind an explicit paid action; ordinary graph execution returns saved text without a network request.
+- Kept Auto Prompter provider generation behind an explicit paid action; ordinary graph execution returns saved text without a network request.
 - Added public installation, migration, compatibility, node, license-notice, and agent-installation documentation.
 
 Full live acceptance of the current bytes across both ComfyUI renderers and all model-dependent paths remains pending.

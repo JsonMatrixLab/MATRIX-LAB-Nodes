@@ -1,6 +1,7 @@
 # MATRIX SPECTRAL SAMPLER
 
-Class ID: `MATRIXSpectralSampler`
+Class ID: `MATRIX_SpectralSampler`
+
 
 Category: `MATRIX LAB/Sampling & Detail`
 

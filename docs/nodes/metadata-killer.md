@@ -1,6 +1,7 @@
 # MATRIX METADATA KILLER
 
-Class ID: `MATRIX_SaveClean`
+Class ID: `MATRIX_MetadataKiller`
+
 
 Category: `MATRIX LAB/Input & Output`
 

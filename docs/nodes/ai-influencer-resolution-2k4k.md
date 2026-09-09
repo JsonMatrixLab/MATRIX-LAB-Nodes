@@ -1,6 +1,7 @@
 # MATRIX AI INFLUENCER RESOLUTION 2K/4K
 
-Class ID: `MATRIXLAB_AIInfluencerResolution2K4K`
+Class ID: `MATRIX_AIInfluencerResolution2K4K`
+
 
 Category: `MATRIX LAB/Resolution & Layout`
 

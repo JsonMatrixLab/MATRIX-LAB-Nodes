@@ -1,6 +1,7 @@
 # MATRIX RESOLUTION
 
-Class ID: `MATRIXLAB_Resolution`
+Class ID: `MATRIX_Resolution`
+
 
 Category: `MATRIX LAB/Resolution & Layout`
 

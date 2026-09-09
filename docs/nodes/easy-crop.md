@@ -1,6 +1,7 @@
 # MATRIX EASY CROP
 
-Class ID: `MATRIXLAB_EasyCrop`
+Class ID: `MATRIX_EasyCrop`
+
 
 Category: `MATRIX LAB/Image Processing`
 

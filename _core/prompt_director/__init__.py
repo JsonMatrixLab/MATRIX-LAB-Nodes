@@ -8,7 +8,7 @@ EMPTY_GENERATION_STATE = '{"version":1,"state":"idle","request_id":null}'
 DEFAULT_INSTRUCTIONS = "Create one coherent photorealistic Krea 2 prompt from these references."
 
 
-class MATRIXLAB_PromptDirector:
+class MATRIX_AutoPrompter:
     @classmethod
     def INPUT_TYPES(cls):
         fields = {
@@ -50,4 +50,4 @@ class MATRIXLAB_PromptDirector:
 
 from .server_routes import PromptDirectorService, load_model_configs, register_routes
 
-__all__ = ["DEFAULT_INSTRUCTIONS", "DEFAULT_MODEL", "EMPTY_GENERATION_STATE", "MATRIXLAB_PromptDirector", "PromptDirectorService", "SYSTEM_PROMPT", "load_model_configs", "register_routes"]
+__all__ = ["DEFAULT_INSTRUCTIONS", "DEFAULT_MODEL", "EMPTY_GENERATION_STATE", "MATRIX_AutoPrompter", "PromptDirectorService", "SYSTEM_PROMPT", "load_model_configs", "register_routes"]
