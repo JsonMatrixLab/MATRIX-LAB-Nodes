@@ -358,9 +358,9 @@ def _tail_adapters(comfy_samplers, comfy_sample, model_management):
         """Recompute the model's sigma table in float64 from its own sigma() formula.
 
         Core's beta_scheduler indexes ``model_sampling.sigmas``; after a model load that buffer
-        can sit in the model's compute dtype (bf16 on the RTX 5090 with the fp8 Krea 2 weights),
+        can sit in the model's low-precision compute dtype,
         where neighbouring low sigmas collapse to equal values and the tail is no longer strictly
-        decreasing (Krea 2 step 11, prompt 0a881049, 2026-09-02). Returns None when the object is
+        decreasing. Returns None when the object is
         not a discrete-flow sampling with a scalar shift and multiplier.
         """
         import logging
@@ -539,7 +539,7 @@ def _output_stage_adapters(schedule_factory, run_sampler):
             raise RuntimeError("ComfyUI ImageUpscaleWithModel ABI is unavailable") from exc
         result = ImageUpscaleWithModel().upscale(upscale_model, image)
         # Core 0.33 returns an io.NodeOutput (v3 schema) whose .args carry the tensors; older
-        # Core returned a tuple. Krea 2 step 14, prompt ee968389, refused the NodeOutput object.
+        # Core returned a tuple.
         if isinstance(result, torch.Tensor):
             return result
         args = getattr(result, "args", None)

@@ -25,7 +25,7 @@ _BATCHED_SOCKETS = ('IMAGE', 'MASK', 'LATENT')
 
 def _fill_widget_defaults(inputs):
     # An API prompt exported before a widget existed omits it; fall back to the declared
-    # default instead of failing with KeyError (pod prompt 65e19bc3, sam_erosion_px, 2026-09-03).
+    # default instead of failing with KeyError.
     filled = dict(inputs)
     for name, spec in SCHEMA_WIDGETS.items():
         if name in filled or name in REQUIRED_INPUT_NAMES:
@@ -98,8 +98,8 @@ def _payload_items(inputs):
         # is [B,H,W,C] inside one tensor. They are different axes, and `map` means the
         # batch one when the input is not a list. flow.api's own contract says
         # payload_items are 'compiler-separated' and that no block may infer items from
-        # an IMAGE tensor — so the separation happens here. Measured 2026-07-29, prompt
-        # 44ae97c4: eight frames arrived as one payload item and the operation refused.
+        # an IMAGE tensor, so the separation happens here.
+        # This keeps each frame available to operations that accept individual images.
         if BATCH_POLICY != 'map':
             return (values,)
         counts = {

@@ -31,7 +31,7 @@
       "version": "0.3.1"
     },
     {
-      "content_hash": "46dd2a9579be353e12d69cb725bb76c5aa2298032d06fc05801f6e14e4189305",
+      "content_hash": "4d315500c104bbbef6ef4a04cb0f23d15ec3c5347010888bd4fd06606c30d433",
       "id": "sample.latent-tail",
       "version": "0.2.3"
     },
@@ -56,7 +56,7 @@
       "version": "0.2.0"
     },
     {
-      "content_hash": "f21b4e35b2fa9cc87e6cf789a7e533e85c80cf167052513c1d343617c6cc83b0",
+      "content_hash": "49ff9a60147186c8012c644a1b65e0fed3ddb8879d2da6c6639a2a03b77d6e23",
       "id": "sample.output-stage",
       "version": "0.1.1"
     },
@@ -132,7 +132,7 @@
     "MATRIX_SpectralSampler": "MATRIX LAB/Sampling & Detail",
     "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout"
   },
-  "compiler_sha256": "2995d2bbbabd0194743b85975e855fa384d7681b5caa394c9d1c458a41bfafda",
+  "compiler_sha256": "fcc055cedd826ac4f38f1da2ae7097472f029b7fcc52d7a075b53bbbf7d8ed53",
   "declaration_hashes": {
     "MATRIX_AIInfluencerResolution": "9dd100da79f07f132edda489d044fc2389017ac74ec7401f33d63f0f2ece3ce7",
     "MATRIX_AutoPrompter": "1f9b62b8c5b9d5eba5596aeb3493b1d62b7978b5a989a904f09f5bf1af9006b9",
@@ -182,7 +182,7 @@
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
-    "compiler_sha256": "2995d2bbbabd0194743b85975e855fa384d7681b5caa394c9d1c458a41bfafda",
+    "compiler_sha256": "fcc055cedd826ac4f38f1da2ae7097472f029b7fcc52d7a075b53bbbf7d8ed53",
     "builder_sha256": "f60506d9d5a1597c860f08d6b8a8119a265b4e50ef42e4930defc60e9bc55ab3",
     "existing_node_implementation_policy": "fresh-canonical-base-build",
     "runtime_registry_policy": "owned-by-canonical-base-builder",

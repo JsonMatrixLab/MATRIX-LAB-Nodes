@@ -84,7 +84,6 @@ def _resize_lanczos(image: torch.Tensor, height: int, width: int) -> torch.Tenso
     x_index, x_weight = _lanczos_weights(image.shape[2], width, image.device)
     work = (work[:, :, x_index, :] * x_weight[None, None, :, :, None]).sum(dim=3)
     # Lanczos ringing overshoots by a few thousandths at hard edges; the IMAGE contract is [0, 1].
-    # Krea 2 step 14, prompt 9021cc9a: -0.0049 after a 0.5x downscale refused the output.
     return work.clamp(0.0, 1.0).to(image.dtype)
 
 

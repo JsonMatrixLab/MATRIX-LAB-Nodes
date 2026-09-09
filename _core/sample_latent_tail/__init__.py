@@ -268,7 +268,7 @@ def resolve_tail_sigmas(
         except TailRefusalError as error:
             # A degraded sigma table (low-precision buffer, duplicate entries) can hand back a
             # tail with equal neighbours for some totals. Skip it, keep the evidence, and let a
-            # valid total win. Seen on the RTX 5090 Krea 2 pod, prompt 0a881049 (2026-09-02).
+            # valid total win.
             rejected.append(
                 f"total={total} tail={[round(v, 5) for v in tail]} ({error})"
             )
