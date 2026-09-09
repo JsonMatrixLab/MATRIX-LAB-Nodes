@@ -231,6 +231,7 @@ def _eye_mask_impl(
         _LOG.warning("no accepted eye detections; returning empty outputs")
         return _empty(height, width, image.device)
     masks: list[torch.Tensor] = []
+    refined_boxes: list[tuple[int, int, int, int]] = []
     for box in boxes:
         if sam_refine:
             box_array = torch.tensor(box, dtype=torch.float32).numpy()
@@ -265,19 +266,25 @@ def _eye_mask_impl(
                 raise EyeMaskError("SAM refine mask must be finite and within [0, 1]")
             refined = (refined >= 0.5).to(torch.float32)
             if not bool(refined.any()):
-                raise EyeMaskError(f"SAM returned an empty eye mask for box {box}")
+                _LOG.warning("eye refinement skipped: SAM returned an empty mask for box %s", box)
+                continue
             current = _erode(refined, sam_erosion_px)
             if not bool(current.any()):
-                raise EyeMaskError(
-                    f"SAM erosion emptied the eye mask for box {box}; reduce sam_erosion_px"
+                _LOG.warning(
+                    "eye refinement skipped: erosion emptied mask for box %s; reduce sam_erosion_px",
+                    box,
                 )
+                continue
         else:
             current = _rectangle(box, height, width)
         masks.append(_feather(current, feather_px))
+        refined_boxes.append(box)
+    if not masks:
+        return _empty(height, width, image.device)
     stacked = torch.stack(masks).to(dtype=torch.float32, device=image.device).clamp(0, 1)
     union = stacked.amax(dim=0, keepdim=True)
     preview = union.unsqueeze(-1).expand(-1, -1, -1, 3).clone()
-    return union, stacked, boxes, preview
+    return union, stacked, refined_boxes, preview
 
 
 def eye_mask(

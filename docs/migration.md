@@ -61,3 +61,13 @@ Other base classes retain their class IDs, but widget schemas and runtime assets
 For the pre-rename 0.2.0 package, use tag `legacy-class-ids-0.2.0-2026-09-09` at revision `0e798eac7d6569ad183ce0a036b81e63f0d7304e`.
 
 The older Camera Look/Renoise predecessor is preserved by tag `legacy-camera-renoise-2026-09-09`. Its revision is `eaa50a674005b4e7bf7be13f0c289faeb37bfcef`. Keep the old installation disabled and intact until migrated workflows pass. Restore that exact revision as a separate rollback operation; do not copy shared `_core`, `nodes`, or `web` folders between versions.
+# Krea2 V1 compatibility update
+
+The Krea2 V1 release restores narrowly scoped compatibility registrations for
+`MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
+`MATRIXLAB_ImageBatchLoader` and `MATRIXLAB_PromptDirector`. CameraLook and Renoise
+are retained with their original algorithms and controls for this workflow.
+The older removal policy below describes the 0.3.0 migration, not this release.
+`MATRIX_SaveClean` is still replaced by `MATRIX_MetadataKiller` in the V1 graph.
+Do not run a separate MetadataKiller supplement alongside a unified pack that
+already registers that class. The supplement is only for older live installations.

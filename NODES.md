@@ -4,6 +4,8 @@ Package version 0.3.1 contains the fourteen classes below in six `MATRIX LAB` gr
 
 | Display name | Class ID | Inputs | Outputs | Guide |
 | --- | --- | --- | --- | --- |
+| MATRIX KREA2 CLIP LOADER | `MATRIX_Krea2CLIPLoader` | `clip_name` | `CLIP` | [Guide](docs/krea2-gpu.md) |
+| MATRIX KREA2 MODEL GUARD | `MATRIX_Krea2ModelGuard` | `model` before LoRAs | `MODEL` | [Guide](docs/krea2-gpu.md) |
 | MATRIX METADATA KILLER | `MATRIX_MetadataKiller` | `images`; save options | output node | [Guide](docs/nodes/metadata-killer.md) |
 | MATRIX IMAGE BATCH LOADER | `MATRIX_ImageBatchLoader` | `collection` | `images`, `masks` | [Guide](docs/nodes/image-batch-loader.md) |
 | MATRIX RESOLUTION | `MATRIX_Resolution` | ratio, tier, custom dimensions | `width`, `height` | [Guide](docs/nodes/resolution.md) |

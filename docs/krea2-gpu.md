@@ -36,6 +36,7 @@ or different patches require validation. Offline tests exercise native-shaped
 module and patcher doubles, including corruption containment, invalid patch
 rejection, static delegate reuse and reference integrity; they are not GPU tests.
 
-The separate empty-SAM-mask behavior change is not part of these two guards.
+The separate empty-SAM-mask behavior change is included in the V1-compatible
+package; it is independent of these two guards.
 No NaN replacement, clipping of invalid predictions, lower LoRA strength or CPU
 encoding is used to turn a failed calculation into an apparent success.

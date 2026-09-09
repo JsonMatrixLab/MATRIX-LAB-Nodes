@@ -2,7 +2,12 @@
 
 ## Current status
 
-Version 0.3.1 is a development candidate. Offline checks cover package registration, schemas, category layout, deterministic builds, runtime registry integrity, and frontend syntax. Those checks do not establish complete live acceptance for Classic and Nodes 2.0 renderers, every interaction, every GPU/model combination, or production use.
+Version 0.3.3 includes the Krea2 FP8 GPU guards, V1 compatibility registrations and
+empty-eye-mask handling. The guard implementations passed repeated full RTX 5090
+FP8 execution in the compatibility deployment. Offline checks cover standalone
+registration, schemas, runtime assets and guard contracts. Exact unified-package
+GPU deployment and complete frontend interaction acceptance remain separate from
+those results; no universal hardware or renderer certification is claimed.
 
 | Area | Current boundary |
 | --- | --- |

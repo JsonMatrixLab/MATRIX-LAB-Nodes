@@ -2,9 +2,24 @@
 
 [![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
-Fourteen focused ComfyUI nodes for image input, resolution, sampling, masks, finishing, output, and assisted prompting—organized in six consistent `MATRIX LAB` categories.
+ComfyUI nodes for image input, resolution, sampling, masks, finishing, output and assisted prompting, including GPU guards and compatibility classes for the Krea 2 V1 workflow.
 
-> **Development candidate 0.3.1.** Read the current [compatibility and acceptance boundary](docs/compatibility.md) before using it in an important workflow.
+## MATRIX Krea 2 — AI Influencer 4K (FP8)
+
+Download the [V1 workflow](examples/krea2-v1/MATRIX-Krea-2-AI-Influencer-4K-FP8-V1.ui.json)
+and read its [setup and verified scope](docs/krea2-v1.md). This package includes
+`MATRIX_Krea2CLIPLoader`, `MATRIX_Krea2ModelGuard`, the current Metadata Killer,
+and safe handling of valid empty eye masks. Text encoding and diffusion remain on GPU.
+The original six-case RTX 5090 FP8 numerical acceptance is documented in
+[GPU guard notes](docs/krea2-gpu.md). INT8 is outside that acceptance.
+
+V1 compatibility registrations preserve existing Spectral, resolution, prompt,
+image-loader, CameraLook and Renoise identities without changing their saved controls.
+Photo Finisher remains available for new workflows; it is not silently substituted
+for V1 finishing settings. See the [migration guide](docs/migration.md).
+
+The [compatibility boundary](docs/compatibility.md) distinguishes offline checks,
+GPU execution and frontend verification. Do not treat one as proof of the others.
 
 ## Installation
 

@@ -132,7 +132,13 @@
     "MATRIX_SpectralSampler": "MATRIX LAB/Sampling & Detail",
     "MATRIX_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout",
     "MATRIX_Krea2CLIPLoader": "MATRIX LAB/Prompting",
-    "MATRIX_Krea2ModelGuard": "MATRIX LAB/Sampling & Detail"
+    "MATRIX_Krea2ModelGuard": "MATRIX LAB/Sampling & Detail",
+    "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
+    "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout",
+    "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
+    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
+    "MATRIX_CameraLook": "MATRIX LAB/Image Processing",
+    "MATRIX_Renoise": "MATRIX LAB/Image Processing"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -162,9 +168,14 @@
     "web/resolution_control_deck.6e1ff85eab697cf7.js"
   ],
   "nodes": [
+    "MATRIXLAB_AIInfluencerResolution2K4K",
+    "MATRIXLAB_ImageBatchLoader",
+    "MATRIXLAB_PromptDirector",
+    "MATRIXSpectralSampler",
     "MATRIX_AIInfluencerResolution",
     "MATRIX_AIInfluencerResolution2K4K",
     "MATRIX_AutoPrompter",
+    "MATRIX_CameraLook",
     "MATRIX_CropTailPaste",
     "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
@@ -175,6 +186,7 @@
     "MATRIX_MetadataKiller",
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
+    "MATRIX_Renoise",
     "MATRIX_Resolution",
     "MATRIX_SkinMask",
     "MATRIX_SpectralSampler"
@@ -182,7 +194,7 @@
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "development",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -199,5 +211,20 @@
     },
     "builder_sha256": "e95c93966773de4cc13c5207a8181b81eaa261b2ddd92d3e01594683447b9c14",
     "support": "FP8 GPU; upstream corruption writer remains unidentified"
+  },
+  "krea2_v1_compatibility": {
+    "aliases": {
+      "MATRIXSpectralSampler": "MATRIX_SpectralSampler",
+      "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX_AIInfluencerResolution2K4K",
+      "MATRIXLAB_ImageBatchLoader": "MATRIX_ImageBatchLoader",
+      "MATRIXLAB_PromptDirector": "MATRIX_AutoPrompter"
+    },
+    "retained_source_sha256": {
+      "_core/color_camera_look/__init__.py": "ca54215a56745781ce05619c72ab7480a37e2f10f1f746710756f149c471fafe",
+      "_core/image_renoise/__init__.py": "1dabd2b9a0595a76e634bc7e57236efd0a899004515de81726ef138fe66f478f",
+      "nodes/image_processing/matrix_cameralook.py": "376e4214940235297ffdda2590eae8d2ecf14863448206a20397956239b42bb0",
+      "nodes/image_processing/matrix_renoise.py": "f9dcf05a6521842a79061b73991d00d1549d924eab53bdff4fadba3e6e61e9b3"
+    },
+    "eye_mask_sha256": "944065881f2a7341a4273a3d4c2fa64b33c15e0ffaa29d2295ddc6dffcf35f27"
   }
 }

@@ -2,6 +2,15 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.3.3 - Krea2 FP8 V1 compatibility - 2026-09-10
+
+- Add GPU CLIP and static diffusion model guards for the observed Krea2 resident-weight corruption.
+- Preserve native CUDA computation and reject incompatible protected-parameter patches.
+- Skip valid empty SAM eye masks rather than failing the whole workflow.
+- Restore narrowly scoped Krea2 V1 node identities and the original CameraLook/Renoise algorithms.
+- Include the MATRIX Krea 2 — AI Influencer 4K (FP8) V1 workflow with the current Metadata Killer.
+- Document the tested FP8 runtime, setup, optional LoRAs and separate frontend/template acceptance limits.
+
 ## 0.3.2 - development candidate - 2026-09-09
 
 - Refresh Eye Mask SAM embeddings when the input image changes or its pixels are modified in place. Preserve reuse for repeated refinement of the same unchanged image.

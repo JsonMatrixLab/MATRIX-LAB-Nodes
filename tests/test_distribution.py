@@ -24,6 +24,7 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_NAME = "matrixlab_public_distribution_under_test"
 RETIRED_NODE_IDS = {"MATRIX_CameraLook", "MATRIX_Renoise"}
+COMPAT_NODE_IDS = RETIRED_NODE_IDS | {"MATRIXSpectralSampler", "MATRIXLAB_AIInfluencerResolution2K4K", "MATRIXLAB_ImageBatchLoader", "MATRIXLAB_PromptDirector"}
 BASE_NODE_IDS = {
     "MATRIX_AIInfluencerResolution",
     "MATRIX_EasyCrop",
@@ -90,7 +91,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        self.assertEqual(imported_ids, BASE_NODE_IDS | {ADDITIVE_NODE_ID, "MATRIX_Krea2CLIPLoader", "MATRIX_Krea2ModelGuard"})
+        self.assertEqual(imported_ids, BASE_NODE_IDS | COMPAT_NODE_IDS | {ADDITIVE_NODE_ID, "MATRIX_Krea2CLIPLoader", "MATRIX_Krea2ModelGuard"})
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
         self.assertEqual(imported_ids, set(self.pack.NODE_DISPLAY_NAME_MAPPINGS))
@@ -107,6 +108,8 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_class_ids_match_public_product_names(self):
         for node_id, display in self.pack.NODE_DISPLAY_NAME_MAPPINGS.items():
+            if node_id in COMPAT_NODE_IDS:
+                continue
             with self.subTest(node_id=node_id):
                 self.assertRegex(node_id, r"^MATRIX_[A-Z][A-Za-z0-9]*$")
                 self.assertTrue(display.startswith("MATRIX "))
@@ -122,20 +125,20 @@ class DistributionStructureTests(unittest.TestCase):
         self.assertEqual(actual, NODE_DIRECTORIES)
         self.assertEqual({path.name for path in (ROOT / "nodes").glob("*.py")}, {"__init__.py"})
 
-    def test_retired_node_ids_are_not_registered_or_implemented(self):
+    def test_krea2_v1_compatibility_ids_are_registered(self):
         visible_ids = (
             set(self.manifest["nodes"])
             | set(self.manifest["categories"])
             | set(self.pack.NODE_CLASS_MAPPINGS)
             | set(self.pack.NODE_DISPLAY_NAME_MAPPINGS)
         )
-        self.assertTrue(RETIRED_NODE_IDS.isdisjoint(visible_ids))
+        self.assertTrue(COMPAT_NODE_IDS.issubset(visible_ids))
         implementation = "\n".join(
             path.read_text(encoding="utf-8")
             for path in (ROOT / "nodes").rglob("*.py")
         )
         for retired in RETIRED_NODE_IDS:
-            self.assertNotIn(retired, implementation)
+            self.assertIn(retired, implementation)
 
     def test_runtime_and_font_asset_hashes_match(self):
         runtime_registry = ROOT / "_core" / "runtime-assets.json"
