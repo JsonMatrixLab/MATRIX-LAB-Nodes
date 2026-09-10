@@ -1,6 +1,8 @@
 # Installation for people
 
-Install MATRIX LAB NODES package version 0.3.1 as one ComfyUI custom-node pack.
+Install the exact authorized MATRIX LAB NODES package version 0.3.4 as one ComfyUI
+custom-node pack. Its `MANIFEST.json` must declare version `0.3.4` and the expected
+22 registered class IDs in six category groups.
 
 ## Before you begin
 
@@ -10,7 +12,7 @@ Install MATRIX LAB NODES package version 0.3.1 as one ComfyUI custom-node pack.
 - Check for folders that provide the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs. They cannot remain enabled beside this unified package because class IDs overlap.
 - Preserve the host's working Python, Torch, and CUDA versions.
 
-## Install from Git
+## Install from Git when repository access is available
 
 From the `custom_nodes` directory of the intended ComfyUI installation:
 
@@ -19,7 +21,8 @@ git clone https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes.git matrix-lab-nodes
 cd matrix-lab-nodes
 ```
 
-If the repository is private, authenticate through your normal Git credential flow. Do not put a token in the clone URL, command history, or repository files.
+If GitHub requests access, authenticate through your normal Git credential flow.
+Do not put a token in the clone URL, command history, or repository files.
 
 Use the Python interpreter that launches this ComfyUI instance to install the declared dependencies. Review the command before running it if your environment manager might replace Torch:
 
@@ -37,7 +40,10 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 
 1. Start ComfyUI through its normal launcher and inspect startup output for import errors.
 2. Open node search and find `MATRIX RESOLUTION`, `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
-3. Compare the installed classes with `MANIFEST.json`. The menu should retain six `MATRIX LAB` category groups.
+3. Compare the installed classes with `MANIFEST.json`. Require version `0.3.4`, 22
+   unique registered class IDs, and six `MATRIX LAB` category groups. The inventory
+   consists of 16 current nodes, CameraLook and Renoise compatibility classes, and
+   four V1 aliases.
 4. Add `MATRIX_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
 5. Open a copy of an existing workflow and follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
 

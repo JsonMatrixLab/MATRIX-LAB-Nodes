@@ -2,6 +2,19 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.3.4 - packaging hygiene - 2026-09-10
+
+- Align release documentation and manifest checks with the 22 registered IDs: 16
+  current nodes, CameraLook and Renoise compatibility classes, and four V1 aliases
+  across the existing six groups.
+- Prepare the Krea 2 V1 examples without a private scene prompt, character trigger,
+  selected LoRA, or Power Lora Loader rows while retaining the reusable Auto
+  Prompter instructions/system prompt and functional skin/eye detail prompts.
+- Document private-repository access conditionally and keep the proprietary license
+  boundary explicit.
+
+Runtime behavior is unchanged from 0.3.3.
+
 ## 0.3.3 - Krea2 FP8 V1 compatibility - 2026-09-10
 
 - Add GPU CLIP and static diffusion model guards for the observed Krea2 resident-weight corruption.

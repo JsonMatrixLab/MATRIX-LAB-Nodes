@@ -194,7 +194,7 @@
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "development",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -226,5 +226,10 @@
       "nodes/image_processing/matrix_renoise.py": "f9dcf05a6521842a79061b73991d00d1549d924eab53bdff4fadba3e6e61e9b3"
     },
     "eye_mask_sha256": "944065881f2a7341a4273a3d4c2fa64b33c15e0ffaa29d2295ddc6dffcf35f27"
+  },
+  "release_packaging": {
+    "runtime_baseline": "8d07b22e61df53e82837f529736436a9cdc3991c",
+    "change": "Empty customer prompts and LoRA rows; synchronized installation documentation.",
+    "projector_sha256": "a7ec1ee99e04fc4c5b6185b75f1e8954c66758a5619c4c6e3d1a7ec3ad4138b0"
   }
 }
