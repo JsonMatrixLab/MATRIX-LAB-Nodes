@@ -1,4 +1,4 @@
-import { HALO_TOKENS, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.b73e64ce43393cf3.mjs";
+import { HALO_TOKENS, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.84c0c1fe41e5e23f.mjs";
 
 export { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, measureHaloVerticalChrome, setHaloNodeSize };
 

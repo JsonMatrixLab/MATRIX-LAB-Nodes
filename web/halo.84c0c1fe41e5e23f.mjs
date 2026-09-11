@@ -858,6 +858,10 @@ export function mountHaloSurface(root, node, options = {}) {
   let destroyed = false;
   let inViewport = true;
   let drops = [];
+  let dashWidth = -1;
+  let dashHeight = -1;
+  let dashCycle = HALO_TOKENS.edgeDashCycle;
+  const edgeDash = [...HALO_TOKENS.edgeDash];
   let unregister = null;
   let resizeObserver = null;
   let intersectionObserver = null;
@@ -933,13 +937,26 @@ export function mountHaloSurface(root, node, options = {}) {
     edge.translate(HALO_TOKENS.canvasOverscan, HALO_TOKENS.canvasOverscan);
     edge.beginPath();
     const halfEdge = HALO_TOKENS.edgeWidth / 2;
-    roundedRect(edge, halfEdge, halfEdge, Math.max(0, frame.width - HALO_TOKENS.edgeWidth), Math.max(0, frame.height - HALO_TOKENS.edgeWidth), HALO_TOKENS.outerRadius);
+    const edgeWidth = Math.max(0, frame.width - HALO_TOKENS.edgeWidth);
+    const edgeHeight = Math.max(0, frame.height - HALO_TOKENS.edgeWidth);
+    roundedRect(edge, halfEdge, halfEdge, edgeWidth, edgeHeight, HALO_TOKENS.outerRadius);
     edge.strokeStyle = HALO_TOKENS.green;
     edge.shadowColor = HALO_TOKENS.green;
     edge.shadowBlur = HALO_TOKENS.edgeShadowBlur;
     edge.lineWidth = HALO_TOKENS.edgeWidth;
-    edge.setLineDash(HALO_TOKENS.edgeDash);
-    edge.lineDashOffset = -((timeSeconds * HALO_TOKENS.edgeSpeed) % HALO_TOKENS.edgeDashCycle);
+    if (edgeWidth !== dashWidth || edgeHeight !== dashHeight) {
+      const radius = Math.min(HALO_TOKENS.outerRadius, edgeWidth / 2, edgeHeight / 2);
+      const perimeter = 2 * (edgeWidth + edgeHeight) + (2 * Math.PI - 8) * radius;
+      // Fit whole dash cycles around the closed path so its seam stays continuous.
+      dashCycle = perimeter / Math.max(1, Math.round(perimeter / HALO_TOKENS.edgeDashCycle));
+      const scale = dashCycle / HALO_TOKENS.edgeDashCycle;
+      edgeDash[0] = HALO_TOKENS.edgeDash[0] * scale;
+      edgeDash[1] = HALO_TOKENS.edgeDash[1] * scale;
+      dashWidth = edgeWidth;
+      dashHeight = edgeHeight;
+    }
+    edge.setLineDash(edgeDash);
+    edge.lineDashOffset = -((timeSeconds * HALO_TOKENS.edgeSpeed) % dashCycle);
     edge.stroke();
     edge.restore();
     if (classicHousing) node.setDirtyCanvas?.(true, false);

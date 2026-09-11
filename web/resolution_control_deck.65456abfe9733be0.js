@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.59e0855f43e3060a.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.a80ef8d6675f57d8.mjs";
 
 const NODE_IDS = new Set("MATRIX_Resolution".split(",").filter(Boolean));
 const RATIOS = {

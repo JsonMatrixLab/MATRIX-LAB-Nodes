@@ -157,13 +157,13 @@
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.1a837209ce36c3ee.js",
-    "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js",
-    "web/easy_crop.b8510f8ee542f9bb.js",
-    "web/halo_execution.09d34f450026959a.js",
-    "web/image_collection.115703a311f28a75.js",
-    "web/prompt_director.c5c84298ff159d35.js",
-    "web/resolution_control_deck.b30eddd3c7057a66.js"
+    "web/ai_influencer_resolution.bc3ad563c6f25c80.js",
+    "web/ai_influencer_resolution_2k4k.ea179b0b1378b742.js",
+    "web/easy_crop.c762cd2c08bdd021.js",
+    "web/halo_execution.61efa407f380b6aa.js",
+    "web/image_collection.b0499872483ab4a6.js",
+    "web/prompt_director.142e8c2b440b899f.js",
+    "web/resolution_control_deck.65456abfe9733be0.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution2K4K",
@@ -234,19 +234,19 @@
     "builder_sha256": "d39e689b06be7b2491809b464536c3f5f95c4a619ea2c93287b96525bd225305",
     "backend_policy": "Baseline runtime is preserved except for removal of Camera Look and Renoise implementations and registrations.",
     "frontend_assets": {
-      "web/ai_influencer_resolution.1a837209ce36c3ee.js": "1a837209ce36c3eeae2422e5dba9a0ac557b619c5f8421e69b26a9a7af68ae23",
-      "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js": "fc69d433ef01a5049691ba24528964270ad94f7e67b423aeeff9520faf0e96bb",
+      "web/ai_influencer_resolution.bc3ad563c6f25c80.js": "bc3ad563c6f25c80321e237c6125eb186054056b3a97f167f6085ee9fabaaa56",
+      "web/ai_influencer_resolution_2k4k.ea179b0b1378b742.js": "ea179b0b1378b742898942a800cc75d950f86aa6b3010e107939a9fc70424c64",
       "web/assets/CascadiaMono-LICENSE.txt": "51882cd3cdba4e16f220f44ddb08a635c38c44ea6e0975db2574f4be6f958238",
       "web/assets/CascadiaMono.woff2": "7d4986a68fbbd674c90cdd8cd5d4a28c698640d3472572b006d2978006049799",
       "web/assets/font-manifest.json": "60aa2ed87cce68373e4087805493dedafdfeb8715670cc4c64f594ab28401810",
-      "web/easy_crop.b8510f8ee542f9bb.js": "b8510f8ee542f9bb0b6b577fdd8a06399ac01196cded98d48f8c070d943302a2",
-      "web/gallery.af177ab78d3e57f7.mjs": "af177ab78d3e57f79fc3e35187f551c2a8c14fca923329a98ab41e7aa86a3b42",
-      "web/halo.b73e64ce43393cf3.mjs": "b73e64ce43393cf357acd90c1daf91b43f28c9f7d324b430354fb64ec9b857b7",
-      "web/halo_execution.09d34f450026959a.js": "09d34f450026959a212c12734d50b4dea5515a3044b168a537f4f4d19d885ec7",
-      "web/halo_resolution.59e0855f43e3060a.mjs": "59e0855f43e3060a8ae410857841b0586f7ba7a2f421046a82606d56d5e418c4",
-      "web/image_collection.115703a311f28a75.js": "115703a311f28a75586e8e6ba0e8d36686bd6d965e9f27c390c7023a3fea7971",
-      "web/prompt_director.c5c84298ff159d35.js": "c5c84298ff159d35be6d8e7a6885886358ebafe8a3e769a328f676419b4505a6",
-      "web/resolution_control_deck.b30eddd3c7057a66.js": "b30eddd3c7057a664996656e09dad90ca76dd8d24330e28af78485e2e2916b32",
+      "web/easy_crop.c762cd2c08bdd021.js": "c762cd2c08bdd02110f69b6c3ebedd06e7c59cde31e945a158abfe4eda5d3531",
+      "web/gallery.e3606d29cf52db7a.mjs": "e3606d29cf52db7aef836d339c2b2a6c1ec39555f4137a5f1e62954e89604121",
+      "web/halo.84c0c1fe41e5e23f.mjs": "84c0c1fe41e5e23ffc7009c5cc1ae8797c218d3d4a51b0ae88dec51937197599",
+      "web/halo_execution.61efa407f380b6aa.js": "61efa407f380b6aaff4c8b471bbb3a4273f7fc53920a0882ebf0b6e33c92f096",
+      "web/halo_resolution.a80ef8d6675f57d8.mjs": "a80ef8d6675f57d8b400eda213392ea4beb2246aacfbd7362fc01f1acb85b37e",
+      "web/image_collection.b0499872483ab4a6.js": "b0499872483ab4a6b67f24dee1447862e37f0ff4e0a8bf5cdfd31e46266a5b6a",
+      "web/prompt_director.142e8c2b440b899f.js": "142e8c2b440b899f58e85b656a11b09c5af02f3f8cf24d58a4007f097845119b",
+      "web/resolution_control_deck.65456abfe9733be0.js": "65456abfe9733be077fe9a7bd578d5201acc1da21e024f73b79daa20c4c6c8cf",
       "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d"
     }
   }
