@@ -24,7 +24,12 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_NAME = "matrixlab_public_distribution_under_test"
 RETIRED_NODE_IDS = {"MATRIX_CameraLook", "MATRIX_Renoise"}
-COMPAT_NODE_IDS = RETIRED_NODE_IDS | {"MATRIXSpectralSampler", "MATRIXLAB_AIInfluencerResolution2K4K", "MATRIXLAB_ImageBatchLoader", "MATRIXLAB_PromptDirector"}
+COMPAT_ALIASES = {
+    "MATRIXSpectralSampler": "MATRIX_SpectralSampler",
+    "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX_AIInfluencerResolution2K4K",
+    "MATRIXLAB_ImageBatchLoader": "MATRIX_ImageBatchLoader",
+    "MATRIXLAB_PromptDirector": "MATRIX_AutoPrompter",
+}
 BASE_NODE_IDS = {
     "MATRIX_AIInfluencerResolution",
     "MATRIX_EasyCrop",
@@ -41,6 +46,8 @@ BASE_NODE_IDS = {
     "MATRIX_SkinMask",
 }
 ADDITIVE_NODE_ID = "MATRIX_AIInfluencerResolution2K4K"
+CLIP_NODE_ID = "MATRIX_Krea2CLIPLoader"
+MODEL_GUARD_NODE_ID = "MATRIX_Krea2ModelGuard"
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -91,7 +98,8 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        self.assertEqual(imported_ids, BASE_NODE_IDS | COMPAT_NODE_IDS | {ADDITIVE_NODE_ID, "MATRIX_Krea2CLIPLoader", "MATRIX_Krea2ModelGuard"})
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | set(COMPAT_ALIASES)
+        self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
         self.assertEqual(imported_ids, set(self.pack.NODE_DISPLAY_NAME_MAPPINGS))
@@ -99,6 +107,20 @@ class DistributionStructureTests(unittest.TestCase):
         for node_id, node_class in self.pack.NODE_CLASS_MAPPINGS.items():
             with self.subTest(node_id=node_id):
                 self.assertEqual(node_class.CATEGORY, self.manifest["categories"][node_id])
+
+    def test_product_native_clip_source_is_hash_bound_when_present(self):
+        if CLIP_NODE_ID not in self.pack.NODE_CLASS_MAPPINGS:
+            self.skipTest("internal base does not include the Krea2 loader")
+        if "product_source_nodes" in self.manifest:
+            record = self.manifest["product_source_nodes"][CLIP_NODE_ID]
+            self.assertEqual(record["path"], "nodes/prompting/matrix_krea2cliploader.py")
+            digest = hashlib.sha256((ROOT / record["path"]).read_bytes()).hexdigest()
+            self.assertEqual(record["source_sha256"], digest)
+            self.assertEqual(self.manifest["candidate_provenance"]["product_source_sha256"][CLIP_NODE_ID], digest)
+            self.assertEqual(record["containment_policy"], "independent-cpu-norm-reference-native-gpu-rmsnorm")
+        else:
+            digest = hashlib.sha256((ROOT / "krea2_clip_loader.py").read_bytes()).hexdigest()
+            self.assertEqual(self.manifest["krea2_gpu_guard_overlay"]["source_sha256"][CLIP_NODE_ID], digest)
 
     def test_package_and_manifest_versions_agree(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
@@ -108,7 +130,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_class_ids_match_public_product_names(self):
         for node_id, display in self.pack.NODE_DISPLAY_NAME_MAPPINGS.items():
-            if node_id in COMPAT_NODE_IDS:
+            if node_id in COMPAT_ALIASES:
                 continue
             with self.subTest(node_id=node_id):
                 self.assertRegex(node_id, r"^MATRIX_[A-Z][A-Za-z0-9]*$")
@@ -125,20 +147,37 @@ class DistributionStructureTests(unittest.TestCase):
         self.assertEqual(actual, NODE_DIRECTORIES)
         self.assertEqual({path.name for path in (ROOT / "nodes").glob("*.py")}, {"__init__.py"})
 
-    def test_krea2_v1_compatibility_ids_are_registered(self):
+    def test_retired_node_ids_are_not_registered_or_implemented(self):
         visible_ids = (
             set(self.manifest["nodes"])
             | set(self.manifest["categories"])
             | set(self.pack.NODE_CLASS_MAPPINGS)
             | set(self.pack.NODE_DISPLAY_NAME_MAPPINGS)
         )
-        self.assertTrue(COMPAT_NODE_IDS.issubset(visible_ids))
+        self.assertTrue(RETIRED_NODE_IDS.isdisjoint(visible_ids))
         implementation = "\n".join(
             path.read_text(encoding="utf-8")
             for path in (ROOT / "nodes").rglob("*.py")
         )
         for retired in RETIRED_NODE_IDS:
-            self.assertIn(retired, implementation)
+            self.assertNotIn(retired, implementation)
+        for relative in (
+            "_core/color_camera_look/__init__.py",
+            "_core/image_renoise/__init__.py",
+            "nodes/image_processing/matrix_cameralook.py",
+            "nodes/image_processing/matrix_renoise.py",
+        ):
+            self.assertFalse((ROOT / relative).exists(), relative)
+
+    def test_schema_compatible_aliases_are_distinct_subclasses(self):
+        for old, current in COMPAT_ALIASES.items():
+            with self.subTest(alias=old):
+                child = self.pack.NODE_CLASS_MAPPINGS[old]
+                parent = self.pack.NODE_CLASS_MAPPINGS[current]
+                self.assertIsNot(child, parent)
+                self.assertTrue(issubclass(child, parent))
+                self.assertEqual(child.INPUT_TYPES(), parent.INPUT_TYPES())
+                self.assertEqual(child.FUNCTION, parent.FUNCTION)
 
     def test_runtime_and_font_asset_hashes_match(self):
         runtime_registry = ROOT / "_core" / "runtime-assets.json"

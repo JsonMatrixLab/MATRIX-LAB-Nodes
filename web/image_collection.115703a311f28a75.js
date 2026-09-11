@@ -1,10 +1,10 @@
-import { mountImageGallery } from "./gallery.2fa7e326ff4dc0d0.mjs";
-import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.dd87986d74909bc0.mjs";
+import { mountImageGallery } from "./gallery.af177ab78d3e57f7.mjs";
+import { createHaloWidgetHost, haloWidgetLayoutHeight, measureHaloContentHeight, setHaloNodeSize } from "./halo.b73e64ce43393cf3.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
 
-const NODE_TYPE = "MATRIX_ImageBatchLoader";
+const NODE_TYPES = new Set(["MATRIX_ImageBatchLoader", "MATRIXLAB_ImageBatchLoader"]);
 const COLLECTION_WIDGET = "collection";
 const PRESENTATION_WIDGET = "matrixlab_image_collection_ui";
 const MIN_WIDTH = 420;
@@ -62,7 +62,7 @@ function install(node) {
     node[CONTROL].syncFromWidget?.(collection?.value);
     return node[CONTROL];
   }
-  if ((node?.comfyClass || node?.type) !== NODE_TYPE || typeof document === "undefined") return null;
+  if (!NODE_TYPES.has(node?.comfyClass || node?.type) || typeof document === "undefined") return null;
   if (typeof node.addDOMWidget !== "function") return null;
   const collection = widgetByName(node, COLLECTION_WIDGET);
   if (!collection) return null;

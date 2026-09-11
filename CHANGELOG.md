@@ -2,6 +2,35 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## 0.4.0 - Photo Finisher replacement - 2026-09-11
+
+- Remove the Camera Look and Renoise registrations and runtime implementations.
+- Keep Photo Finisher as the single MATRIX photographic-finishing node.
+- Preserve all 16 current nodes and the four schema-compatible V1 aliases, for 20
+  registered IDs across the existing six groups.
+- Preserve the 0.3.5 frontend targeting repair for those four aliases.
+- Require manual replacement and retuning for workflows that used the removed
+  finishing nodes; their old controls have no exact Photo Finisher mapping.
+
+Verified the exact package in ComfyUI Classic 0.33.3/frontend 1.49.6 on an RTX 5090:
+20 unified IDs, save and fresh-browser reload, exact frontend/API graph equality, and
+successful 2K Photo Finisher ON, 2K OFF, and 4K ON runs. These used a standard manual
+prompt without a LoRA; the optional provider action was not run. Nodes 2.0 is not a
+supported or verified target for this release.
+
+## 0.3.5 - legacy/current frontend compatibility - 2026-09-10
+
+- Target the four Krea 2 V1 aliases and their current IDs with the same unified green
+  frontend controls for Spectral Sampler, AI Influencer Resolution 2K/4K, Image
+  Batch Loader, and Auto Prompter.
+- Accept both legacy and current Image Batch Loader IDs in the Auto Prompter frontend
+  image-source check.
+- Keep the 22 registered backend IDs, schemas, processing code, GPU guards, and
+  sanitized examples unchanged from 0.3.4.
+
+Offline source and package checks do not establish live Classic, Nodes 2.0, GPU, or
+workflow acceptance for this candidate.
+
 ## 0.3.4 - packaging hygiene - 2026-09-10
 
 - Align release documentation and manifest checks with the 22 registered IDs: 16
@@ -58,7 +87,8 @@ This is a breaking workflow-identity change. Read [docs/migration.md](docs/migra
 - Kept Auto Prompter provider generation behind an explicit paid action; ordinary graph execution returns saved text without a network request.
 - Added public installation, migration, compatibility, node, license-notice, and agent-installation documentation.
 
-Full live acceptance of the current bytes across both ComfyUI renderers and all model-dependent paths remains pending.
+At that development point, full live renderer and model-path acceptance had not yet
+been completed.
 
 ## 0.1.0
 

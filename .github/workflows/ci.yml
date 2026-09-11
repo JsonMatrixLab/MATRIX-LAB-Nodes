@@ -49,3 +49,4 @@ jobs:
             found=1
           done < <(find web -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
           test "$found" -eq 1
+          node --experimental-vm-modules tests/test_frontend_alias_compat.mjs .

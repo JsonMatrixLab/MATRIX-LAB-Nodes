@@ -70,12 +70,6 @@ NODE_DISPLAY_NAME_MAPPINGS.update(_gpu_krea2_model_guard_d)
 # END generated Krea2 GPU guards
 
 # BEGIN Krea2 V1 compatibility
-from .nodes.image_processing.matrix_cameralook import NODE_CLASS_MAPPINGS as _matrix_cameralook_c, NODE_DISPLAY_NAME_MAPPINGS as _matrix_cameralook_d
-NODE_CLASS_MAPPINGS.update(_matrix_cameralook_c)
-NODE_DISPLAY_NAME_MAPPINGS.update(_matrix_cameralook_d)
-from .nodes.image_processing.matrix_renoise import NODE_CLASS_MAPPINGS as _matrix_renoise_c, NODE_DISPLAY_NAME_MAPPINGS as _matrix_renoise_d
-NODE_CLASS_MAPPINGS.update(_matrix_renoise_c)
-NODE_DISPLAY_NAME_MAPPINGS.update(_matrix_renoise_d)
 NODE_CLASS_MAPPINGS['MATRIXSpectralSampler'] = type('MATRIXSpectralSampler', (NODE_CLASS_MAPPINGS['MATRIX_SpectralSampler'],), {"__module__": __name__})
 NODE_DISPLAY_NAME_MAPPINGS['MATRIXSpectralSampler'] = NODE_DISPLAY_NAME_MAPPINGS['MATRIX_SpectralSampler']
 NODE_CLASS_MAPPINGS['MATRIXLAB_AIInfluencerResolution2K4K'] = type('MATRIXLAB_AIInfluencerResolution2K4K', (NODE_CLASS_MAPPINGS['MATRIX_AIInfluencerResolution2K4K'],), {"__module__": __name__})

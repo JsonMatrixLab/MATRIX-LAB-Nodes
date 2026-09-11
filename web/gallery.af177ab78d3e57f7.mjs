@@ -1,4 +1,4 @@
-import { haloMinimumNodeHeight, measureHaloContentHeight, mountHaloSurface, setHaloNodeSize } from "./halo.dd87986d74909bc0.mjs";
+import { haloMinimumNodeHeight, measureHaloContentHeight, mountHaloSurface, setHaloNodeSize } from "./halo.b73e64ce43393cf3.mjs";
 
 export const GALLERY_STATE_VERSION = 1;
 export const MAX_GALLERY_IMAGES = 10;

@@ -23,16 +23,17 @@ to model instances, not globally registered buffers or global class overrides.
 
 ## Evidence and limits
 
-The verified RTX 5090 compatibility deployment completed six consecutive FP8 4K
-server runs with character returns, Nicegirls, Skindetails and RawGirl at strength
-1.0. A private repeated sequence produced 18 finite text encodings using the same
-GPU encoder. The guard source files here are byte-identical to that deployment.
-Those runs used the compatibility package; they do not certify a full migration of
-all legacy workflow nodes to the current repository, or frontend behavior.
+The exact 0.4.0 package and release workflow completed 2K with Photo Finisher ON,
+2K with it OFF, and 4K with it ON on an RTX 5090. All runs used the standard manual
+prompt, no LoRA, and no optional provider request. The same Classic session verified
+all 20 unified registrations, then saved the workflow and loaded it in a fresh
+browser with exact frontend/API graph equality.
 
 FP8 diffusion is the accepted scope. INT8 is not supported by this acceptance.
-The observed runtime used ComfyUI 0.33.3 and PyTorch 2.8.0+cu128. New runtime versions
-or different patches require validation. Offline tests exercise native-shaped
+The observed runtime used ComfyUI 0.33.3 at core
+`4da9e2dbead52fc1e68beae33fe3d7ad63b63241`, frontend 1.49.6, and PyTorch
+2.8.0+cu128. New runtime versions or different patches require validation. Nodes 2.0
+is not supported or verified for this release. Offline tests exercise native-shaped
 module and patcher doubles, including corruption containment, invalid patch
 rejection, static delegate reuse and reference integrity; they are not GPU tests.
 

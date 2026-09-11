@@ -7,7 +7,9 @@ Metadata Killer intentionally removes workflow metadata from saved images.
 
 ## Requirements
 
-- Install this package and rgthree-comfy, then restart ComfyUI and reload the page.
+- Install exact node package 0.4.0 and rgthree-comfy, then restart ComfyUI and reload
+  the page. Use a workflow release that has migrated its finishing stage to Photo
+  Finisher.
 - Tested numerical environment: RTX 5090, ComfyUI 0.33.3, PyTorch 2.8.0+cu128.
 - Diffusion: `krea2_turbo_fp8_scaled.safetensors` under `models/diffusion_models`.
 - Encoder: `qwen3vl_4b_bf16.safetensors` under `models/text_encoders`.
@@ -37,25 +39,25 @@ rows, so the imported graph applies no LoRA until you add one.
 
 Select 2K or 4K, enter the manual prompt or explicitly generate and review an Auto
 Prompter result, add any intended LoRA rows, and then run. Skin and eye detail are
-enabled; CameraLook is off and Renoise on. A valid empty eye detection/mask leaves
-that region unchanged. Keep the model guard before the LoRA loader and use the
+enabled, and Photo Finisher owns the photographic finishing stage. A valid empty eye
+detection/mask leaves that region unchanged. Keep the model guard before the LoRA loader and use the
 protected CLIP loader. Compatible diffusion LoRAs are supported; patches to protected
 parameters or incompatible encoder hooks are rejected.
 
 ## Acceptance
 
-The unchanged guard implementations completed six consecutive full 4K FP8 server
-runs across compatible LoRA cases. Those historical runs used the original populated
-V1 graph. The sanitized distributed default preserves its generation wiring while
-intentionally clearing the primary prompts, character trigger, and LoRA rows, so it
-does not reproduce the exact prompt and LoRA inputs used in those runs.
+Node package 0.4.0 targets the four schema-compatible V1 aliases and their current
+IDs with the unified green frontend. On the exact installed package, all 20 MATRIX
+IDs resolved to that pack in ComfyUI Classic. The workflow was saved on the Pod,
+loaded in a fresh browser, and exported with exact equality to the supplied API
+graph.
 
-The historical V1 API graph additionally completed a full 3072x4096 run on that Pod
-with the saver-only supplement: original PNG decoded, metadata verification passed,
-and its 1024-pixel WebP preview decoded successfully. The original was visually
-inspected. This does not claim an identical full-package installation was exercised on
-the Pod. Package CI checks standalone imports, retained compatibility, and guard
-contracts. See [GPU limits](krea2-gpu.md). Arbitrary LoRAs, other GPU/runtime versions,
-and INT8 are not covered by this numerical acceptance. Frontend behavior and template
-portability require their own verification; clean JSON is not proof of a tested
-deployment template.
+The release workflow completed three RTX 5090 FP8 runs: 2K with Photo Finisher ON,
+2K with it OFF, and 4K with it ON. The environment was ComfyUI 0.33.3 at core
+`4da9e2dbead52fc1e68beae33fe3d7ad63b63241`, frontend 1.49.6, and PyTorch
+2.8.0+cu128. Tests used a standard manual prompt without a LoRA. The optional Auto
+Prompter provider action was not run.
+
+Package CI separately checks imports, retained aliases, and guard contracts. See
+[GPU limits](krea2-gpu.md). Arbitrary LoRAs, other GPU/runtime versions, INT8,
+provider behavior, and Nodes 2.0 are outside this acceptance.

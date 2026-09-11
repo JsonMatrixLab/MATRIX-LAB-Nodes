@@ -6,13 +6,13 @@ import {
   measureHaloContentHeight,
   mountHaloSurface,
   setHaloNodeSize,
-} from "./halo.dd87986d74909bc0.mjs";
+} from "./halo.b73e64ce43393cf3.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};
 
-const NODE_TYPE = "MATRIX_AutoPrompter";
-const LOADER_TYPE = "MATRIX_ImageBatchLoader";
+const NODE_TYPES = new Set(["MATRIX_AutoPrompter", "MATRIXLAB_PromptDirector"]);
+const LOADER_TYPES = new Set(["MATRIX_ImageBatchLoader", "MATRIXLAB_ImageBatchLoader"]);
 const PRESENTATION_WIDGET = "matrixlab_prompt_director_ui";
 const CREDENTIAL_PATH = "/matrixlab/prompt-director/v1/credential";
 const MODELS_PATH = "/matrixlab/prompt-director/v1/models";
@@ -206,7 +206,7 @@ export function resolveReferenceCollection(node, application = app) {
       widget: imageWidget,
     };
   }
-  if (!origin || (origin.comfyClass || origin.type) !== LOADER_TYPE) {
+  if (!origin || !LOADER_TYPES.has(origin.comfyClass || origin.type)) {
     throw new Error("Connect IMAGE directly from Load Image or MATRIX IMAGE BATCH LOADER. Other upstream images must first be saved as input files.");
   }
   const output = origin.outputs?.[originSlot];
@@ -314,7 +314,7 @@ function uuid(randomUUID) {
 
 export function mountPromptDirector(node, options = {}) {
   if (node?.[CONTROL]) { node[CONTROL].render(); return node[CONTROL]; }
-  if ((node?.comfyClass || node?.type) !== NODE_TYPE || typeof node?.addDOMWidget !== "function") return null;
+  if (!NODE_TYPES.has(node?.comfyClass || node?.type) || typeof node?.addDOMWidget !== "function") return null;
   const doc = options.document || globalThis.document;
   const service = options.api || api;
   const application = options.app || app;

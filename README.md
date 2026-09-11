@@ -3,36 +3,40 @@
 [![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
 Sixteen current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
-output, and assisted prompting, plus six narrowly scoped Krea 2 V1 compatibility
-registrations. All 22 registered class IDs remain in six consistent `MATRIX LAB`
-categories.
+output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
+20 registered class IDs remain in six consistent `MATRIX LAB` categories.
 
-> **Package version 0.3.4.** This patch changes packaging and example hygiene;
-> runtime behavior is unchanged from 0.3.3. Read the current
+> **Package version 0.4.0.** Photo Finisher is now the only MATRIX photographic
+> finishing implementation. The four schema-compatible Krea 2 V1 aliases retain the
+> source-owned green frontend repair introduced in 0.3.5. Read the current
 > [compatibility and acceptance boundary](docs/compatibility.md) before using it in an
 > important workflow.
 
 ## MATRIX Krea 2 — AI Influencer 4K (FP8)
 
-After repository access is available, use the
+Use the included
 [V1 workflow](examples/krea2-v1/MATRIX-Krea-2-AI-Influencer-4K-FP8-V1.ui.json) with
 its [setup and verified scope](docs/krea2-v1.md). The package includes
 `MATRIX_Krea2CLIPLoader`, `MATRIX_Krea2ModelGuard`, the current Metadata Killer,
 and safe handling of valid empty eye masks. Text encoding and diffusion remain on
-GPU. The original six-case RTX 5090 FP8 numerical acceptance is documented in the
+GPU. The current RTX 5090 FP8 acceptance is documented in the
 [GPU guard notes](docs/krea2-gpu.md); INT8 is outside that acceptance.
 
-V1 compatibility registrations preserve the saved Spectral, resolution, prompt,
-image-loader, CameraLook, and Renoise identities. Photo Finisher remains available
-for new workflows and is not substituted for V1 finishing settings. See the
-[migration guide](docs/migration.md).
+V1 compatibility aliases preserve the saved Spectral, resolution, prompt, and
+image-loader identities. The former two-node finishing chain requires deliberate
+replacement with Photo Finisher; see the [migration guide](docs/migration.md).
 
 ## Installation
 
 - **Install it yourself:** follow [INSTALL.md](INSTALL.md).
 - **Ask a coding agent to install it:** provide the repository and require [AGENT-INSTALL.md](AGENT-INSTALL.md).
 
-Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable it beside the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs: retained class IDs would register twice. Back up workflows and review the [migration guide](docs/migration.md) before switching.
+Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable
+it beside `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` or
+`MATRIXLAB-UI-Nodes` split packs, or a standalone Metadata Killer: registrations or
+frontend targeting overlap. Preserve existing packs and workflows, obtain authority
+before disabling them recoverably, and review the [migration guide](docs/migration.md)
+before switching.
 
 ## Input & Output (2 current)
 
@@ -76,18 +80,28 @@ Try Photo Finisher without a model or provider using the [included example workf
 
 Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
 
-## Krea 2 V1 compatibility registrations (6)
+## Krea 2 V1 compatibility aliases (4)
 
-`MATRIX_CameraLook` and `MATRIX_Renoise` retain their original implementations and
-saved controls in Image Processing. Four aliases preserve V1 graph identities:
+Four aliases preserve schema-compatible V1 graph identities:
 `MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
 `MATRIXLAB_ImageBatchLoader`, and `MATRIXLAB_PromptDirector`. These registrations
-are included in the 22-ID manifest; they do not add categories or replace the
+are included in the 20-ID manifest; they do not add categories or replace the
 current IDs. See [NODES.md](NODES.md) for the exact mapping.
+
+Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The
+exact package was verified in ComfyUI Classic 0.33.3 with frontend 1.49.6 on an RTX
+5090: all 20 IDs loaded from the unified pack, the workflow survived save and fresh
+browser reload, and its frontend export exactly matched the API graph. Nodes 2.0 is
+not a supported or verified target for this release.
 
 ## Package boundary
 
-The installed `MANIFEST.json` is the machine-readable inventory for the exact artifact. Offline CI checks package registration, public schemas, assets, and syntax; complete live renderer, GPU, model, and workflow acceptance remains a separate release gate.
+The installed `MANIFEST.json` is the machine-readable inventory for the exact
+artifact. The bundled Krea 2 workflow completed 2K with Photo Finisher enabled, 2K
+with it bypassed, and 4K with it enabled on the recorded Classic/RTX 5090 boundary.
+Those runs used a standard manual prompt without a LoRA; the optional Auto Prompter
+provider action was not run. Other hosts, models, LoRAs, provider behavior, and image
+quality choices require their own evaluation.
 
 ## License
 

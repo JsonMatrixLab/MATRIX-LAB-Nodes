@@ -1,15 +1,20 @@
 # Installation for people
 
-Install the exact authorized MATRIX LAB NODES package version 0.3.4 as one ComfyUI
-custom-node pack. Its `MANIFEST.json` must declare version `0.3.4` and the expected
-22 registered class IDs in six category groups.
+Install the exact authorized MATRIX LAB NODES package version 0.4.0 as one ComfyUI
+custom-node pack. Its `MANIFEST.json` must declare version `0.4.0` and the expected
+20 registered class IDs in six category groups.
 
 ## Before you begin
 
 - Use a working ComfyUI installation with Python 3.10 or newer.
 - Back up important workflows and the current custom-node installation.
 - Close ComfyUI before changing custom nodes.
-- Check for folders that provide the older `MATRIXLAB-Nodes` or `MATRIXLAB-UI-Nodes` packs. They cannot remain enabled beside this unified package because class IDs overlap.
+- Check for the older `MATRIXLAB-Nodes` and `MATRIXLAB-UI-Nodes` split packs,
+  `matrix-krea2-adapter`, and a standalone Metadata Killer. They cannot remain
+  enabled beside this unified package because their registrations or frontend
+  targeting overlap.
+- Preserve every existing pack before changing it. Disable or replace a conflicting
+  folder through a recoverable process only with the user's authority.
 - Preserve the host's working Python, Torch, and CUDA versions.
 
 ## Install from Git when repository access is available
@@ -40,12 +45,18 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 
 1. Start ComfyUI through its normal launcher and inspect startup output for import errors.
 2. Open node search and find `MATRIX RESOLUTION`, `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
-3. Compare the installed classes with `MANIFEST.json`. Require version `0.3.4`, 22
+3. Compare the installed classes with `MANIFEST.json`. Require version `0.4.0`, 20
    unique registered class IDs, and six `MATRIX LAB` category groups. The inventory
-   consists of 16 current nodes, CameraLook and Renoise compatibility classes, and
-   four V1 aliases.
-4. Add `MATRIX_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
-5. Open a copy of an existing workflow and follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
+   consists of 16 current nodes and four schema-compatible V1 aliases.
+4. Confirm all 20 IDs report the unified `matrix-lab-nodes` pack as their provider.
+   Stop if any ID or frontend asset still resolves to `matrix-krea2-adapter`, an
+   older split pack, or the standalone Metadata Killer.
+5. Open copies of an alias-ID workflow and a current-ID workflow. Confirm the green
+   MATRIX controls appear for both IDs in each pair: Spectral Sampler, AI Influencer
+   Resolution 2K/4K, Image Batch Loader, and Auto Prompter. Do not save or rewrite
+   either workflow during this check.
+6. Add `MATRIX_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
+7. Follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
 
 This verification proves discovery and the local geometry path only. It does not prove every model, detector, sampler, GPU, or frontend renderer.
 
@@ -54,6 +65,9 @@ This verification proves discovery and the local geometry path only. It does not
 Model weights are not bundled. Installing the pack does not acquire them, establish redistribution rights, or complete compatible inference-runtime setup. `MATRIX_SkinMask` and `MATRIX_EyeMask` fail when their registered assets or compatible runtimes are unavailable; do not bypass identity checks with a similarly named file. A successful package import is not proof that either mask node is ready to execute. Follow [the detector and segmentation setup guide](docs/detector-setup.md) for exact paths, hashes, source evidence, runtime boundaries, and unresolved license questions.
 
 `MATRIX_AutoPrompter` returns saved text during normal execution. Its explicit **Generate Prompt** control uses xAI and may incur charges. Configure credentials through its masked control or the documented server environment, never inside a workflow. Make the first provider call only after reviewing the selected model, reference images, request text, and cost boundary.
+
+Installation and compatibility checks must not alter provider keys or submit a paid
+request. Do not use **Generate Prompt** during installation verification.
 
 ## Update
 

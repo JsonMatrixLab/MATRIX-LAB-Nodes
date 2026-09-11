@@ -6,6 +6,7 @@ export const HALO_GLYPHS =
 
 export const HALO_EXECUTION_NODE_IDS = Object.freeze([
   "MATRIX_SpectralSampler",
+  "MATRIXSpectralSampler",
   "MATRIX_LatentTail",
   "MATRIX_SkinMask",
   "MATRIX_EyeMask",
@@ -1114,7 +1115,7 @@ function parameterFieldPresentation(node, widget) {
         : widget.name === "feather_px" ? "Feather radius in working-resolution pixels. Set zero for exact original-mask paste in Soft mask mode."
         : "" };
   }
-  if ((node.comfyClass || node.type) !== "MATRIX_SpectralSampler") return null;
+  if (!["MATRIX_SpectralSampler", "MATRIXSpectralSampler"].includes(node.comfyClass || node.type)) return null;
   const value = (name) => node.widgets?.find((item) => item.name === name)?.value;
   const known = (name) => !linkedInput(node, name);
   const scales = String(value("scales") ?? "").split(",").map((part) => Number(part.trim()));

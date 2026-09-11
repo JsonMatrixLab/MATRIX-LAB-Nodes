@@ -1,8 +1,8 @@
 # Node reference
 
-Package version 0.3.4 registers 22 class IDs in six `MATRIX LAB` groups: 16
-current nodes, two retained Krea 2 V1 implementation classes, and four compatibility
-aliases. The installed `MANIFEST.json` is authoritative for a particular artifact.
+Package version 0.4.0 registers 20 class IDs in six `MATRIX LAB` groups: 16
+current nodes and four schema-compatible aliases. The installed `MANIFEST.json` is
+authoritative for a particular artifact.
 
 | Group | Status | Display name | Class ID | Inputs | Outputs | Guide |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -22,8 +22,6 @@ aliases. The installed `MANIFEST.json` is authoritative for a particular artifac
 | Image Processing | Current | MATRIX OUTPUT STAGE | `MATRIX_OutputStage` | image/model/noise/conditioning/VAE/target geometry; output controls | `image`, `info` | [Guide](docs/nodes/output-stage.md) |
 | Prompting | Current | MATRIX AUTO PROMPTER | `MATRIX_AutoPrompter` | saved prompt fields; optional images | `prompt` | [Guide](docs/nodes/auto-prompter.md) |
 | Prompting | Current | MATRIX KREA2 CLIP LOADER | `MATRIX_Krea2CLIPLoader` | Krea 2 Qwen3-VL 4B `clip_name` | `CLIP` | [Guide](docs/krea2-gpu.md) |
-| Image Processing | V1 implementation | MATRIX CAMERA LOOK | `MATRIX_CameraLook` | image; camera-look controls | `image` | [V1 guide](docs/krea2-v1.md) |
-| Image Processing | V1 implementation | MATRIX RENOISE | `MATRIX_Renoise` | image; grain controls | `image` | [V1 guide](docs/krea2-v1.md) |
 | Sampling & Detail | V1 alias | MATRIX SPECTRAL SAMPLER | `MATRIXSpectralSampler` | same as `MATRIX_SpectralSampler` | `sampler` | [Migration](docs/migration.md) |
 | Resolution & Layout | V1 alias | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIXLAB_AIInfluencerResolution2K4K` | same as `MATRIX_AIInfluencerResolution2K4K` | `width`, `height` | [Migration](docs/migration.md) |
 | Input & Output | V1 alias | MATRIX IMAGE BATCH LOADER | `MATRIXLAB_ImageBatchLoader` | same as `MATRIX_ImageBatchLoader` | `images`, `masks` | [Migration](docs/migration.md) |
@@ -32,3 +30,7 @@ aliases. The installed `MANIFEST.json` is authoritative for a particular artifac
 `MATRIX_AIInfluencerResolution2K4K` does not replace the base AI Influencer Resolution class.
 Compatibility aliases preserve serialized V1 identities; new workflows should use the
 current class IDs. They do not represent additional implementations.
+
+Version 0.4.0 targets each legacy alias and its current ID with the same unified
+green frontend. Both ID sets were verified in ComfyUI Classic with the exact release
+workflow. Nodes 2.0 is not supported or verified for this release.

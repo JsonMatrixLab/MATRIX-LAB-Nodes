@@ -136,9 +136,7 @@
     "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
     "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout",
     "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
-    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
-    "MATRIX_CameraLook": "MATRIX LAB/Image Processing",
-    "MATRIX_Renoise": "MATRIX LAB/Image Processing"
+    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -159,13 +157,13 @@
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.4494789dd5805c35.js",
-    "web/ai_influencer_resolution_2k4k.3a36028916c21b63.js",
-    "web/easy_crop.ecce21d7a6f52c16.js",
-    "web/halo_execution.035911ef803c28bc.js",
-    "web/image_collection.cd03d1d6a98d71d5.js",
-    "web/prompt_director.a37de4ea51073b4f.js",
-    "web/resolution_control_deck.6e1ff85eab697cf7.js"
+    "web/ai_influencer_resolution.1a837209ce36c3ee.js",
+    "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js",
+    "web/easy_crop.b8510f8ee542f9bb.js",
+    "web/halo_execution.09d34f450026959a.js",
+    "web/image_collection.115703a311f28a75.js",
+    "web/prompt_director.c5c84298ff159d35.js",
+    "web/resolution_control_deck.b30eddd3c7057a66.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution2K4K",
@@ -175,7 +173,6 @@
     "MATRIX_AIInfluencerResolution",
     "MATRIX_AIInfluencerResolution2K4K",
     "MATRIX_AutoPrompter",
-    "MATRIX_CameraLook",
     "MATRIX_CropTailPaste",
     "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
@@ -186,15 +183,14 @@
     "MATRIX_MetadataKiller",
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
-    "MATRIX_Renoise",
     "MATRIX_Resolution",
     "MATRIX_SkinMask",
     "MATRIX_SpectralSampler"
   ],
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
-  "status": "development",
-  "version": "0.3.4",
+  "status": "release",
+  "version": "0.4.0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -219,17 +215,39 @@
       "MATRIXLAB_ImageBatchLoader": "MATRIX_ImageBatchLoader",
       "MATRIXLAB_PromptDirector": "MATRIX_AutoPrompter"
     },
-    "retained_source_sha256": {
-      "_core/color_camera_look/__init__.py": "ca54215a56745781ce05619c72ab7480a37e2f10f1f746710756f149c471fafe",
-      "_core/image_renoise/__init__.py": "1dabd2b9a0595a76e634bc7e57236efd0a899004515de81726ef138fe66f478f",
-      "nodes/image_processing/matrix_cameralook.py": "376e4214940235297ffdda2590eae8d2ecf14863448206a20397956239b42bb0",
-      "nodes/image_processing/matrix_renoise.py": "f9dcf05a6521842a79061b73991d00d1549d924eab53bdff4fadba3e6e61e9b3"
-    },
-    "eye_mask_sha256": "944065881f2a7341a4273a3d4c2fa64b33c15e0ffaa29d2295ddc6dffcf35f27"
+    "eye_mask_sha256": "944065881f2a7341a4273a3d4c2fa64b33c15e0ffaa29d2295ddc6dffcf35f27",
+    "removed_implementations": [
+      "MATRIX_CameraLook",
+      "MATRIX_Renoise"
+    ],
+    "finishing_migration": "Replace the retired two-node chain with MATRIX_PhotoFinisher and retune."
   },
   "release_packaging": {
-    "runtime_baseline": "8d07b22e61df53e82837f529736436a9cdc3991c",
-    "change": "Empty customer prompts and LoRA rows; synchronized installation documentation.",
-    "projector_sha256": "a7ec1ee99e04fc4c5b6185b75f1e8954c66758a5619c4c6e3d1a7ec3ad4138b0"
+    "baseline_commit": "3f434be8706be318d03b693a3d54a19837e98616",
+    "version": "0.4.0",
+    "builder_sha256": "d39e689b06be7b2491809b464536c3f5f95c4a619ea2c93287b96525bd225305",
+    "change": "Remove Camera Look and Renoise; preserve Photo Finisher, the other current backends, and the 0.3.5 frontend alias repair.",
+    "workflow_examples": "Projected from the separately reviewed distribution examples."
+  },
+  "frontend_alias_compatibility": {
+    "baseline_commit": "3f434be8706be318d03b693a3d54a19837e98616",
+    "builder_sha256": "d39e689b06be7b2491809b464536c3f5f95c4a619ea2c93287b96525bd225305",
+    "backend_policy": "Baseline runtime is preserved except for removal of Camera Look and Renoise implementations and registrations.",
+    "frontend_assets": {
+      "web/ai_influencer_resolution.1a837209ce36c3ee.js": "1a837209ce36c3eeae2422e5dba9a0ac557b619c5f8421e69b26a9a7af68ae23",
+      "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js": "fc69d433ef01a5049691ba24528964270ad94f7e67b423aeeff9520faf0e96bb",
+      "web/assets/CascadiaMono-LICENSE.txt": "51882cd3cdba4e16f220f44ddb08a635c38c44ea6e0975db2574f4be6f958238",
+      "web/assets/CascadiaMono.woff2": "7d4986a68fbbd674c90cdd8cd5d4a28c698640d3472572b006d2978006049799",
+      "web/assets/font-manifest.json": "60aa2ed87cce68373e4087805493dedafdfeb8715670cc4c64f594ab28401810",
+      "web/easy_crop.b8510f8ee542f9bb.js": "b8510f8ee542f9bb0b6b577fdd8a06399ac01196cded98d48f8c070d943302a2",
+      "web/gallery.af177ab78d3e57f7.mjs": "af177ab78d3e57f79fc3e35187f551c2a8c14fca923329a98ab41e7aa86a3b42",
+      "web/halo.b73e64ce43393cf3.mjs": "b73e64ce43393cf357acd90c1daf91b43f28c9f7d324b430354fb64ec9b857b7",
+      "web/halo_execution.09d34f450026959a.js": "09d34f450026959a212c12734d50b4dea5515a3044b168a537f4f4d19d885ec7",
+      "web/halo_resolution.59e0855f43e3060a.mjs": "59e0855f43e3060a8ae410857841b0586f7ba7a2f421046a82606d56d5e418c4",
+      "web/image_collection.115703a311f28a75.js": "115703a311f28a75586e8e6ba0e8d36686bd6d965e9f27c390c7023a3fea7971",
+      "web/prompt_director.c5c84298ff159d35.js": "c5c84298ff159d35be6d8e7a6885886358ebafe8a3e769a328f676419b4505a6",
+      "web/resolution_control_deck.b30eddd3c7057a66.js": "b30eddd3c7057a664996656e09dad90ca76dd8d24330e28af78485e2e2916b32",
+      "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d"
+    }
   }
 }
