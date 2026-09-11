@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.b73e64ce43393cf3.mjs";
+import { createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, mountHaloSurface, setHaloNodeSize } from "./halo.84c0c1fe41e5e23f.mjs";
 
 const NODE_IDS = new Set(["MATRIX_EasyCrop"]);
 export const CONTROL = Symbol.for("matrixlab.easy-crop.control");
