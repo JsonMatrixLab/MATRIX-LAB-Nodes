@@ -280,7 +280,7 @@
   "h3_resolution_addition": {
     "baseline_commit": "383b7c71a2919a59d9dc3103dfbbe9b89311e2b6",
     "baseline_version": "0.5.0.dev0",
-    "builder_sha256": "99e14be699457b99bb057f5d6b3b775e3e031682f6bab91fa1a82689bfb9df44",
+    "builder_sha256": "a2117f497d47098dc7fe54295d5fc3aeee916dacd86c321789f136ec0de0bcef",
     "declaration_sha256": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b",
     "block_spec_sha256": "7b9347d4de3b66237f013133301a4886fe1ddbb3b339578198031011132a757c",
     "backend_sha256": "e44ee4a4f01ae32d78cfe01effec9b97c93db2104d7e90edc7b5d1c9407a1070",
@@ -294,7 +294,8 @@
       "NODES.md",
       "README.md",
       "__init__.py",
-      "tests/test_distribution.py"
+      "tests/test_distribution.py",
+      "tests/test_frontend_alias_compat.mjs"
     ],
     "new_paths": [
       "_core/resolution_h3_dimensions/__init__.py",

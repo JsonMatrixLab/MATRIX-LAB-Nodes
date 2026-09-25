@@ -46,8 +46,10 @@ for (const relative of manifest.frontend_entrypoints) {
   const module = await moduleAt(path.join(root, relative));
   await module.evaluate();
 }
-assert.equal(registrations.length, 8);
-assert.equal(new Set(registrations.map(item => item.name)).size, 8);
+const expectedRegistrations = manifest.frontend_entrypoints.length;
+assert.equal(registrations.length, expectedRegistrations);
+assert.equal(new Set(registrations.map(item => item.name)).size, expectedRegistrations);
+assert(registrations.some(item => item.name === "matrix.h3-resolution.halo.classic"));
 assert(registrations.some(item => item.name === "matrixlab.video-prompt"));
 const pairs = [
   ["MATRIX_SpectralSampler", "MATRIXSpectralSampler", "halo.execution"],
