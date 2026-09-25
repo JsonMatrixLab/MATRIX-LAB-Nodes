@@ -70,6 +70,7 @@ PHOTO_DEFAULTS = {
 }
 
 
+
 class _Socket:
     def __init__(self, socket_id, **options):
         self.id = socket_id
@@ -125,7 +126,6 @@ def _runtime_import_stubs():
         "comfy_api.latest": latest,
         f"{PACKAGE_NAME}._core.runtime_bootstrap": runtime_bootstrap,
     }
-
 
 def _load_pack():
     """Import the checkout as a package even when its directory has a hyphen."""

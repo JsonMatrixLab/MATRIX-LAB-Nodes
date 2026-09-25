@@ -262,7 +262,7 @@
   },
   "video_prompt_candidate": {
     "baseline_commit": "27c48f36b0ad871b301d9cb848c0f4484c2850f5",
-    "builder_sha256": "b0d01a4f3301f892c63f4665d33edaccccd08b514b31224d2ddaa4d642cb8724",
+    "builder_sha256": "1880e05643e93107a8bcd8d8e11ef45a58794bb8c137b9151f734f9f25a66554",
     "halo_source_sha256": "87ce22ea9cb20e75b3de2a93406a1aa5c4496acde7cba6202c901c43cf022e32",
     "previous_registration_count": 20,
     "registration_count": 22,
