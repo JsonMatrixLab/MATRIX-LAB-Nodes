@@ -1,6 +1,6 @@
 # Node reference
 
-The video/prompt candidate registers 22 class IDs in six `MATRIX LAB` groups: 18
+The additive H3 candidate registers 23 class IDs in six `MATRIX LAB` groups: 19
 current nodes and four schema-compatible aliases. The installed `MANIFEST.json` is
 authoritative for a particular artifact.
 
@@ -12,6 +12,7 @@ authoritative for a particular artifact.
 | Resolution & Layout | Current | MATRIX RESOLUTION | `MATRIX_Resolution` | ratio, tier, custom dimensions | `width`, `height` | [Guide](docs/nodes/resolution.md) |
 | Resolution & Layout | Current | MATRIX AI INFLUENCER RESOLUTION | `MATRIX_AIInfluencerResolution` | ratio, tier | `width`, `height` | [Guide](docs/nodes/ai-influencer-resolution.md) |
 | Resolution & Layout | Current | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIX_AIInfluencerResolution2K4K` | ratio, 2K/4K tier | `width`, `height` | [Guide](docs/nodes/ai-influencer-resolution-2k4k.md) |
+| Resolution & Layout | Current | MATRIX H3 RESOLUTION | `MATRIX_H3Resolution` | `aspect_ratio`, `resolution_tier`, `custom_width`, `custom_height` | `width`, `height` | [Guide](docs/nodes/h3-resolution.md) |
 | Sampling & Detail | Current | MATRIX SPECTRAL SAMPLER | `MATRIX_SpectralSampler` | sampler and spectral controls | `sampler` | [Guide](docs/nodes/spectral-sampler.md) |
 | Sampling & Detail | Current | MATRIX LATENT TAIL | `MATRIX_LatentTail` | model/noise/conditioning/latent; tail controls | `latent` | [Guide](docs/nodes/latent-tail.md) |
 | Sampling & Detail | Current | MATRIX CROP TAIL PASTE | `MATRIX_CropTailPaste` | image/mask/model/noise/conditioning/VAE; crop controls | `image` | [Guide](docs/nodes/crop-tail-paste.md) |
@@ -33,5 +34,5 @@ authoritative for a particular artifact.
 Compatibility aliases preserve serialized V1 identities; new workflows should use the
 current class IDs. They do not represent additional implementations.
 
-The 0.4.0 baseline verification remains historical evidence. This additive candidate
-requires separate visible acceptance in Classic and Nodes 2.0 before release.
+The 0.4.0 baseline verification remains historical evidence. For H3, the four-widget controls and `width`/`height` connections were tested in
+Classic and Nodes 2.0 on frontend 1.53.6; other nodes retain their own compatibility boundaries.

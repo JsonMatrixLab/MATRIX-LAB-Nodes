@@ -113,6 +113,11 @@
       "content_hash": "a7cb4cc08e46e4a1603c4473221207e1db8b49ff959f9be6a0d312e5299d3648",
       "id": "resolution.ai-influencer-2k4k",
       "version": "1.0.0"
+    },
+    {
+      "id": "resolution.h3-dimensions",
+      "version": "0.6.0",
+      "content_hash": "e44ee4a4f01ae32d78cfe01effec9b97c93db2104d7e90edc7b5d1c9407a1070"
     }
   ],
   "builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -138,7 +143,8 @@
     "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
     "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
     "MATRIX_VideoMetadataKiller": "MATRIX LAB/Input & Output",
-    "MATRIX_Prompt": "MATRIX LAB/Prompting"
+    "MATRIX_Prompt": "MATRIX LAB/Prompting",
+    "MATRIX_H3Resolution": "MATRIX LAB/Resolution & Layout"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -156,13 +162,15 @@
     "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2",
     "MATRIX_SpectralSampler": "065dea25f4f05c00f0bc920da0655b493a111378cef5e897f1b91ded7d463a43",
     "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef",
-    "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378"
+    "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378",
+    "MATRIX_H3Resolution": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
     "web/ai_influencer_resolution.7beab9aef41639c1.js",
     "web/ai_influencer_resolution_2k4k.1dce86d9f5ee222b.js",
     "web/easy_crop.6dbc906cba3704a2.js",
+    "web/h3_resolution_control_deck.a052234431446e9e.js",
     "web/halo_execution.e0dab22fc32c519c.js",
     "web/image_collection.490245783ceb641a.js",
     "web/prompt_director.ee8441b58371cbb8.js",
@@ -180,6 +188,7 @@
     "MATRIX_CropTailPaste",
     "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
+    "MATRIX_H3Resolution",
     "MATRIX_ImageBatchLoader",
     "MATRIX_Krea2CLIPLoader",
     "MATRIX_Krea2ModelGuard",
@@ -195,7 +204,7 @@
   ],
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
-  "status": "assembled-unverified",
+  "status": "candidate",
   "version": "0.5.0.dev0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
@@ -267,5 +276,35 @@
     "previous_registration_count": 20,
     "registration_count": 22,
     "frontend_assumption": "HALO exports mountHaloExecutionNode and recognizes both added IDs when --halo-source is supplied."
+  },
+  "h3_resolution_addition": {
+    "baseline_commit": "383b7c71a2919a59d9dc3103dfbbe9b89311e2b6",
+    "baseline_version": "0.5.0.dev0",
+    "builder_sha256": "99e14be699457b99bb057f5d6b3b775e3e031682f6bab91fa1a82689bfb9df44",
+    "declaration_sha256": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b",
+    "block_spec_sha256": "7b9347d4de3b66237f013133301a4886fe1ddbb3b339578198031011132a757c",
+    "backend_sha256": "e44ee4a4f01ae32d78cfe01effec9b97c93db2104d7e90edc7b5d1c9407a1070",
+    "frontend_source_sha256": "a052234431446e9e99aa0da9f2663974ed3daf6d4dd9086b6c08671a4af35002",
+    "frontend_entrypoint": "web/h3_resolution_control_deck.a052234431446e9e.js",
+    "halo_dependency": "web/halo_resolution.8dff7e8fca32fa44.mjs",
+    "baseline_policy": "immutable-git-show-bytes",
+    "changed_baseline_paths": [
+      "CHANGELOG.md",
+      "MANIFEST.json",
+      "NODES.md",
+      "README.md",
+      "__init__.py",
+      "tests/test_distribution.py"
+    ],
+    "new_paths": [
+      "_core/resolution_h3_dimensions/__init__.py",
+      "docs/nodes/h3-resolution.md",
+      "nodes/resolution_layout/matrix_h3resolution.py",
+      "tests/test_h3_resolution.py",
+      "web/h3_resolution_control_deck.a052234431446e9e.js"
+    ],
+    "graph_migration": "BREAKING V0.6-to-V0.7 workflow migration; five-widget graphs require explicit migration",
+    "runtime_scope": "geometry only; no model inference or image transforms",
+    "live_ui_acceptance": "not claimed"
   }
 }

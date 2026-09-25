@@ -2,15 +2,14 @@
 
 [![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
-Sixteen current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
+Nineteen current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
 output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
-20 registered class IDs remain in six consistent `MATRIX LAB` categories.
+23 registered class IDs remain in six consistent `MATRIX LAB` categories.
 
-> **Package version 0.4.0.** Photo Finisher is now the only MATRIX photographic
-> finishing implementation. The four schema-compatible Krea 2 V1 aliases retain the
-> source-owned green frontend repair introduced in 0.3.5. Read the current
-> [compatibility and acceptance boundary](docs/compatibility.md) before using it in an
-> important workflow.
+> **Development package version 0.5.0.dev0.** This additive candidate adds
+> MATRIX H3 RESOLUTION while retaining the prior nodes and four Krea 2 V1 aliases.
+> Read its [guide and migration boundary](docs/nodes/h3-resolution.md) before opening
+> an older H3 graph.
 
 ## MATRIX Krea 2 — AI Influencer 4K (FP8)
 
@@ -49,6 +48,7 @@ before switching.
 - [**MATRIX RESOLUTION**](docs/nodes/resolution.md) — calculate 1K, 2K, 4K, or exact custom pixel dimensions across common aspect ratios.
 - [**MATRIX AI INFLUENCER RESOLUTION**](docs/nodes/ai-influencer-resolution.md) — select 1:1, 9:16, or 3:4 geometry at 1K, 2K, or 4K.
 - [**MATRIX AI INFLUENCER RESOLUTION 2K/4K**](docs/nodes/ai-influencer-resolution-2k4k.md) — use the focused two-tier geometry selector required by current Krea 2 graphs.
+- [**MATRIX H3 RESOLUTION**](docs/nodes/h3-resolution.md) — return exact integer `width` and `height` generation geometry from four canonical widgets.
 
 Resolution nodes return integer geometry. They do not certify that a model supports the selected dimensions.
 
@@ -93,8 +93,9 @@ current IDs. See [NODES.md](NODES.md) for the exact mapping.
 Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The
 exact package was verified in ComfyUI Classic 0.33.3 with frontend 1.49.6 on an RTX
 5090: all 20 IDs loaded from the unified pack, the workflow survived save and fresh
-browser reload, and its frontend export exactly matched the API graph. Nodes 2.0 is
-not a supported or verified target for this release.
+browser reload, and its frontend export exactly matched the API graph. That evidence predates the H3 addition. The H3 four-widget controls and `width`/`height`
+connections were tested in Classic and Nodes 2.0 on frontend 1.53.6. This H3-specific
+check does not extend the compatibility claims of the other nodes.
 
 ## Package boundary
 

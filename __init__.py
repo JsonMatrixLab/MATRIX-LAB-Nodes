@@ -43,6 +43,10 @@ from .nodes.resolution_layout.matrix_aiinfluencerresolution2k4k import NODE_CLAS
 NODE_CLASS_MAPPINGS.update(_resolution_2k4k_c)
 NODE_DISPLAY_NAME_MAPPINGS.update(_resolution_2k4k_d)
 
+from .nodes.resolution_layout.matrix_h3resolution import NODE_CLASS_MAPPINGS as _h3_resolution_c, NODE_DISPLAY_NAME_MAPPINGS as _h3_resolution_d
+NODE_CLASS_MAPPINGS.update(_h3_resolution_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_h3_resolution_d)
+
 try:
     import folder_paths as _matrix_folder_paths
 except ImportError:

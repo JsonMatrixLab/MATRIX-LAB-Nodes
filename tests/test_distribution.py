@@ -50,6 +50,7 @@ ADDITIVE_NODE_ID = "MATRIX_AIInfluencerResolution2K4K"
 CLIP_NODE_ID = "MATRIX_Krea2CLIPLoader"
 MODEL_GUARD_NODE_ID = "MATRIX_Krea2ModelGuard"
 VIDEO_PROMPT_NODE_IDS = {"MATRIX_VideoMetadataKiller", "MATRIX_Prompt"}
+H3_NODE_ID = "MATRIX_H3Resolution"
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -158,7 +159,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES)
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID}
         self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))

@@ -2,6 +2,17 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - additive H3 resolution candidate - 2026-09-25
+
+- Add `MATRIX_H3Resolution` as the 23rd registered class ID without replacing existing nodes.
+- Expose exactly four widgets—`aspect_ratio`, `resolution_tier`, `custom_width`, and
+  `custom_height`—and exactly two integer outputs named `width` and `height`.
+- Require explicit migration from the V0.6 five-widget prototype: replace the node and
+  reconnect outputs by meaning; positional values are not shifted into the new ABI.
+- Verify H3 controls and saved state in Classic and Nodes 2.0 on frontend 1.53.6,
+  without extending the compatibility claims of other nodes.
+- Keep version `0.5.0.dev0` and status `candidate`; no tag or release is implied.
+
 ## Unreleased - video metadata and prompt additions - 2026-09-25
 
 - Add `MATRIX_VideoMetadataKiller`, which publishes a non-overwriting MP4 and returns
