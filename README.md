@@ -38,10 +38,11 @@ frontend targeting overlap. Preserve existing packs and workflows, obtain author
 before disabling them recoverably, and review the [migration guide](docs/migration.md)
 before switching.
 
-## Input & Output (2 current)
+## Input & Output (3 current)
 
 - [**MATRIX IMAGE BATCH LOADER**](docs/nodes/image-batch-loader.md) — load and reorder one to ten static input images while preserving each image's dimensions.
 - [**MATRIX METADATA KILLER**](docs/nodes/metadata-killer.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
+- [**MATRIX VIDEO METADATA KILLER**](docs/nodes/video-metadata-killer.md) — remux MP4 video/audio into a newly saved native VIDEO while removing descriptive container and stream tags.
 
 ## Resolution & Layout (3 current)
 
@@ -73,10 +74,11 @@ Model weights are not bundled or downloaded. Both mask nodes require separately 
 
 Try Photo Finisher without a model or provider using the [included example workflow](examples/README.md).
 
-## Prompting (2 current)
+## Prompting (3 current)
 
 - [**MATRIX AUTO PROMPTER**](docs/nodes/auto-prompter.md) — return an editable saved prompt locally, with an explicit action for assisted prompting from ordered reference images.
 - **MATRIX KREA2 CLIP LOADER** — load the protected Qwen3-VL 4B Krea 2 text encoder for GPU text encoding; see the [GPU guard notes](docs/krea2-gpu.md).
+- [**MATRIX PROMPT**](docs/nodes/prompt.md) — preserve one editable multiline prompt exactly, without AI or provider behavior.
 
 Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
 

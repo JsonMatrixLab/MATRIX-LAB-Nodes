@@ -6,7 +6,7 @@ import {
   measureHaloContentHeight,
   mountHaloSurface,
   setHaloNodeSize,
-} from "./halo.b73e64ce43393cf3.mjs";
+} from "./halo.87ce22ea9cb20e75.mjs";
 
 const { app } = globalThis.comfyAPI?.app || {};
 const { api } = globalThis.comfyAPI?.api || {};

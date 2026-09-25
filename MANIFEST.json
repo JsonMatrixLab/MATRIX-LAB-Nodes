@@ -136,7 +136,9 @@
     "MATRIXSpectralSampler": "MATRIX LAB/Sampling & Detail",
     "MATRIXLAB_AIInfluencerResolution2K4K": "MATRIX LAB/Resolution & Layout",
     "MATRIXLAB_ImageBatchLoader": "MATRIX LAB/Input & Output",
-    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting"
+    "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
+    "MATRIX_VideoMetadataKiller": "MATRIX LAB/Input & Output",
+    "MATRIX_Prompt": "MATRIX LAB/Prompting"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -153,17 +155,19 @@
     "MATRIX_Resolution": "7227bb19186a7f307e05928b4f997b70ff41434003c63795510204cd5c7eb948",
     "MATRIX_SkinMask": "e17b320fdc4ab7535fb6f017578e43b87e6f8d90740adfba2aeabe1a377521f2",
     "MATRIX_SpectralSampler": "065dea25f4f05c00f0bc920da0655b493a111378cef5e897f1b91ded7d463a43",
-    "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef"
+    "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef",
+    "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
-    "web/ai_influencer_resolution.1a837209ce36c3ee.js",
-    "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js",
-    "web/easy_crop.b8510f8ee542f9bb.js",
-    "web/halo_execution.09d34f450026959a.js",
-    "web/image_collection.115703a311f28a75.js",
-    "web/prompt_director.c5c84298ff159d35.js",
-    "web/resolution_control_deck.b30eddd3c7057a66.js"
+    "web/ai_influencer_resolution.7beab9aef41639c1.js",
+    "web/ai_influencer_resolution_2k4k.1dce86d9f5ee222b.js",
+    "web/easy_crop.6dbc906cba3704a2.js",
+    "web/halo_execution.e0dab22fc32c519c.js",
+    "web/image_collection.490245783ceb641a.js",
+    "web/prompt_director.ee8441b58371cbb8.js",
+    "web/resolution_control_deck.6acd4567b0802646.js",
+    "web/video_prompt.d0ec0d536f359776.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution2K4K",
@@ -183,14 +187,16 @@
     "MATRIX_MetadataKiller",
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
+    "MATRIX_Prompt",
     "MATRIX_Resolution",
     "MATRIX_SkinMask",
-    "MATRIX_SpectralSampler"
+    "MATRIX_SpectralSampler",
+    "MATRIX_VideoMetadataKiller"
   ],
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
-  "status": "release",
-  "version": "0.4.0",
+  "status": "assembled-unverified",
+  "version": "0.5.0.dev0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -234,20 +240,32 @@
     "builder_sha256": "d39e689b06be7b2491809b464536c3f5f95c4a619ea2c93287b96525bd225305",
     "backend_policy": "Baseline runtime is preserved except for removal of Camera Look and Renoise implementations and registrations.",
     "frontend_assets": {
-      "web/ai_influencer_resolution.1a837209ce36c3ee.js": "1a837209ce36c3eeae2422e5dba9a0ac557b619c5f8421e69b26a9a7af68ae23",
-      "web/ai_influencer_resolution_2k4k.fc69d433ef01a504.js": "fc69d433ef01a5049691ba24528964270ad94f7e67b423aeeff9520faf0e96bb",
+      "web/ai_influencer_resolution.7beab9aef41639c1.js": "7beab9aef41639c14b196d19a64d005b6ad074cb256f4fbb8cff5442ba514e7e",
+      "web/ai_influencer_resolution_2k4k.1dce86d9f5ee222b.js": "1dce86d9f5ee222ba74e6325d584411e24a5e23e31901ded7d39cf136dbb6645",
       "web/assets/CascadiaMono-LICENSE.txt": "51882cd3cdba4e16f220f44ddb08a635c38c44ea6e0975db2574f4be6f958238",
       "web/assets/CascadiaMono.woff2": "7d4986a68fbbd674c90cdd8cd5d4a28c698640d3472572b006d2978006049799",
       "web/assets/font-manifest.json": "60aa2ed87cce68373e4087805493dedafdfeb8715670cc4c64f594ab28401810",
-      "web/easy_crop.b8510f8ee542f9bb.js": "b8510f8ee542f9bb0b6b577fdd8a06399ac01196cded98d48f8c070d943302a2",
-      "web/gallery.af177ab78d3e57f7.mjs": "af177ab78d3e57f79fc3e35187f551c2a8c14fca923329a98ab41e7aa86a3b42",
-      "web/halo.b73e64ce43393cf3.mjs": "b73e64ce43393cf357acd90c1daf91b43f28c9f7d324b430354fb64ec9b857b7",
-      "web/halo_execution.09d34f450026959a.js": "09d34f450026959a212c12734d50b4dea5515a3044b168a537f4f4d19d885ec7",
-      "web/halo_resolution.59e0855f43e3060a.mjs": "59e0855f43e3060a8ae410857841b0586f7ba7a2f421046a82606d56d5e418c4",
-      "web/image_collection.115703a311f28a75.js": "115703a311f28a75586e8e6ba0e8d36686bd6d965e9f27c390c7023a3fea7971",
-      "web/prompt_director.c5c84298ff159d35.js": "c5c84298ff159d35be6d8e7a6885886358ebafe8a3e769a328f676419b4505a6",
-      "web/resolution_control_deck.b30eddd3c7057a66.js": "b30eddd3c7057a664996656e09dad90ca76dd8d24330e28af78485e2e2916b32",
-      "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d"
+      "web/easy_crop.6dbc906cba3704a2.js": "6dbc906cba3704a2c08261fdcbefc697932cd55a6ec64826e39b9fea7b8c8bd7",
+      "web/gallery.e159304effcb5c7f.mjs": "e159304effcb5c7fbe7cffc159336d87469165e7d42572dbed364cf6e6d4ef0d",
+      "web/halo.87ce22ea9cb20e75.mjs": "87ce22ea9cb20e75b3de2a93406a1aa5c4496acde7cba6202c901c43cf022e32",
+      "web/halo_execution.e0dab22fc32c519c.js": "e0dab22fc32c519cef8447d53d283a98a9afbd5ac0693d099a918446e465c520",
+      "web/halo_resolution.8dff7e8fca32fa44.mjs": "8dff7e8fca32fa44f56da17b63955bb981b2311773fac6cf1618057fd18e77d9",
+      "web/image_collection.490245783ceb641a.js": "490245783ceb641a4f5359a110e1d742a7abcd3a4adc5e71120dcf8edf42b48d",
+      "web/prompt_director.ee8441b58371cbb8.js": "ee8441b58371cbb893f6a53b1524e088de14afe795574da7a57662b92c1a570d",
+      "web/resolution_control_deck.6acd4567b0802646.js": "6acd4567b08026466fd2a0cffcd3939a2695c57bb2732cec3dff05468c29283e",
+      "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d",
+      "web/video_prompt.d0ec0d536f359776.js": "d0ec0d536f35977698c5d2bfa626dcf3a22d9650843c587260aea150fa57f4c6"
     }
+  },
+  "native_node_sources": {
+    "MATRIX_VideoMetadataKiller": "07a0959784ffb4bce0d9f5fc9363a1a2a1a7f60ac9a846b68b37f23ec927b5eb"
+  },
+  "video_prompt_candidate": {
+    "baseline_commit": "27c48f36b0ad871b301d9cb848c0f4484c2850f5",
+    "builder_sha256": "b0d01a4f3301f892c63f4665d33edaccccd08b514b31224d2ddaa4d642cb8724",
+    "halo_source_sha256": "87ce22ea9cb20e75b3de2a93406a1aa5c4496acde7cba6202c901c43cf022e32",
+    "previous_registration_count": 20,
+    "registration_count": 22,
+    "frontend_assumption": "HALO exports mountHaloExecutionNode and recognizes both added IDs when --halo-source is supplied."
   }
 }

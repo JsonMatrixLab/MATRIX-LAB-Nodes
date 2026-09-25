@@ -1,14 +1,14 @@
 import { app } from "../../scripts/app.js";
-import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution, migrateResolutionGraph } from "./halo_resolution.59e0855f43e3060a.mjs";
+import { createHaloResolutionDeck, createHaloWidgetHost, haloMinimumNodeHeight, haloWidgetLayoutHeight, measureHaloContentHeight, measureHaloHorizontalChrome, setHaloNodeSize, calculateTierResolution } from "./halo_resolution.8dff7e8fca32fa44.mjs";
 const ASPECT_RATIOS = ["1:1", "9:16", "3:4"];
-const RESOLUTION_TIERS = ["1K", "2K", "4K"];
+const RESOLUTION_TIERS = ["2K", "4K"];
 export function calculateResolution(state) {
   if (!ASPECT_RATIOS.includes(state.aspect_ratio)) throw new Error("Unsupported aspect ratio");
   return calculateTierResolution(state.aspect_ratio, state.resolution_tier);
 }
 
 const NODE_IDS = new Set(
-  "MATRIX_AIInfluencerResolution".split(",").filter(Boolean),
+  "MATRIX_AIInfluencerResolution2K4K,MATRIXLAB_AIInfluencerResolution2K4K".split(",").filter(Boolean),
 );
 const DEFAULT_STATE = Object.freeze({ aspect_ratio: "3:4", resolution_tier: "2K" });
 const MIN_SURFACE_WIDTH = 420;
@@ -30,7 +30,7 @@ export function applyButton(state, group, value) {
   return { ...state, [group]: value };
 }
 
-export const CONTROL = Symbol.for("matrix.ai-influencer-resolution.control");
+export const CONTROL = Symbol.for("matrix.ai-influencer-resolution-2k4k.control");
 
 function widgetsByName(node) {
   return Object.fromEntries((node.widgets || []).map((widget) => [widget.name, widget]));
@@ -101,7 +101,7 @@ function createHaloPanel(node, control) {
     document,
     node,
     control,
-    ariaLabel: "AI Influencer resolution controls",
+    ariaLabel: "AI Influencer resolution 2K/4K controls",
     haloOptions: { app },
     groups: [
       {
@@ -211,9 +211,9 @@ function install(node) {
   try {
     element = createHaloPanel(node, control);
     host = createHaloWidgetHost(element, document);
-    if (!host) throw new Error("AI Influencer Resolution HALO host unavailable");
+    if (!host) throw new Error("AI Influencer Resolution 2K/4K HALO host unavailable");
     control.host = host;
-    domWidget = node.addDOMWidget("matrixlab_ai_influencer_resolution_ui", "matrixlab-prism", host, {
+    domWidget = node.addDOMWidget("matrixlab_ai_influencer_resolution_2k4k_ui", "matrixlab-prism", host, {
       serialize: false,
       hideOnZoom: false,
       getMinHeight: () => haloWidgetLayoutHeight(measureHaloContentHeight(element, control.minimumContentHeight || CONTENT_HEIGHT), domWidget),
@@ -223,7 +223,7 @@ function install(node) {
     domWidget.serialize = false;
     domWidget.options ||= {};
     domWidget.options.serialize = false;
-    if (!control.mountHalo?.()) throw new Error("AI Influencer Resolution HALO surface unavailable");
+    if (!control.mountHalo?.()) throw new Error("AI Influencer Resolution 2K/4K HALO surface unavailable");
     hideCanonicalWidgets(node, control);
     node[CONTROL] = control;
   } catch (problem) {
@@ -234,14 +234,14 @@ function install(node) {
       for (let index = node.widgets.length - 1; index >= 0; index -= 1) {
         const widget = node.widgets[index];
         if (!existingWidgets.has(widget)
-          && (widget === domWidget || widget?.element === host || widget?.name === "matrixlab_ai_influencer_resolution_ui")) {
+          && (widget === domWidget || widget?.element === host || widget?.name === "matrixlab_ai_influencer_resolution_2k4k_ui")) {
           node.widgets.splice(index, 1);
         }
       }
     }
     element?.remove();
     host?.remove();
-    console.warn("AI Influencer Resolution UI unavailable; native widgets remain active", problem);
+    console.warn("AI Influencer Resolution 2K/4K UI unavailable; native widgets remain active", problem);
     return null;
   }
 
@@ -309,8 +309,7 @@ function install(node) {
 }
 
 app.registerExtension({
-  name: "matrix.ai-influencer-resolution.halo",
-  beforeConfigureGraph(graph) { migrateResolutionGraph(graph); },
+  name: "matrix.ai-influencer-resolution-2k4k.halo",
   nodeCreated(node) {
     if (NODE_IDS.has(node.comfyClass || node.type)) install(node);
   },

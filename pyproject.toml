@@ -1,6 +1,6 @@
 [project]
 name = "matrix-lab-nodes"
-version = "0.4.0"
+version = "0.5.0.dev0"
 description = "MATRIX LAB custom nodes for ComfyUI."
 readme = "README.md"
 requires-python = ">=3.10"

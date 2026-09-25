@@ -46,8 +46,9 @@ for (const relative of manifest.frontend_entrypoints) {
   const module = await moduleAt(path.join(root, relative));
   await module.evaluate();
 }
-assert.equal(registrations.length, 7);
-assert.equal(new Set(registrations.map(item => item.name)).size, 7);
+assert.equal(registrations.length, 8);
+assert.equal(new Set(registrations.map(item => item.name)).size, 8);
+assert(registrations.some(item => item.name === "matrixlab.video-prompt"));
 const pairs = [
   ["MATRIX_SpectralSampler", "MATRIXSpectralSampler", "halo.execution"],
   ["MATRIX_AIInfluencerResolution2K4K", "MATRIXLAB_AIInfluencerResolution2K4K", "resolution"],
@@ -71,6 +72,18 @@ for (const [current, legacy, needle] of pairs) {
         assert.equal(JSON.stringify(node), before, "No canonical state mutation before mounting");
         hookCases++;
       }
+    }
+  }
+}
+const added = registrations.find(item => item.name === "matrixlab.video-prompt");
+for (const hook of ["nodeCreated", "loadedGraphNode"]) {
+  for (const key of ["comfyClass", "type"]) {
+    for (const id of ["MATRIX_Prompt", "MATRIX_VideoMetadataKiller", "UnrelatedNode"]) {
+      const node = {[key]: id, widgets: [{name: "prompt", value: ""}, {name: "filename_prefix", value: "clean"}], inputs: [], addDOMWidget() {}};
+      const started = domAttempts;
+      try { added[hook](node); } catch (error) { assert.equal(error, sentinel); }
+      assert.equal(domAttempts - started, id === "UnrelatedNode" ? 0 : 1, `${id} ${hook} ${key}`);
+      hookCases++;
     }
   }
 }

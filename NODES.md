@@ -1,6 +1,6 @@
 # Node reference
 
-Package version 0.4.0 registers 20 class IDs in six `MATRIX LAB` groups: 16
+The video/prompt candidate registers 22 class IDs in six `MATRIX LAB` groups: 18
 current nodes and four schema-compatible aliases. The installed `MANIFEST.json` is
 authoritative for a particular artifact.
 
@@ -8,6 +8,7 @@ authoritative for a particular artifact.
 | --- | --- | --- | --- | --- | --- | --- |
 | Input & Output | Current | MATRIX METADATA KILLER | `MATRIX_MetadataKiller` | `images`; save options | output node | [Guide](docs/nodes/metadata-killer.md) |
 | Input & Output | Current | MATRIX IMAGE BATCH LOADER | `MATRIX_ImageBatchLoader` | `collection` | `images`, `masks` | [Guide](docs/nodes/image-batch-loader.md) |
+| Input & Output | Current | MATRIX VIDEO METADATA KILLER | `MATRIX_VideoMetadataKiller` | native `video`; `filename_prefix` | cleaned saved `video` | [Guide](docs/nodes/video-metadata-killer.md) |
 | Resolution & Layout | Current | MATRIX RESOLUTION | `MATRIX_Resolution` | ratio, tier, custom dimensions | `width`, `height` | [Guide](docs/nodes/resolution.md) |
 | Resolution & Layout | Current | MATRIX AI INFLUENCER RESOLUTION | `MATRIX_AIInfluencerResolution` | ratio, tier | `width`, `height` | [Guide](docs/nodes/ai-influencer-resolution.md) |
 | Resolution & Layout | Current | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIX_AIInfluencerResolution2K4K` | ratio, 2K/4K tier | `width`, `height` | [Guide](docs/nodes/ai-influencer-resolution-2k4k.md) |
@@ -22,6 +23,7 @@ authoritative for a particular artifact.
 | Image Processing | Current | MATRIX OUTPUT STAGE | `MATRIX_OutputStage` | image/model/noise/conditioning/VAE/target geometry; output controls | `image`, `info` | [Guide](docs/nodes/output-stage.md) |
 | Prompting | Current | MATRIX AUTO PROMPTER | `MATRIX_AutoPrompter` | saved prompt fields; optional images | `prompt` | [Guide](docs/nodes/auto-prompter.md) |
 | Prompting | Current | MATRIX KREA2 CLIP LOADER | `MATRIX_Krea2CLIPLoader` | Krea 2 Qwen3-VL 4B `clip_name` | `CLIP` | [Guide](docs/krea2-gpu.md) |
+| Prompting | Current | MATRIX PROMPT | `MATRIX_Prompt` | multiline `prompt` | verbatim `prompt` | [Guide](docs/nodes/prompt.md) |
 | Sampling & Detail | V1 alias | MATRIX SPECTRAL SAMPLER | `MATRIXSpectralSampler` | same as `MATRIX_SpectralSampler` | `sampler` | [Migration](docs/migration.md) |
 | Resolution & Layout | V1 alias | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIXLAB_AIInfluencerResolution2K4K` | same as `MATRIX_AIInfluencerResolution2K4K` | `width`, `height` | [Migration](docs/migration.md) |
 | Input & Output | V1 alias | MATRIX IMAGE BATCH LOADER | `MATRIXLAB_ImageBatchLoader` | same as `MATRIX_ImageBatchLoader` | `images`, `masks` | [Migration](docs/migration.md) |
@@ -31,6 +33,5 @@ authoritative for a particular artifact.
 Compatibility aliases preserve serialized V1 identities; new workflows should use the
 current class IDs. They do not represent additional implementations.
 
-Version 0.4.0 targets each legacy alias and its current ID with the same unified
-green frontend. Both ID sets were verified in ComfyUI Classic with the exact release
-workflow. Nodes 2.0 is not supported or verified for this release.
+The 0.4.0 baseline verification remains historical evidence. This additive candidate
+requires separate visible acceptance in Classic and Nodes 2.0 before release.

@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import socket
 import sys
+import types
 import unittest
 from unittest import mock
 
@@ -48,6 +49,7 @@ BASE_NODE_IDS = {
 ADDITIVE_NODE_ID = "MATRIX_AIInfluencerResolution2K4K"
 CLIP_NODE_ID = "MATRIX_Krea2CLIPLoader"
 MODEL_GUARD_NODE_ID = "MATRIX_Krea2ModelGuard"
+VIDEO_PROMPT_NODE_IDS = {"MATRIX_VideoMetadataKiller", "MATRIX_Prompt"}
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -68,6 +70,63 @@ PHOTO_DEFAULTS = {
 }
 
 
+class _Socket:
+    def __init__(self, socket_id, **options):
+        self.id = socket_id
+        vars(self).update(options)
+
+
+class _SocketType:
+    @staticmethod
+    def Input(socket_id, **options):
+        return _Socket(socket_id, **options)
+
+    @staticmethod
+    def Output(socket_id, **options):
+        return _Socket(socket_id, **options)
+
+
+class _NodeOutput:
+    def __init__(self, *values, ui=None):
+        self.result = values
+        self.ui = ui
+
+
+def _runtime_import_stubs():
+    """Provide only the ComfyUI import boundary required to inspect the package offline."""
+    def unavailable(*_args, **_kwargs):
+        raise AssertionError("runtime-only API called by an offline distribution test")
+
+    io = types.SimpleNamespace(
+        ComfyNode=object,
+        Schema=lambda **values: types.SimpleNamespace(**values),
+        Video=_SocketType,
+        String=_SocketType,
+        NodeOutput=_NodeOutput,
+        FolderType=types.SimpleNamespace(output="output"),
+    )
+    latest = types.ModuleType("comfy_api.latest")
+    latest.InputImpl = types.SimpleNamespace(VideoFromFile=unavailable)
+    latest.io = io
+    latest.ui = types.SimpleNamespace(PreviewVideo=unavailable, SavedResult=unavailable)
+    comfy_api = types.ModuleType("comfy_api")
+    comfy_api.latest = latest
+    av = types.ModuleType("av")
+    av.open = unavailable
+    folder_paths = types.ModuleType("folder_paths")
+    folder_paths.get_output_directory = unavailable
+    folder_paths.get_save_image_path = unavailable
+    runtime_bootstrap = types.ModuleType(f"{PACKAGE_NAME}._core.runtime_bootstrap")
+    runtime_bootstrap.bootstrap_runtime = lambda: None
+    return {
+        "av": av,
+        "folder_paths": folder_paths,
+        "comfy_api": comfy_api,
+        "comfy_api.latest": latest,
+        f"{PACKAGE_NAME}._core.runtime_bootstrap": runtime_bootstrap,
+    }
+
+
 def _load_pack():
     """Import the checkout as a package even when its directory has a hyphen."""
     existing = sys.modules.get(PACKAGE_NAME)
@@ -83,7 +142,8 @@ def _load_pack():
     module = importlib.util.module_from_spec(spec)
     sys.modules[PACKAGE_NAME] = module
     try:
-        spec.loader.exec_module(module)
+        with mock.patch.dict(sys.modules, _runtime_import_stubs()):
+            spec.loader.exec_module(module)
     except BaseException:
         sys.modules.pop(PACKAGE_NAME, None)
         raise
@@ -98,7 +158,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | set(COMPAT_ALIASES)
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES)
         self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
@@ -106,7 +166,11 @@ class DistributionStructureTests(unittest.TestCase):
         self.assertEqual(len(self.pack.NODE_CLASS_MAPPINGS), len(set(self.pack.NODE_CLASS_MAPPINGS.values())))
         for node_id, node_class in self.pack.NODE_CLASS_MAPPINGS.items():
             with self.subTest(node_id=node_id):
-                self.assertEqual(node_class.CATEGORY, self.manifest["categories"][node_id])
+                if hasattr(node_class, "CATEGORY"):
+                    category = node_class.CATEGORY
+                else:
+                    category = node_class.define_schema().category
+                self.assertEqual(category, self.manifest["categories"][node_id])
 
     def test_product_native_clip_source_is_hash_bound_when_present(self):
         if CLIP_NODE_ID not in self.pack.NODE_CLASS_MAPPINGS:
@@ -238,6 +302,9 @@ class PhotoFinisherTests(unittest.TestCase):
         cls.pack = _load_pack()
         cls.node_class = cls.pack.NODE_CLASS_MAPPINGS["MATRIX_PhotoFinisher"]
         cls.api = importlib.import_module(f"{PACKAGE_NAME}._core.image_photo_finisher")
+        cls.interruption = mock.patch.object(cls.api, "_check_interruption", return_value=None)
+        cls.interruption.start()
+        cls.addClassCleanup(cls.interruption.stop)
 
     def test_public_defaults_are_stable_and_match_the_core_api(self):
         optional = self.node_class.INPUT_TYPES()["optional"]
@@ -282,12 +349,12 @@ class PhotoFinisherTests(unittest.TestCase):
         mask[:, :, 0] = 0.0
         masked = self.api.photo_finish(image, mask, seed=17)
         self.assertTrue(torch.equal(masked[:, :, 0], image[:, :, 0]))
-        torch.testing.assert_close(
+        self.assertTrue(torch.allclose(
             masked[:, :, 1:],
             (image[:, :, 1:] + full[:, :, 1:]) / 2,
             rtol=0.0,
             atol=2e-7,
-        )
+        ))
 
     def test_compiled_node_executes_actual_cpu_operation(self):
         image = torch.full((2, 9, 7, 3), 0.45)
@@ -307,6 +374,15 @@ class OfflineNodeTests(unittest.TestCase):
         with mock.patch.object(socket.socket, "connect", side_effect=AssertionError("network attempted")):
             self.assertEqual(node.execute(final_prompt=saved), (saved,))
         self.assertEqual(node.check_lazy_status(), [])
+
+    def test_prompt_preserves_exact_multiline_text(self):
+        node = self.pack.NODE_CLASS_MAPPINGS["MATRIX_Prompt"]
+        schema = node.define_schema()
+        self.assertEqual(schema.inputs[0].id, "prompt")
+        self.assertTrue(schema.inputs[0].multiline)
+        for value in ("", "   ", "\n\t", "  first\n第二行 🎬\nlast  ", "x" * 100_000):
+            with self.subTest(length=len(value)):
+                self.assertEqual(node.execute(value).result, (value,))
 
     def test_additive_resolution_node_returns_all_six_dimensions_when_present(self):
         node_id = ADDITIVE_NODE_ID

@@ -12,6 +12,7 @@ export const HALO_EXECUTION_NODE_IDS = Object.freeze([
   "MATRIX_EyeMask",
   "MATRIX_CropTailPaste",
   "MATRIX_MetadataKiller",
+  "MATRIX_VideoMetadataKiller",
   "MATRIX_OutputStage",
   "MATRIX_PhotoFinisher",
 ]);
@@ -495,19 +496,22 @@ function installStyle(doc) {
 .matrixlab-halo__edge{z-index:5;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px)}
 .matrixlab-halo__content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:0 7px;padding:18px 16px}
 .matrixlab-halo__field{position:relative;z-index:2;display:flex;min-width:0;flex-wrap:wrap;min-height:38px;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:9px;background:${HALO_TOKENS.parameterField};color:${HALO_TOKENS.parameterLabel};transition:background-color 150ms ease,border-color 150ms ease}
-.matrixlab-halo__saved-images button,.matrixlab-halo__saved-images a{font-size:11px;padding:6px 8px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.parameterField};color:${HALO_TOKENS.parameterLabel};text-decoration:none;cursor:pointer}
+.matrixlab-halo__saved-images button,.matrixlab-halo__saved-images a,.matrixlab-halo__saved-videos a{font-size:11px;padding:6px 8px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.parameterField};color:${HALO_TOKENS.parameterLabel};text-decoration:none;cursor:pointer}
 .matrixlab-halo__saved-images button:disabled{opacity:.4;cursor:default}
-.matrixlab-halo__saved-images button:focus-visible,.matrixlab-halo__saved-images a:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:2px}
+.matrixlab-halo__saved-images button:focus-visible,.matrixlab-halo__saved-images a:focus-visible,.matrixlab-halo__saved-videos a:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:2px}
 .matrixlab-halo__field:hover{border-color:${HALO_TOKENS.fieldHoverBorder}}
 .matrixlab-halo__field[data-linked="true"]{border-color:${HALO_TOKENS.linkedBorder};background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.linkedText}}
 .matrixlab-halo__field label{min-width:0;flex:1 1 108px;overflow-wrap:anywhere;font-size:11px;line-height:16.5px}
 .matrixlab-halo-select{appearance:auto;box-sizing:border-box;min-width:0;max-width:100%;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};color-scheme:dark;accent-color:${HALO_TOKENS.green};direction:ltr;text-align:left;text-align-last:left}
 .matrixlab-halo-select option{background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};direction:ltr;text-align:left}
 .matrixlab-halo__field input{box-sizing:border-box;min-width:0;width:108px;flex:0 1 108px;max-width:100%;min-height:24px;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};text-align:right}
+.matrixlab-halo__field textarea{box-sizing:border-box;display:block;min-width:0;width:100%;min-height:128px;flex:1 1 128px;resize:none;border:1px solid ${HALO_TOKENS.fieldBorder};border-radius:6px;padding:10px;background:${HALO_TOKENS.linkedSurface};color:${HALO_TOKENS.primaryText};line-height:19.5px;text-align:left;white-space:pre-wrap}
+.matrixlab-halo__field--prompt{flex:1 1 180px;min-height:180px;align-items:stretch;flex-direction:column;flex-wrap:nowrap}
+.matrixlab-halo__field--prompt label{flex:0 0 auto}
 .matrixlab-halo__field .matrixlab-halo-select{width:152px;flex:0 1 152px;min-height:24px}
 .matrixlab-halo__field input[type="checkbox"]{width:18px;flex:0 0 18px}
-.matrixlab-halo__field input:focus-visible,.matrixlab-halo-select:focus-visible,.matrixlab-halo__field button:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:4px}
-.matrixlab-halo__field input:disabled,.matrixlab-halo-select:disabled{color:${HALO_TOKENS.linkedText};opacity:1}
+.matrixlab-halo__field input:focus-visible,.matrixlab-halo__field textarea:focus-visible,.matrixlab-halo-select:focus-visible,.matrixlab-halo__field button:focus-visible{outline:2px solid ${HALO_TOKENS.focus};outline-offset:4px}
+.matrixlab-halo__field input:disabled,.matrixlab-halo__field textarea:disabled,.matrixlab-halo-select:disabled{color:${HALO_TOKENS.linkedText};opacity:1}
 .matrixlab-halo__linked{font-size:9px;line-height:13.5px;letter-spacing:1px;color:${HALO_TOKENS.linkedText}}
 .matrixlab-halo [data-halo-effect]{position:relative;overflow:hidden}
 .matrixlab-halo [data-halo-effect="primary"]:active:not(:disabled){transform:translateY(1px)}
@@ -1095,7 +1099,7 @@ function coerceValue(widget, raw) {
 
 // A presentation policy only: keep backend names, values, order and links intact.
 function parameterFieldPresentation(node, widget) {
-  if ((node.comfyClass || node.type) === "MATRIX_MetadataKiller") {
+  if (["MATRIX_MetadataKiller", "MATRIX_VideoMetadataKiller"].includes(node.comfyClass || node.type)) {
     return { label: ({ filename_prefix: "Name", format: "Format", quality: "Quality" })[widget.name] };
   }
   if ((node.comfyClass || node.type) === "MATRIX_CropTailPaste" && widget.name === "mask_mode") {
@@ -1193,9 +1197,16 @@ function createWidgetField(doc, node, widget, options) {
     return Array.isArray(values) ? values : Array.isArray(widget.options) ? widget.options : null;
   };
   let renderedChoices = null;
+  const promptEditor = (node.comfyClass || node.type) === "MATRIX_Prompt" && widget.name === "prompt";
   if (choices()) {
     control = doc.createElement("select");
     applyHaloSelect(control);
+  } else if (promptEditor) {
+    control = doc.createElement("textarea");
+    control.rows = 8;
+    control.spellcheck = true;
+    control.wrap = "soft";
+    field.className += " matrixlab-halo__field--prompt";
   } else {
     control = doc.createElement("input");
     control.type = typeof widget.value === "boolean" ? "checkbox" : typeof widget.value === "number" ? "number" : "text";
@@ -1264,12 +1275,16 @@ function createWidgetField(doc, node, widget, options) {
     }
   };
   control.addEventListener("change", commit);
+  if (promptEditor) control.addEventListener("input", commit);
   const marker = doc.createElement("span");
   marker.className = "matrixlab-halo__linked";
   marker.textContent = "LINKED";
   field.append(label, control, marker);
   render();
-  return { field, control, render, destroy: () => control.removeEventListener("change", commit) };
+  return { field, control, render, promptEditor, destroy: () => {
+    control.removeEventListener("change", commit);
+    if (promptEditor) control.removeEventListener("input", commit);
+  } };
 }
 
 // Export is a projection of the existing format/quality pair, never a saved widget.
@@ -1613,6 +1628,165 @@ export function mountHaloSavedImages(node, root, options = {}) {
   } };
 }
 
+// PreviewVideo intentionally returns the established ComfyUI `images` descriptor
+// envelope with `animated: (true,)`. Keep VIDEO sockets and history native; this
+// adapter only replaces the duplicate canvas preview for the exact video saver.
+export function mountHaloSavedVideos(node, root, options = {}) {
+  const doc = root.ownerDocument;
+  const section = doc.createElement("section");
+  section.className = "matrixlab-halo__saved-videos";
+  Object.assign(section.style, { display: "flex", flexDirection: "column", flex: "1 1 220px", minHeight: "220px", minWidth: "0", gap: "8px", position: "relative", zIndex: "2" });
+  const viewport = doc.createElement("div");
+  Object.assign(viewport.style, { position: "relative", flex: "1 1 auto", minHeight: "170px", overflow: "hidden", borderRadius: "9px", background: "rgba(0,0,0,0.25)" });
+  const video = doc.createElement("video");
+  video.controls = true;
+  video.autoplay = false;
+  video.preload = "metadata";
+  video.playsInline = true;
+  Object.assign(video.style, { display: "block", width: "100%", height: "100%", objectFit: "contain", background: "transparent" });
+  const footer = doc.createElement("div");
+  Object.assign(footer.style, { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" });
+  const status = doc.createElement("span");
+  status.textContent = "Saved video appears here";
+  status.setAttribute("aria-live", "polite");
+  const open = doc.createElement("a");
+  open.textContent = "Open saved video";
+  open.hidden = true;
+  footer.append(status, open);
+  viewport.appendChild(video);
+  section.append(viewport, footer);
+  root.appendChild(section);
+
+  let destroyed = false;
+  let revision = 0;
+  let lastSignature = null;
+  const previousHidden = node.hideOutputImages;
+  let ownsHidden = false;
+  const nativeWidgets = new Map();
+  const nativeIdentity = new Map(["images", "preview"].map(name => [name,
+    { own: Object.prototype.hasOwnProperty.call(node, name), value: node[name], assigned: undefined }]));
+  const outputKey = () => node.graph?.isRootGraph === false ? `${node.graph.id}:${node.id}` : String(node.id);
+  const storedOutput = () => options.app?.nodeOutputs?.[outputKey()];
+  const syncNativeWidgets = () => {
+    for (const widget of node.widgets || []) {
+      if (!["$$canvas-image-preview", "video-preview"].includes(widget.name)) continue;
+      if (ownsHidden && !nativeWidgets.has(widget)) {
+        nativeWidgets.set(widget, { hidden: widget.hidden, computeLayoutSize: widget.computeLayoutSize,
+          options: widget.options, optionHidden: widget.options?.hidden, elementHidden: widget.element?.hidden });
+        widget.hidden = true;
+        widget.options ||= {};
+        widget.options.hidden = true;
+        if (widget.element) widget.element.hidden = true;
+        widget.computeLayoutSize = () => ({ minHeight: 0, maxHeight: 0, minWidth: 0 });
+      }
+    }
+    if (!ownsHidden) {
+      for (const [widget, state] of nativeWidgets) {
+        widget.hidden = state.hidden; widget.computeLayoutSize = state.computeLayoutSize;
+        if (state.options) state.options.hidden = state.optionHidden;
+        widget.options = state.options;
+        if (widget.element) widget.element.hidden = state.elementHidden;
+      }
+      nativeWidgets.clear();
+    }
+  };
+  const hideNative = hidden => {
+    const changed = hidden ? node.hideOutputImages !== true : ownsHidden;
+    if (hidden) { node.hideOutputImages = true; ownsHidden = true; }
+    else { if (ownsHidden && node.hideOutputImages === true) node.hideOutputImages = previousHidden; ownsHidden = false; }
+    syncNativeWidgets();
+    if (changed) node.setDirtyCanvas?.(true, true);
+  };
+  const descriptorFrom = output => Array.isArray(output?.images)
+    ? output.images.find(item => item && typeof item.filename === "string" && item.filename)
+    : null;
+  const prepareNative = output => {
+    if (destroyed) return;
+    const stored = storedOutput() || output;
+    const descriptor = descriptorFrom(stored);
+    hideNative(Boolean(descriptor));
+    if (descriptor && Object.prototype.hasOwnProperty.call(stored, "images")) {
+      node.images = stored.images;
+      nativeIdentity.get("images").assigned = stored.images;
+    }
+    const previews = options.app?.nodePreviewImages?.[outputKey()];
+    if (previews) {
+      node.preview = previews;
+      nativeIdentity.get("preview").assigned = previews;
+    }
+  };
+  const urlFor = descriptor => {
+    const query = new URLSearchParams({ filename: descriptor.filename, subfolder: descriptor.subfolder || "", type: descriptor.type || "output" });
+    return options.videoURL?.(query) ?? options.imageURL?.(query) ?? `${options.app?.api?.apiURL?.("/view") || "./view"}?${query}`;
+  };
+  const clearVideo = () => {
+    revision++;
+    video.onloadedmetadata = null;
+    video.onerror = null;
+    video.pause?.();
+    video.removeAttribute?.("src");
+    video.load?.();
+  };
+  const update = output => {
+    if (destroyed || !output || !Object.prototype.hasOwnProperty.call(output, "images")) return;
+    const descriptor = descriptorFrom(output);
+    prepareNative(output);
+    const signature = descriptor ? JSON.stringify([descriptor.filename, descriptor.subfolder || "", descriptor.type || "output"]) : "";
+    if (signature === lastSignature) return;
+    lastSignature = signature;
+    clearVideo();
+    if (!descriptor) {
+      viewport.hidden = true;
+      open.hidden = true;
+      status.textContent = "Saved video appears here";
+      return;
+    }
+    viewport.hidden = false;
+    const token = revision;
+    const url = urlFor(descriptor);
+    open.href = url;
+    open.hidden = false;
+    open.title = `Saved video: ${descriptor.filename}`;
+    status.textContent = `Loading ${descriptor.filename}`;
+    video.onloadedmetadata = () => {
+      if (!destroyed && revision === token) status.textContent = `Saved: ${descriptor.filename}`;
+    };
+    video.onerror = () => {
+      if (!destroyed && revision === token) status.textContent = "Saved video preview unavailable";
+    };
+    video.src = url;
+    video.load?.();
+  };
+  const originalBackground = node.onDrawBackground;
+  const background = function (...args) {
+    const output = storedOutput();
+    prepareNative(output);
+    update(output);
+    try { return originalBackground?.apply(this, args); }
+    finally { syncNativeWidgets(); }
+  };
+  node.onDrawBackground = background;
+  prepareNative(storedOutput());
+  update(storedOutput());
+  return {
+    section, video, update, prepareNative, storedOutput,
+    minimumHeight: () => 170 + (Number(footer.offsetHeight) || 32) + 16,
+    destroy() {
+      if (destroyed) return;
+      destroyed = true;
+      clearVideo();
+      hideNative(false);
+      for (const [name, state] of nativeIdentity) {
+        if (state.assigned !== undefined && node[name] === state.assigned) {
+          if (state.own) node[name] = state.value; else delete node[name];
+        }
+      }
+      if (node.onDrawBackground === background) node.onDrawBackground = originalBackground;
+      section.remove();
+    },
+  };
+}
+
 function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, profile = "execution") {
   const nodeType = node?.comfyClass || node?.type;
   if (!allowedIds.has(nodeType) || !node || typeof node.addDOMWidget !== "function") return null;
@@ -1638,10 +1812,18 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     : namedWidgets.map(widget => createWidgetField(doc, node, widget, options));
   for (const field of fields) root.appendChild(field.field);
   const savedImages = nodeType === "MATRIX_MetadataKiller" ? mountHaloSavedImages(node, root, options) : null;
-  if (savedImages) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
+  const savedVideos = nodeType === "MATRIX_VideoMetadataKiller" ? mountHaloSavedVideos(node, root, options) : null;
+  const promptEditor = fields.find(field => field.promptEditor);
+  const resizableContent = savedImages || savedVideos || promptEditor;
+  if (resizableContent) Object.assign(root.style, { flex: "1 1 auto", minHeight: "0" });
   const contentMinimum = () => savedImages
     ? Math.max(fields.filter(({ field }) => !field.hidden).length * 46 + 36,
       ...fields.filter(({ field }) => !field.hidden).map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + savedImages.minimumHeight()
+    : savedVideos
+      ? Math.max(fields.filter(({ field }) => !field.hidden).length * 46 + 36,
+        ...fields.filter(({ field }) => !field.hidden).map(({ field }) => (Number(field.offsetTop) || 0) + (Number(field.offsetHeight) || 0) + 18)) + savedVideos.minimumHeight()
+    : promptEditor
+      ? 224
     : measureHaloContentHeight(root, fields.filter(({ field }) => !field.hidden).length * 46 + 36);
   let presentation = null;
   let halo = null;
@@ -1681,6 +1863,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     restoreWidgets(snapshots);
     halo?.destroy();
     savedImages?.destroy();
+    savedVideos?.destroy();
     removePresentation();
     root.remove?.();
     host.remove?.();
@@ -1735,7 +1918,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     const contentHeight = contentMinimum();
     const requiredHeight = haloMinimumNodeHeight(node, contentHeight,
       suppliedChrome ?? options.rendererChrome);
-    const height = savedImages ? Math.max(currentHeight, requiredHeight) : requiredHeight;
+    const height = resizableContent ? Math.max(currentHeight, requiredHeight) : requiredHeight;
     if (width === currentWidth && height === currentHeight) return;
     const size = [width, height];
     setHaloNodeSize(node, size);
@@ -1743,7 +1926,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
   const scheduleMinimum = () => {
     if (destroyed) return;
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { resizeTimer = null; savedImages?.update(savedImages.storedOutput()); fields.forEach((field) => field.render()); minimumSize(); halo.renderStatic(); }, 0);
+    resizeTimer = setTimeout(() => { resizeTimer = null; savedImages?.update(savedImages.storedOutput()); savedVideos?.update(savedVideos.storedOutput()); fields.forEach((field) => field.render()); minimumSize(); halo.renderStatic(); }, 0);
   };
   // Canonical callbacks own state; the DOM is refreshed only after they finish.
   const refresh = () => {
@@ -1764,7 +1947,7 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
       try { return previous?.apply(this, args); }
       finally {
         if (name === "onConfigure") fields.forEach(field => field.reset?.());
-        savedImages?.update(savedImages.storedOutput()); refresh();
+        savedImages?.update(savedImages.storedOutput()); savedVideos?.update(savedVideos.storedOutput()); refresh();
       }
     };
     refreshHooks.push({ name, previous, wrapped });
@@ -1780,6 +1963,17 @@ function mountHaloPrimitiveNode(node, options = {}, allowedIds = EXECUTION_IDS, 
     refreshHooks.push({ name: "onExecuted", previous, wrapped });
     node.onExecuted = wrapped;
     savedImages.update(savedImages.storedOutput());
+  }
+  if (savedVideos) {
+    const previous = node.onExecuted;
+    const wrapped = function (output, ...args) {
+      savedVideos.prepareNative(output);
+      try { return previous?.call(this, output, ...args); }
+      finally { savedVideos.update(savedVideos.storedOutput() || output); refresh(); }
+    };
+    refreshHooks.push({ name: "onExecuted", previous, wrapped });
+    node.onExecuted = wrapped;
+    savedVideos.update(savedVideos.storedOutput());
   }
   wrappedResize = function (...args) {
     const result = previousResize?.apply(this, args);

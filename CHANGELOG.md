@@ -2,6 +2,15 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - video metadata and prompt additions - 2026-09-25
+
+- Add `MATRIX_VideoMetadataKiller`, which publishes a non-overwriting MP4 and returns
+  a native VIDEO backed by that cleaned file.
+- Add `MATRIX_Prompt`, a local multiline STRING pass-through with exact text preservation.
+- Preserve the previous 20 registrations, including all four compatibility aliases.
+- Keep metadata claims bounded to descriptive container/stream tags; visible watermarks,
+  codec-level data, and indispensable playback structure are outside the guarantee.
+
 ## 0.4.0 - Photo Finisher replacement - 2026-09-11
 
 - Remove the Camera Look and Renoise registrations and runtime implementations.

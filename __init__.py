@@ -79,3 +79,12 @@ NODE_DISPLAY_NAME_MAPPINGS['MATRIXLAB_ImageBatchLoader'] = NODE_DISPLAY_NAME_MAP
 NODE_CLASS_MAPPINGS['MATRIXLAB_PromptDirector'] = type('MATRIXLAB_PromptDirector', (NODE_CLASS_MAPPINGS['MATRIX_AutoPrompter'],), {"__module__": __name__})
 NODE_DISPLAY_NAME_MAPPINGS['MATRIXLAB_PromptDirector'] = NODE_DISPLAY_NAME_MAPPINGS['MATRIX_AutoPrompter']
 # END Krea2 V1 compatibility
+
+# BEGIN video and prompt additions
+from .nodes.input_output.matrix_videometadatakiller import NODE_CLASS_MAPPINGS as _video_c, NODE_DISPLAY_NAME_MAPPINGS as _video_d
+NODE_CLASS_MAPPINGS.update(_video_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_video_d)
+from .nodes.prompting.matrix_prompt import NODE_CLASS_MAPPINGS as _prompt_c, NODE_DISPLAY_NAME_MAPPINGS as _prompt_d
+NODE_CLASS_MAPPINGS.update(_prompt_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_prompt_d)
+# END video and prompt additions
