@@ -6,10 +6,9 @@ Twenty current ComfyUI nodes for image input, resolution, sampling, masks, finis
 output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
 24 registered class IDs remain in seven consistent `MATRIX LAB` categories.
 
-> **Development package version 0.6.0.dev0.** This additive candidate adds
-> MATRIX H3 RESOLUTION while retaining the prior nodes and four Krea 2 V1 aliases.
-> Read its [guide and migration boundary](docs/nodes/h3-resolution.md) before opening
-> an older H3 graph.
+> **Development package version 0.6.0.dev0.** This release adds MATRIX WAN 3.0 in the
+> new Video Generation category while retaining all prior nodes and the four Krea 2 V1
+> aliases. Older H3 graphs: read the [H3 guide and migration boundary](docs/nodes/h3-resolution.md).
 
 ## MATRIX Krea 2 — AI Influencer 4K (FP8)
 
@@ -44,7 +43,7 @@ before switching.
 - [**MATRIX METADATA KILLER**](docs/nodes/metadata-killer.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
 - [**MATRIX VIDEO METADATA KILLER**](docs/nodes/video-metadata-killer.md) — remux MP4 video/audio into a newly saved native VIDEO while removing descriptive container and stream tags.
 
-## Resolution & Layout (3 current)
+## Resolution & Layout (4 current)
 
 - [**MATRIX RESOLUTION**](docs/nodes/resolution.md) — calculate 1K, 2K, 4K, or exact custom pixel dimensions across common aspect ratios.
 - [**MATRIX AI INFLUENCER RESOLUTION**](docs/nodes/ai-influencer-resolution.md) — select 1:1, 9:16, or 3:4 geometry at 1K, 2K, or 4K.
@@ -95,7 +94,7 @@ ComfyUI host. The pack does not install or replace the host's media stack.
 Four aliases preserve schema-compatible V1 graph identities:
 `MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
 `MATRIXLAB_ImageBatchLoader`, and `MATRIXLAB_PromptDirector`. These registrations
-are included in the 20-ID manifest; they do not add categories or replace the
+are included in the 24-ID manifest; they do not add categories or replace the
 current IDs. See [NODES.md](NODES.md) for the exact mapping.
 
 Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The
