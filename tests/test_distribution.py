@@ -51,6 +51,7 @@ CLIP_NODE_ID = "MATRIX_Krea2CLIPLoader"
 MODEL_GUARD_NODE_ID = "MATRIX_Krea2ModelGuard"
 VIDEO_PROMPT_NODE_IDS = {"MATRIX_VideoMetadataKiller", "MATRIX_Prompt"}
 H3_NODE_ID = "MATRIX_H3Resolution"
+WAN_NODE_ID = "MATRIX_Wan3"
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -58,6 +59,7 @@ NODE_DIRECTORIES = {
     "prompting",
     "resolution_layout",
     "sampling_detail",
+    "video_generation",
 }
 PHOTO_DEFAULTS = {
     "profile": "Everyday Capture",
@@ -103,7 +105,21 @@ def _runtime_import_stubs():
         ComfyNode=object,
         Schema=lambda **values: types.SimpleNamespace(**values),
         Video=_SocketType,
+        Image=_SocketType,
+        Audio=_SocketType,
         String=_SocketType,
+        Int=_SocketType,
+        Boolean=_SocketType,
+        Combo=_SocketType,
+        DynamicCombo=types.SimpleNamespace(
+            Input=lambda socket_id, **options: _Socket(socket_id, **options),
+            Option=lambda key, inputs: types.SimpleNamespace(key=key, inputs=inputs),
+        ),
+        Autogrow=types.SimpleNamespace(
+            Input=lambda socket_id, **options: _Socket(socket_id, **options),
+            TemplateNames=lambda input, **options: types.SimpleNamespace(input=input, **options),
+        ),
+        Hidden=types.SimpleNamespace(unique_id="UNIQUE_ID"),
         NodeOutput=_NodeOutput,
         FolderType=types.SimpleNamespace(output="output"),
     )
@@ -159,7 +175,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID}
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID, WAN_NODE_ID}
         self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
@@ -195,7 +211,8 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_class_ids_match_public_product_names(self):
         for node_id, display in self.pack.NODE_DISPLAY_NAME_MAPPINGS.items():
-            if node_id in COMPAT_ALIASES:
+            # MATRIX_Wan3 is the one documented legacy serialization exception.
+            if node_id in COMPAT_ALIASES or node_id == WAN_NODE_ID:
                 continue
             with self.subTest(node_id=node_id):
                 self.assertRegex(node_id, r"^MATRIX_[A-Z][A-Za-z0-9]*$")
@@ -203,7 +220,7 @@ class DistributionStructureTests(unittest.TestCase):
                 self.assertEqual(node_id[len("MATRIX_"):].upper(),
                                  re.sub(r"[^A-Z0-9]", "", display[len("MATRIX "):]))
 
-    def test_distribution_has_exactly_the_six_public_node_directories(self):
+    def test_distribution_has_exactly_the_seven_public_node_directories(self):
         actual = {
             path.name
             for path in (ROOT / "nodes").iterdir()

@@ -28,11 +28,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
-          python -m pip install Pillow aiohttp numpy scipy
+          python -m pip install Pillow aiohttp numpy scipy av pytest
       - name: Run offline distribution tests
         env:
           NO_PROXY: "*"
-        run: python -m unittest discover -s tests -v
+        run: python -m pytest tests -q --import-mode=importlib -p no:cacheprovider --confcutdir=tests
 
   javascript:
     name: JavaScript syntax
@@ -50,3 +50,4 @@ jobs:
           done < <(find web -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
           test "$found" -eq 1
           node --experimental-vm-modules tests/test_frontend_alias_compat.mjs .
+          node --test tests/test_wan3_frontend.mjs tests/test_wan3_halo_housing.mjs

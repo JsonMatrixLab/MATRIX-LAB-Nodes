@@ -1,6 +1,6 @@
 # Node reference
 
-The additive H3 candidate registers 23 class IDs in six `MATRIX LAB` groups: 19
+The WAN 3.0 candidate registers 24 class IDs in seven `MATRIX LAB` groups: 20
 current nodes and four schema-compatible aliases. The installed `MANIFEST.json` is
 authoritative for a particular artifact.
 
@@ -25,6 +25,7 @@ authoritative for a particular artifact.
 | Prompting | Current | MATRIX AUTO PROMPTER | `MATRIX_AutoPrompter` | saved prompt fields; optional images | `prompt` | [Guide](docs/nodes/auto-prompter.md) |
 | Prompting | Current | MATRIX KREA2 CLIP LOADER | `MATRIX_Krea2CLIPLoader` | Krea 2 Qwen3-VL 4B `clip_name` | `CLIP` | [Guide](docs/krea2-gpu.md) |
 | Prompting | Current | MATRIX PROMPT | `MATRIX_Prompt` | multiline `prompt` | verbatim `prompt` | [Guide](docs/nodes/prompt.md) |
+| Video Generation | Current | MATRIX WAN 3.0 | `MATRIX_Wan3` | operation-specific native media; generation, seed, credential, and billing controls | native `VIDEO` | [Guide](docs/nodes/wan3.md) |
 | Sampling & Detail | V1 alias | MATRIX SPECTRAL SAMPLER | `MATRIXSpectralSampler` | same as `MATRIX_SpectralSampler` | `sampler` | [Migration](docs/migration.md) |
 | Resolution & Layout | V1 alias | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIXLAB_AIInfluencerResolution2K4K` | same as `MATRIX_AIInfluencerResolution2K4K` | `width`, `height` | [Migration](docs/migration.md) |
 | Input & Output | V1 alias | MATRIX IMAGE BATCH LOADER | `MATRIXLAB_ImageBatchLoader` | same as `MATRIX_ImageBatchLoader` | `images`, `masks` | [Migration](docs/migration.md) |

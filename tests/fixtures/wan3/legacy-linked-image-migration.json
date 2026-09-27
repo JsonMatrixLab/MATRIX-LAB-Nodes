@@ -1,0 +1,494 @@
+{
+  "id": "29209187-d3f6-4f04-867e-032d9966946b",
+  "revision": 0,
+  "last_node_id": 7,
+  "last_link_id": 101,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MATRIX_Wan3",
+      "pos": [
+        -301.4478202342843,
+        266.56193841264593
+      ],
+      "size": [
+        419.662109375,
+        1062
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "First frame",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 101
+        },
+        {
+          "localized_name": "Last frame",
+          "name": "last_image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Source video",
+          "name": "video",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 01",
+          "name": "reference_image_01",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 02",
+          "name": "reference_image_02",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 03",
+          "name": "reference_image_03",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 04",
+          "name": "reference_image_04",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 05",
+          "name": "reference_image_05",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 06",
+          "name": "reference_image_06",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 07",
+          "name": "reference_image_07",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 08",
+          "name": "reference_image_08",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 09",
+          "name": "reference_image_09",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference image 10",
+          "name": "reference_image_10",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "Reference video 01",
+          "name": "reference_video_01",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference video 02",
+          "name": "reference_video_02",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference video 03",
+          "name": "reference_video_03",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference video 04",
+          "name": "reference_video_04",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference video 05",
+          "name": "reference_video_05",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference audio 01",
+          "name": "reference_audio_01",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference audio 02",
+          "name": "reference_audio_02",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference audio 03",
+          "name": "reference_audio_03",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference audio 04",
+          "name": "reference_audio_04",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "Reference audio 05",
+          "name": "reference_audio_05",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "Provider",
+          "name": "provider",
+          "type": "COMBO",
+          "widget": {
+            "name": "provider"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tier",
+          "name": "tier",
+          "type": "COMBO",
+          "widget": {
+            "name": "tier"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Image route",
+          "name": "image_variant",
+          "type": "COMBO",
+          "widget": {
+            "name": "image_variant"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "resolution",
+          "name": "resolution",
+          "type": "COMBO",
+          "widget": {
+            "name": "resolution"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "duration",
+          "name": "duration",
+          "type": "INT",
+          "widget": {
+            "name": "duration"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "aspect_ratio",
+          "name": "aspect_ratio",
+          "type": "COMBO",
+          "widget": {
+            "name": "aspect_ratio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "enable_audio",
+          "name": "enable_audio",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "enable_audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Generate new audio for Edit",
+          "name": "generate_audio",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "generate_audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "enable_prompt_expansion",
+          "name": "enable_prompt_expansion",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "enable_prompt_expansion"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seed_mode",
+          "name": "seed_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "seed_mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Edit output duration",
+          "name": "edit_duration",
+          "type": "COMBO",
+          "widget": {
+            "name": "edit_duration"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Allow native VIDEO materialization for upload",
+          "name": "allow_video_materialization",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "allow_video_materialization"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Allow documented long-video trimming",
+          "name": "acknowledge_provider_trimming",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "acknowledge_provider_trimming"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "intent_nonce",
+          "name": "intent_nonce",
+          "type": "STRING",
+          "widget": {
+            "name": "intent_nonce"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "credential_scope",
+          "name": "credential_scope",
+          "type": "STRING",
+          "widget": {
+            "name": "credential_scope"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "prompt",
+          "name": "prompt",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MATRIX_Wan3"
+      },
+      "widgets_values": [
+        "Demo (free, offline)",
+        "Image to Video",
+        "Standard",
+        "Regular",
+        "720p",
+        5,
+        "Auto",
+        true,
+        true,
+        false,
+        "Random",
+        0,
+        "randomize",
+        "Auto",
+        false,
+        false,
+        "beb64a0f-ad0a-4029-a406-d92df6423fd5",
+        "3192cf3b-b1bb-4954-802d-f78e0110e0f6",
+        "",
+        "",
+        null,
+        null
+      ],
+      "widgets_values_named": {
+        "provider": "Demo (free, offline)",
+        "operation": "Image to Video",
+        "tier": "Standard",
+        "image_variant": "Regular",
+        "resolution": "720p",
+        "duration": 5,
+        "aspect_ratio": "Auto",
+        "enable_audio": true,
+        "generate_audio": true,
+        "enable_prompt_expansion": false,
+        "seed_mode": "Random",
+        "seed": 0,
+        "control_after_generate": "randomize",
+        "edit_duration": "Auto",
+        "allow_video_materialization": false,
+        "acknowledge_provider_trimming": false,
+        "intent_nonce": "beb64a0f-ad0a-4029-a406-d92df6423fd5",
+        "credential_scope": "3192cf3b-b1bb-4954-802d-f78e0110e0f6",
+        "prompt": "",
+        "matrix_wan3_estimate": "",
+        "WaveSpeed key…": null,
+        "New result": null
+      }
+    },
+    {
+      "id": 7,
+      "type": "LoadImage",
+      "pos": [
+        -632.7800400831933,
+        465.709835291886
+      ],
+      "size": [
+        282.798828125,
+        102
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            101
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "reference.png",
+        "upload": "image"
+      }
+    }
+  ],
+  "links": [
+    [
+      101,
+      7,
+      0,
+      1,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1.471273857823818,
+      "offset": [
+        693.2465114373599,
+        -361.24660708972556
+      ]
+    }
+  },
+  "version": 0.4
+}

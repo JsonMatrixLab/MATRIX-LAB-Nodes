@@ -2,6 +2,17 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - MATRIX WAN 3.0 integration - 2026-09-27
+
+- Add `MATRIX_Wan3` as the 24th registration and the first node in
+  `MATRIX LAB/Video Generation`, preserving its serialized ID, widget order,
+  dynamic native media sockets, migration hooks, credential routes, and user-data path.
+- Reuse the pack's single HALO module and Cascadia Mono font set; do not ship the
+  standalone WAN HALO, fonts, notice, or package metadata.
+- Raise the documented minimum to ComfyUI 0.37.0/frontend 1.53.6. PyAV remains a
+  documented host prerequisite rather than an installer dependency.
+- Set the development version to `0.6.0.dev0`; no tag or release is implied.
+
 ## Unreleased - additive H3 resolution candidate - 2026-09-25
 
 - Add `MATRIX_H3Resolution` as the 23rd registered class ID without replacing existing nodes.

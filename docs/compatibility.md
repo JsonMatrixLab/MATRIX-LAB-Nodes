@@ -2,6 +2,11 @@
 
 ## Current status
 
+The `0.6.0.dev0` WAN candidate requires ComfyUI 0.37.0 or newer and frontend
+1.53.6 or newer. PyAV must be supplied by the ComfyUI host; it is tested in CI but
+is not installed by this pack. MATRIX WAN 3.0 has scoped Classic and Nodes 2.0
+evidence. That evidence does not extend Nodes 2.0 support to every other pack node.
+
 Version 0.4.0 passed package registration, schema, deterministic-build, registry, and
 frontend checks. The exact package also completed its bundled Krea 2 workflow on the
 recorded Classic/RTX 5090 boundary. This is a tested compatibility boundary rather
@@ -11,6 +16,7 @@ than a universal hardware or workflow guarantee.
 | --- | --- |
 | Python | Package metadata requires Python 3.10 or newer. |
 | ComfyUI frontend | Classic frontend 1.49.6 was verified through workflow save, fresh-browser load, 20 unified node providers, and exact frontend/API graph equality. Nodes 2.0 is not supported or verified for this release. |
+| MATRIX WAN 3.0 | Requires ComfyUI 0.37.0/frontend 1.53.6 and host PyAV. Preserves native IMAGE/AUDIO/VIDEO sockets and returns native VIDEO. WaveSpeed behavior, availability, prices, and output quality require separate live evaluation. |
 | Torch/CUDA | Verified with ComfyUI 0.33.3, core `4da9e2dbead52fc1e68beae33fe3d7ad63b63241`, PyTorch 2.8.0+cu128, and an RTX 5090. No universal hardware, Torch, or CUDA matrix is claimed. |
 | Resolution nodes | Model-independent integer geometry; output dimensions do not certify that a model can generate or process that size. |
 | Image processing | Photo Finisher is local Torch processing. Easy Crop and Image Batch Loader operate on static uploaded images. |

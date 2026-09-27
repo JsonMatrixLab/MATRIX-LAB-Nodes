@@ -144,7 +144,8 @@
     "MATRIXLAB_PromptDirector": "MATRIX LAB/Prompting",
     "MATRIX_VideoMetadataKiller": "MATRIX LAB/Input & Output",
     "MATRIX_Prompt": "MATRIX LAB/Prompting",
-    "MATRIX_H3Resolution": "MATRIX LAB/Resolution & Layout"
+    "MATRIX_H3Resolution": "MATRIX LAB/Resolution & Layout",
+    "MATRIX_Wan3": "MATRIX LAB/Video Generation"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -175,7 +176,8 @@
     "web/image_collection.490245783ceb641a.js",
     "web/prompt_director.ee8441b58371cbb8.js",
     "web/resolution_control_deck.6acd4567b0802646.js",
-    "web/video_prompt.d0ec0d536f359776.js"
+    "web/video_prompt.d0ec0d536f359776.js",
+    "web/wan3.966d9792a941c4af.js"
   ],
   "nodes": [
     "MATRIXLAB_AIInfluencerResolution2K4K",
@@ -200,12 +202,13 @@
     "MATRIX_Resolution",
     "MATRIX_SkinMask",
     "MATRIX_SpectralSampler",
-    "MATRIX_VideoMetadataKiller"
+    "MATRIX_VideoMetadataKiller",
+    "MATRIX_Wan3"
   ],
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
-  "status": "candidate",
-  "version": "0.5.0.dev0",
+  "status": "assembled-unverified",
+  "version": "0.6.0.dev0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -256,6 +259,7 @@
       "web/assets/font-manifest.json": "60aa2ed87cce68373e4087805493dedafdfeb8715670cc4c64f594ab28401810",
       "web/easy_crop.6dbc906cba3704a2.js": "6dbc906cba3704a2c08261fdcbefc697932cd55a6ec64826e39b9fea7b8c8bd7",
       "web/gallery.e159304effcb5c7f.mjs": "e159304effcb5c7fbe7cffc159336d87469165e7d42572dbed364cf6e6d4ef0d",
+      "web/h3_resolution_control_deck.a052234431446e9e.js": "a052234431446e9e99aa0da9f2663974ed3daf6d4dd9086b6c08671a4af35002",
       "web/halo.87ce22ea9cb20e75.mjs": "87ce22ea9cb20e75b3de2a93406a1aa5c4496acde7cba6202c901c43cf022e32",
       "web/halo_execution.e0dab22fc32c519c.js": "e0dab22fc32c519cef8447d53d283a98a9afbd5ac0693d099a918446e465c520",
       "web/halo_resolution.8dff7e8fca32fa44.mjs": "8dff7e8fca32fa44f56da17b63955bb981b2311773fac6cf1618057fd18e77d9",
@@ -263,11 +267,13 @@
       "web/prompt_director.ee8441b58371cbb8.js": "ee8441b58371cbb893f6a53b1524e088de14afe795574da7a57662b92c1a570d",
       "web/resolution_control_deck.6acd4567b0802646.js": "6acd4567b08026466fd2a0cffcd3939a2695c57bb2732cec3dff05468c29283e",
       "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d",
-      "web/video_prompt.d0ec0d536f359776.js": "d0ec0d536f35977698c5d2bfa626dcf3a22d9650843c587260aea150fa57f4c6"
+      "web/video_prompt.d0ec0d536f359776.js": "d0ec0d536f35977698c5d2bfa626dcf3a22d9650843c587260aea150fa57f4c6",
+      "web/wan3.966d9792a941c4af.js": "966d9792a941c4af100402070ec9d319876d71bf6f43722b4bed277ea621a72b"
     }
   },
   "native_node_sources": {
-    "MATRIX_VideoMetadataKiller": "07a0959784ffb4bce0d9f5fc9363a1a2a1a7f60ac9a846b68b37f23ec927b5eb"
+    "MATRIX_VideoMetadataKiller": "07a0959784ffb4bce0d9f5fc9363a1a2a1a7f60ac9a846b68b37f23ec927b5eb",
+    "MATRIX_Wan3": "65d4e251251b3df264434ac51a140a1a034f7ae6b762f8912148a3ca67ee2e0f"
   },
   "video_prompt_candidate": {
     "baseline_commit": "27c48f36b0ad871b301d9cb848c0f4484c2850f5",
@@ -307,5 +313,17 @@
     "graph_migration": "BREAKING V0.6-to-V0.7 workflow migration; five-widget graphs require explicit migration",
     "runtime_scope": "geometry only; no model inference or image transforms",
     "live_ui_acceptance": "not claimed"
+  },
+  "wan3_addition": {
+    "baseline_commit": "b8956546d5c03516e9fed813ceee7a9f76f503b1",
+    "wan_source_commit": "82c32e248c44dd0595c4f3187be66d853b2d5efa",
+    "builder_sha256": "8cc8ad318aed0d2215251e9239502ef649f64e3a07886d81bd9c9f2001bf8eae",
+    "registration_count": 24,
+    "current_node_count": 20,
+    "alias_count": 4,
+    "category_count": 7,
+    "frontend_entrypoint": "web/wan3.966d9792a941c4af.js",
+    "shared_halo": "web/halo.87ce22ea9cb20e75.mjs",
+    "pyav_policy": "documented ComfyUI host prerequisite; not an installer dependency"
   }
 }

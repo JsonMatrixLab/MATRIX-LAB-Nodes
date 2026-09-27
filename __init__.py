@@ -92,3 +92,17 @@ from .nodes.prompting.matrix_prompt import NODE_CLASS_MAPPINGS as _prompt_c, NOD
 NODE_CLASS_MAPPINGS.update(_prompt_c)
 NODE_DISPLAY_NAME_MAPPINGS.update(_prompt_d)
 # END video and prompt additions
+
+
+# BEGIN MATRIX WAN 3.0 addition
+from .nodes.video_generation.matrix_wan3 import NODE_CLASS_MAPPINGS as _wan3_c, NODE_DISPLAY_NAME_MAPPINGS as _wan3_d
+NODE_CLASS_MAPPINGS.update(_wan3_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_wan3_d)
+try:
+    from server import PromptServer as _wan3_prompt_server
+except ImportError:
+    _wan3_prompt_server = None
+if _wan3_prompt_server is not None:
+    from ._core.wan3.credentials import register_routes as _register_wan3_routes
+    _register_wan3_routes(_wan3_prompt_server.instance)
+# END MATRIX WAN 3.0 addition

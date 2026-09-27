@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
-Nineteen current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
+Twenty current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
 output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
-23 registered class IDs remain in six consistent `MATRIX LAB` categories.
+24 registered class IDs remain in seven consistent `MATRIX LAB` categories.
 
-> **Development package version 0.5.0.dev0.** This additive candidate adds
+> **Development package version 0.6.0.dev0.** This additive candidate adds
 > MATRIX H3 RESOLUTION while retaining the prior nodes and four Krea 2 V1 aliases.
 > Read its [guide and migration boundary](docs/nodes/h3-resolution.md) before opening
 > an older H3 graph.
@@ -32,7 +32,8 @@ replacement with Photo Finisher; see the [migration guide](docs/migration.md).
 
 Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable
 it beside `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` or
-`MATRIXLAB-UI-Nodes` split packs, or a standalone Metadata Killer: registrations or
+`MATRIXLAB-UI-Nodes` split packs, a standalone Metadata Killer, or a standalone
+`MATRIX_Wan3` installation: registrations or
 frontend targeting overlap. Preserve existing packs and workflows, obtain authority
 before disabling them recoverably, and review the [migration guide](docs/migration.md)
 before switching.
@@ -81,6 +82,13 @@ Try Photo Finisher without a model or provider using the [included example workf
 - [**MATRIX PROMPT**](docs/nodes/prompt.md) — preserve one editable multiline prompt exactly, without AI or provider behavior.
 
 Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
+
+## Video Generation (1 current)
+
+- [**MATRIX WAN 3.0**](docs/nodes/wan3.md) — submit one of five WAN 3.0 operations to WaveSpeed and return a native ComfyUI VIDEO. Every new generation is billable; a user-supplied WaveSpeed key and explicit activation are required.
+
+The WAN node requires ComfyUI 0.37.0, frontend 1.53.6, and PyAV supplied by the
+ComfyUI host. The pack does not install or replace the host's media stack.
 
 ## Krea 2 V1 compatibility aliases (4)
 

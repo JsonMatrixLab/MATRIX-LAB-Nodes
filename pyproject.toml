@@ -1,12 +1,16 @@
 [project]
 name = "matrix-lab-nodes"
-version = "0.5.0.dev0"
+version = "0.6.0.dev0"
 description = "MATRIX LAB custom nodes for ComfyUI."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "MATRIX LAB" }]
 dependencies = ["Pillow", "aiohttp", "numpy", "scipy", "torch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib", "-p", "no:cacheprovider"]
 
 [project.urls]
 Repository = "https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes"

@@ -1,16 +1,19 @@
 # Installation for people
 
-Install the exact authorized MATRIX LAB NODES package version 0.4.0 as one ComfyUI
-custom-node pack. Its `MANIFEST.json` must declare version `0.4.0` and the expected
-20 registered class IDs in six category groups.
+Install the exact authorized MATRIX LAB NODES package version 0.6.0.dev0 as one ComfyUI
+custom-node pack. Its `MANIFEST.json` must declare version `0.6.0.dev0` and the expected
+24 registered class IDs in seven category groups.
 
 ## Before you begin
 
-- Use a working ComfyUI installation with Python 3.10 or newer.
+- Use ComfyUI 0.37.0 or newer with frontend 1.53.6 or newer and Python 3.10 or newer.
+- The ComfyUI host must already provide PyAV (`av`). It is intentionally not an
+  installer dependency because replacing the host media stack is unsafe.
 - Back up important workflows and the current custom-node installation.
 - Close ComfyUI before changing custom nodes.
 - Check for the older `MATRIXLAB-Nodes` and `MATRIXLAB-UI-Nodes` split packs,
-  `matrix-krea2-adapter`, and a standalone Metadata Killer. They cannot remain
+  `matrix-krea2-adapter`, a standalone Metadata Killer, and a standalone
+  `MATRIX_Wan3` installation. They cannot remain
   enabled beside this unified package because their registrations or frontend
   targeting overlap.
 - Preserve every existing pack before changing it. Disable or replace a conflicting
@@ -45,9 +48,9 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 
 1. Start ComfyUI through its normal launcher and inspect startup output for import errors.
 2. Open node search and find `MATRIX RESOLUTION`, `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
-3. Compare the installed classes with `MANIFEST.json`. Require version `0.4.0`, 20
-   unique registered class IDs, and six `MATRIX LAB` category groups. The inventory
-   consists of 16 current nodes and four schema-compatible V1 aliases.
+3. Compare the installed classes with `MANIFEST.json`. Require version `0.6.0.dev0`, 24
+   unique registered class IDs, and seven `MATRIX LAB` category groups. The inventory
+   consists of 20 current nodes and four schema-compatible V1 aliases.
 4. Confirm all 20 IDs report the unified `matrix-lab-nodes` pack as their provider.
    Stop if any ID or frontend asset still resolves to `matrix-krea2-adapter`, an
    older split pack, or the standalone Metadata Killer.
