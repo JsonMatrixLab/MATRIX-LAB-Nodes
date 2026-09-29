@@ -2,6 +2,11 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - license change - 2026-09-29
+
+- Relicense the pack from proprietary terms to the Apache License 2.0 and add `NOTICE`.
+  Earlier tagged versions are also available under Apache 2.0; the MATRIX LAB name is not licensed.
+
 ## Unreleased - MATRIX WAN 3.0 integration - 2026-09-27
 
 - Add `MATRIX_Wan3` as the 24th registration and the first node in

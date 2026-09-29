@@ -64,4 +64,4 @@ register the same class ID and credential routes. Stop ComfyUI, preserve workflo
 and `matrix-wan3/` user data, install into a clean folder, and verify the exact
 manifest before disabling the previous version recoverably. See
 [INSTALL.md](../../INSTALL.md), [compatibility](../compatibility.md),
-[security](../../SECURITY.md), and the [proprietary license](../../LICENSE).
+[security](../../SECURITY.md), and the [Apache 2.0 license](../../LICENSE).

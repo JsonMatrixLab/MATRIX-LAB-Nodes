@@ -43,6 +43,6 @@ Every result must match the table exactly. Stop on a missing or mismatched file.
 
 The detector paths may need `onnxruntime`, `ultralytics`, and `segment-anything` in the same Python environment that launches ComfyUI. Development validation observed versions 1.29.0, 8.4.142, and 1.0 respectively; these observations are not minimum supported versions or installation pins. Inspect the environment and package requirements before making changes, especially where Torch/CUDA could be affected.
 
-Ultralytics publishes AGPL-3.0 and Enterprise licensing options in its [official licensing guidance](https://github.com/ultralytics/ultralytics/blob/main/docs/en/help/contributing.md). Which terms apply to this proprietary pack and a particular deployment has not been established by this release documentation. Review the current upstream terms before installation or distribution.
+Ultralytics publishes AGPL-3.0 and Enterprise licensing options in its [official licensing guidance](https://github.com/ultralytics/ultralytics/blob/main/docs/en/help/contributing.md). Which terms apply to this pack and a particular deployment has not been established by this release documentation. Review the current upstream terms before installation or distribution.
 
 After the exact assets and compatible runtimes are present, restart ComfyUI and test each mask node with non-sensitive local media. A successful import or hash check alone does not prove inference compatibility, output quality, or license suitability.

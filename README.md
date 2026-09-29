@@ -115,6 +115,6 @@ quality choices require their own evaluation.
 
 ## License
 
-Access to the repository or an archive does not grant permission beyond the
-repository's [proprietary license](LICENSE). The bundled Cascadia Mono font has its
+Licensed under the [Apache License 2.0](LICENSE); see [NOTICE](NOTICE). The MATRIX LAB
+name and logos are not covered by the license. The bundled Cascadia Mono font has its
 own [SIL Open Font License 1.1](web/assets/CascadiaMono-LICENSE.txt).

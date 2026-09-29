@@ -1,0 +1,13 @@
+MATRIX LAB NODES
+Copyright 2026 MATRIX LAB
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+Earlier tagged versions of this repository shipped with a proprietary LICENSE file;
+since 2026-09-29 those versions are also available under the Apache License, Version 2.0.
+
+The names "MATRIX LAB" and "MATRIX LAB NODES" and related logos are not licensed
+under the Apache License (see Section 6 of the license).
+
+Third-party components:
+- Cascadia Mono font (web/assets/), SIL Open Font License 1.1,
+  see web/assets/CascadiaMono-LICENSE.txt.
