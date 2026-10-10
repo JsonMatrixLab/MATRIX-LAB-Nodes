@@ -118,6 +118,11 @@
       "id": "resolution.h3-dimensions",
       "version": "0.6.0",
       "content_hash": "e44ee4a4f01ae32d78cfe01effec9b97c93db2104d7e90edc7b5d1c9407a1070"
+    },
+    {
+      "content_hash": "61135fe8744e357b6b4b78646ece2c478de7106bec4b7a5a13533a020d321c90",
+      "id": "resolution.qwen-image-21-dimensions",
+      "version": "1.0.0"
     }
   ],
   "builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -145,6 +150,7 @@
     "MATRIX_VideoMetadataKiller": "MATRIX LAB/Input & Output",
     "MATRIX_Prompt": "MATRIX LAB/Prompting",
     "MATRIX_H3Resolution": "MATRIX LAB/Resolution & Layout",
+    "MATRIX_QwenImage21Resolution": "MATRIX LAB/Resolution & Layout",
     "MATRIX_Wan3": "MATRIX LAB/Video Generation"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
@@ -164,7 +170,8 @@
     "MATRIX_SpectralSampler": "065dea25f4f05c00f0bc920da0655b493a111378cef5e897f1b91ded7d463a43",
     "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef",
     "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378",
-    "MATRIX_H3Resolution": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b"
+    "MATRIX_H3Resolution": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b",
+    "MATRIX_QwenImage21Resolution": "116205a565d4fbd2d1a59f870a5c6fabdaae96b5cfc2c48dc7ade00c41dcb567"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
@@ -175,6 +182,7 @@
     "web/halo_execution.e0dab22fc32c519c.js",
     "web/image_collection.490245783ceb641a.js",
     "web/prompt_director.ee8441b58371cbb8.js",
+    "web/qwen_image_21_resolution_control_deck.792fe5c0ca38a8b6.js",
     "web/resolution_control_deck.6acd4567b0802646.js",
     "web/video_prompt.d0ec0d536f359776.js",
     "web/wan3.966d9792a941c4af.js"
@@ -199,6 +207,7 @@
     "MATRIX_OutputStage",
     "MATRIX_PhotoFinisher",
     "MATRIX_Prompt",
+    "MATRIX_QwenImage21Resolution",
     "MATRIX_Resolution",
     "MATRIX_SkinMask",
     "MATRIX_SpectralSampler",
@@ -265,6 +274,7 @@
       "web/halo_resolution.8dff7e8fca32fa44.mjs": "8dff7e8fca32fa44f56da17b63955bb981b2311773fac6cf1618057fd18e77d9",
       "web/image_collection.490245783ceb641a.js": "490245783ceb641a4f5359a110e1d742a7abcd3a4adc5e71120dcf8edf42b48d",
       "web/prompt_director.ee8441b58371cbb8.js": "ee8441b58371cbb893f6a53b1524e088de14afe795574da7a57662b92c1a570d",
+      "web/qwen_image_21_resolution_control_deck.792fe5c0ca38a8b6.js": "792fe5c0ca38a8b6e86b28f29664de718028476fcaf63b255f34533fdc877fe9",
       "web/resolution_control_deck.6acd4567b0802646.js": "6acd4567b08026466fd2a0cffcd3939a2695c57bb2732cec3dff05468c29283e",
       "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d",
       "web/video_prompt.d0ec0d536f359776.js": "d0ec0d536f35977698c5d2bfa626dcf3a22d9650843c587260aea150fa57f4c6",
@@ -325,5 +335,40 @@
     "frontend_entrypoint": "web/wan3.966d9792a941c4af.js",
     "shared_halo": "web/halo.87ce22ea9cb20e75.mjs",
     "pyav_policy": "documented ComfyUI host prerequisite; not an installer dependency"
+  },
+  "qwen_image_21_resolution_addition": {
+    "baseline_commit": "97a65a299e1b2d6c19158ee1f44294ae27c23c11",
+    "baseline_version": "0.6.0.dev0",
+    "source_commit": "e4f4b3ec1aa33f88a3fa28050683225ce02e2104",
+    "builder_sha256": "591ac62624df02def9616e07a2a000cc5e4c0994acd6a72da8034f04fed2bf57",
+    "declaration_sha256": "116205a565d4fbd2d1a59f870a5c6fabdaae96b5cfc2c48dc7ade00c41dcb567",
+    "block_spec_sha256": "61135fe8744e357b6b4b78646ece2c478de7106bec4b7a5a13533a020d321c90",
+    "backend_sha256": "159d51993f911326f6e8f939bb2606ef51aa466682fd1728189be3dc69bb4407",
+    "frontend_source_sha256": "10d5850e56af816c68aa52b8874cfdf841023393924442d6977e3fa5e124dc07",
+    "frontend_entrypoint_sha256": "792fe5c0ca38a8b6e86b28f29664de718028476fcaf63b255f34533fdc877fe9",
+    "frontend_entrypoint": "web/qwen_image_21_resolution_control_deck.792fe5c0ca38a8b6.js",
+    "halo_dependency": "web/halo_resolution.8dff7e8fca32fa44.mjs",
+    "baseline_policy": "immutable-origin-main-and-reviewed-source-commit-bytes",
+    "changed_baseline_paths": [
+      "AGENT-INSTALL.md",
+      "CHANGELOG.md",
+      "INSTALL.md",
+      "MANIFEST.json",
+      "NODES.md",
+      "README.md",
+      "__init__.py",
+      "tests/test_distribution.py",
+      "tests/test_frontend_alias_compat.mjs"
+    ],
+    "new_paths": [
+      "_core/resolution_qwen_image_21_dimensions/__init__.py",
+      "docs/nodes/qwen-image-21-resolution.md",
+      "nodes/resolution_layout/matrix_qwenimage21resolution.py",
+      "tests/test_qwen_image_21_resolution.py",
+      "web/qwen_image_21_resolution_control_deck.792fe5c0ca38a8b6.js"
+    ],
+    "runtime_scope": "geometry only; no model inference or image transforms",
+    "live_ui_acceptance": "Classic and Nodes 2.0 verified locally on ComfyUI 0.37.0/frontend 1.53.6; Pod not tested",
+    "model_license": "Qwen Research License; non-commercial model; geometry table node does not alter it"
   }
 }

@@ -50,6 +50,7 @@ const expectedRegistrations = manifest.frontend_entrypoints.length;
 assert.equal(registrations.length, expectedRegistrations);
 assert.equal(new Set(registrations.map(item => item.name)).size, expectedRegistrations);
 assert(registrations.some(item => item.name === "matrix.h3-resolution.halo.classic"));
+assert(registrations.some(item => item.name === "matrix.qwen-image-21-resolution.halo"));
 assert(registrations.some(item => item.name === "matrixlab.video-prompt"));
 const pairs = [
   ["MATRIX_SpectralSampler", "MATRIXSpectralSampler", "halo.execution"],
@@ -112,6 +113,18 @@ for (const scales of ["1", "0.5,1"]) {
   assert(policy("MATRIXSpectralSampler"));
   assert.equal(policy("UnrelatedNode"), null);
 }
+const qwen = modules.get(file("qwen_image_21_resolution_control_deck")).namespace;
+const qwenTable = {
+  "1:1": [2048, 2048], "4:3": [2400, 1792], "3:4": [1792, 2400],
+  "3:2": [2528, 1696], "2:3": [1696, 2528], "16:9": [2752, 1536],
+  "9:16": [1536, 2752],
+};
+assert.equal(qwen.DEFAULT_STATE.aspect_ratio, "1:1");
+for (const [aspect_ratio, expected] of Object.entries(qwenTable)) {
+  assert.deepEqual(Array.from(qwen.calculateQwenImage21Resolution({aspect_ratio})), expected);
+}
+assert.equal(qwen.applyQwenImage21Action({aspect_ratio: "9:16"}, "reset").aspect_ratio, "1:1");
+assert.throws(() => qwen.calculateQwenImage21Resolution({aspect_ratio: "21:9"}), /aspect_ratio/);
 for (const [relative, expected] of Object.entries(manifest.frontend_alias_compatibility.frontend_assets)) {
   const data = fs.readFileSync(path.join(root, relative));
   assert.equal(crypto.createHash("sha256").update(data).digest("hex"), expected);

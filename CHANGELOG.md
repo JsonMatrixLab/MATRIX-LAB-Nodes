@@ -2,6 +2,19 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - Qwen Image 2.1 resolution integration - 2026-10-10
+
+- Add `MATRIX_QwenImage21Resolution` as the 25th registered class ID without
+  replacing existing nodes or changing the development version.
+- Provide the seven native Qwen Image 2.1 aspect-ratio sizes through one widget and
+  exactly two integer outputs named `width` and `height`; default and RESET are `1:1`.
+- Reuse the pack's single shared HALO resolution module and font assets; only the
+  node-specific control deck is added.
+- Record local renderer Classic and renderer Nodes 2.0 verification on ComfyUI
+  0.37.0/frontend 1.53.6. A Pod run remains not tested.
+- Note the Qwen Research License and non-commercial model boundary; this geometry
+  table node ships no model and does not alter that license.
+
 ## Unreleased - license change - 2026-09-29
 
 - Relicense the pack from proprietary terms to the Apache License 2.0 and add `NOTICE`.
