@@ -7,6 +7,11 @@ import sys
 import types
 from unittest import mock
 
+# Keep native extension modules outside the temporary host-stub import context.
+# Otherwise patch.dict restores sys.modules and a later test attempts an unsafe reload.
+import numpy
+import torch
+
 
 TESTS = Path(__file__).resolve().parent
 ROOT = TESTS.parent

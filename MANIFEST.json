@@ -123,6 +123,16 @@
       "content_hash": "61135fe8744e357b6b4b78646ece2c478de7106bec4b7a5a13533a020d321c90",
       "id": "resolution.qwen-image-21-dimensions",
       "version": "1.0.0"
+    },
+    {
+      "content_hash": "79d0ee01b515069b65e66198f5f023d34bed32f3ba21687a763b475ddd6d6c07",
+      "id": "ui.appearance",
+      "version": "0.7.0"
+    },
+    {
+      "content_hash": "61292e16619e000520054e5ec291c4fc6a5a66c237b0183b977405414f93d6a0",
+      "id": "sample.scail-window",
+      "version": "1.0.0"
     }
   ],
   "builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -151,7 +161,8 @@
     "MATRIX_Prompt": "MATRIX LAB/Prompting",
     "MATRIX_H3Resolution": "MATRIX LAB/Resolution & Layout",
     "MATRIX_QwenImage21Resolution": "MATRIX LAB/Resolution & Layout",
-    "MATRIX_Wan3": "MATRIX LAB/Video Generation"
+    "MATRIX_Wan3": "MATRIX LAB/Video Generation",
+    "MATRIX_SCAILWindow": "MATRIX LAB/Video Generation"
   },
   "compiler_sha256": "ecb4e0a37e55c7eb60f4263e1dfd0f6b0e7888c32c812922570b60e8ad5dd882",
   "declaration_hashes": {
@@ -171,13 +182,15 @@
     "MATRIX_AIInfluencerResolution2K4K": "78dfa19ace9ef16911c70150e9bd81b208f9fbeda89acad62a0d4e18668438ef",
     "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378",
     "MATRIX_H3Resolution": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b",
-    "MATRIX_QwenImage21Resolution": "116205a565d4fbd2d1a59f870a5c6fabdaae96b5cfc2c48dc7ade00c41dcb567"
+    "MATRIX_QwenImage21Resolution": "116205a565d4fbd2d1a59f870a5c6fabdaae96b5cfc2c48dc7ade00c41dcb567",
+    "MATRIX_SCAILWindow": "83e263f0001d06a4cbc77e68a3851c4f4e0877465f3fa44512896b953596af75"
   },
   "display_name": "MATRIX LAB NODES",
   "frontend_entrypoints": [
     "web/ai_influencer_resolution.7beab9aef41639c1.js",
     "web/ai_influencer_resolution_2k4k.1dce86d9f5ee222b.js",
     "web/easy_crop.6dbc906cba3704a2.js",
+    "web/flat_entry.0f3c3ed2942d4b44.js",
     "web/h3_resolution_control_deck.a052234431446e9e.js",
     "web/halo_execution.e0dab22fc32c519c.js",
     "web/image_collection.490245783ceb641a.js",
@@ -209,6 +222,7 @@
     "MATRIX_Prompt",
     "MATRIX_QwenImage21Resolution",
     "MATRIX_Resolution",
+    "MATRIX_SCAILWindow",
     "MATRIX_SkinMask",
     "MATRIX_SpectralSampler",
     "MATRIX_VideoMetadataKiller",
@@ -217,7 +231,7 @@
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "assembled-unverified",
-  "version": "0.6.0.dev0",
+  "version": "0.7.0.dev0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -278,12 +292,16 @@
       "web/resolution_control_deck.6acd4567b0802646.js": "6acd4567b08026466fd2a0cffcd3939a2695c57bb2732cec3dff05468c29283e",
       "web/resolution_geometry.7c84089742df0120.mjs": "7c84089742df01204445ae3e811d88e7d74f3ba6282f788e44331e3ef3e5f82d",
       "web/video_prompt.d0ec0d536f359776.js": "d0ec0d536f35977698c5d2bfa626dcf3a22d9650843c587260aea150fa57f4c6",
-      "web/wan3.966d9792a941c4af.js": "966d9792a941c4af100402070ec9d319876d71bf6f43722b4bed277ea621a72b"
+      "web/wan3.966d9792a941c4af.js": "966d9792a941c4af100402070ec9d319876d71bf6f43722b4bed277ea621a72b",
+      "web/flat.2afa06e7cf948e37.mjs": "2afa06e7cf948e37671e0a4a762ab89cc98095be557670a57c82d89d0d131755",
+      "web/flat_entry.0f3c3ed2942d4b44.js": "0f3c3ed2942d4b446545de319dea68283f3c9af2dc952d7e876a6de45c5f1108",
+      "web/renderer.2c53217d2a7c4360.mjs": "2c53217d2a7c4360be949a0375e68ded4915e90343505d069d01d118a244cf2f"
     }
   },
   "native_node_sources": {
     "MATRIX_VideoMetadataKiller": "07a0959784ffb4bce0d9f5fc9363a1a2a1a7f60ac9a846b68b37f23ec927b5eb",
-    "MATRIX_Wan3": "65d4e251251b3df264434ac51a140a1a034f7ae6b762f8912148a3ca67ee2e0f"
+    "MATRIX_Wan3": "65d4e251251b3df264434ac51a140a1a034f7ae6b762f8912148a3ca67ee2e0f",
+    "MATRIX_SCAILWindow": "046f137abfb91fe31ecad81a344189b144e3c43296d721f9dc719aa2198c9b76"
   },
   "video_prompt_candidate": {
     "baseline_commit": "27c48f36b0ad871b301d9cb848c0f4484c2850f5",
@@ -370,5 +388,21 @@
     "runtime_scope": "geometry only; no model inference or image transforms",
     "live_ui_acceptance": "Classic and Nodes 2.0 verified locally on ComfyUI 0.37.0/frontend 1.53.6; Pod not tested",
     "model_license": "Qwen Research License; non-commercial model; geometry table node does not alter it"
+  },
+  "scail_window_addition": {
+    "baseline_commit": "97a65a299e1b2d6c19158ee1f44294ae27c23c11",
+    "source_pack_tree_sha256": "42cc00e91f507411ae63cf9c87d35f3ee5a3bc12d3b04488e1bb66de733f03a5",
+    "builder_sha256": "3b896aaa7b62a653809fa6df275ecb95eaf87dbfc9d57959291a4f482abeac5d",
+    "registration_count": 26,
+    "current_node_count": 22,
+    "alias_count": 4,
+    "category_count": 7,
+    "appearance": "flat",
+    "frontend_entrypoint": "web/flat_entry.0f3c3ed2942d4b44.js",
+    "shared_renderer": "web/renderer.2c53217d2a7c4360.mjs",
+    "shared_halo_unchanged": "web/halo.87ce22ea9cb20e75.mjs",
+    "live_renderer_acceptance": "not tested",
+    "gpu_execution": "not tested",
+    "rebased_onto": "f71fb38 (adds MATRIX_QwenImage21Resolution); qwen_image_21_resolution_addition retained"
   }
 }

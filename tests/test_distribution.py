@@ -53,6 +53,7 @@ VIDEO_PROMPT_NODE_IDS = {"MATRIX_VideoMetadataKiller", "MATRIX_Prompt"}
 H3_NODE_ID = "MATRIX_H3Resolution"
 QWEN_IMAGE_21_NODE_ID = "MATRIX_QwenImage21Resolution"
 WAN_NODE_ID = "MATRIX_Wan3"
+SCAIL_NODE_ID = "MATRIX_SCAILWindow"
 NODE_DIRECTORIES = {
     "image_processing",
     "input_output",
@@ -176,7 +177,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID, QWEN_IMAGE_21_NODE_ID, WAN_NODE_ID}
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID, QWEN_IMAGE_21_NODE_ID, WAN_NODE_ID, SCAIL_NODE_ID}
         self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))
@@ -212,8 +213,8 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_class_ids_match_public_product_names(self):
         for node_id, display in self.pack.NODE_DISPLAY_NAME_MAPPINGS.items():
-            # MATRIX_Wan3 is the one documented legacy serialization exception.
-            if node_id in COMPAT_ALIASES or node_id == WAN_NODE_ID:
+            # WAN keeps its legacy display; SCAIL adds ENGINE while retaining its class ID.
+            if node_id in COMPAT_ALIASES or node_id in {WAN_NODE_ID, SCAIL_NODE_ID}:
                 continue
             with self.subTest(node_id=node_id):
                 self.assertRegex(node_id, r"^MATRIX_[A-Z][A-Za-z0-9]*$")

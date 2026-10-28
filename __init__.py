@@ -110,3 +110,10 @@ if _wan3_prompt_server is not None:
     from ._core.wan3.credentials import register_routes as _register_wan3_routes
     _register_wan3_routes(_wan3_prompt_server.instance)
 # END MATRIX WAN 3.0 addition
+
+
+# BEGIN MATRIX SCAIL Window addition
+from .nodes.video_generation.matrix_scailwindow import NODE_CLASS_MAPPINGS as _scail_c, NODE_DISPLAY_NAME_MAPPINGS as _scail_d
+NODE_CLASS_MAPPINGS.update(_scail_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_scail_d)
+# END MATRIX SCAIL Window addition

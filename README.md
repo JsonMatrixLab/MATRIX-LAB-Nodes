@@ -4,11 +4,12 @@
 
 Twenty-one current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
 output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
-25 registered class IDs remain in seven consistent `MATRIX LAB` categories.
+26 registered class IDs remain in seven consistent `MATRIX LAB` categories.
 
-> **Development package version 0.6.0.dev0.** The pack includes MATRIX WAN 3.0 and
-> MATRIX QWEN IMAGE 2.1 RESOLUTION while retaining all prior nodes and the four Krea 2
-> V1 aliases. Older H3 graphs: read the [H3 guide and migration boundary](docs/nodes/h3-resolution.md).
+> **Development package version 0.7.0.dev0.** The pack includes MATRIX WAN 3.0,
+> MATRIX QWEN IMAGE 2.1 RESOLUTION and MATRIX SCAIL WINDOW ENGINE while retaining all
+> prior nodes and the four Krea 2 V1 aliases. Older H3 graphs: read the
+> [H3 guide and migration boundary](docs/nodes/h3-resolution.md).
 
 ## MATRIX Krea 2 — AI Influencer 4K (FP8)
 
@@ -32,7 +33,7 @@ replacement with Photo Finisher; see the [migration guide](docs/migration.md).
 Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable
 it beside `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` or
 `MATRIXLAB-UI-Nodes` split packs, a standalone Metadata Killer, or a standalone
-`MATRIX_Wan3` or `MATRIX_QwenImage21Resolution` installation: registrations or
+`MATRIX_Wan3`, `MATRIX_QwenImage21Resolution`, `matrix-scail-window`, or `matrix-scail-window-flat` installation: registrations or
 frontend targeting overlap. Preserve existing packs and workflows, obtain authority
 before disabling them recoverably, and review the [migration guide](docs/migration.md)
 before switching.
@@ -83,9 +84,10 @@ Try Photo Finisher without a model or provider using the [included example workf
 
 Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
 
-## Video Generation (1 current)
+## Video Generation (2 current)
 
 - [**MATRIX WAN 3.0**](docs/nodes/wan3.md) — submit one of five WAN 3.0 operations to WaveSpeed and return a native ComfyUI VIDEO. Every new generation is billable; a user-supplied WaveSpeed key and explicit activation are required.
+- [**MATRIX SCAIL WINDOW ENGINE**](docs/nodes/scail-window.md) — run SCAIL-2 through fixed 81/5/76 windows and return exactly the requested number of decoded IMAGE frames.
 
 The WAN node requires ComfyUI 0.37.0, frontend 1.53.6, and PyAV supplied by the
 ComfyUI host. The pack does not install or replace the host's media stack.
@@ -95,7 +97,7 @@ ComfyUI host. The pack does not install or replace the host's media stack.
 Four aliases preserve schema-compatible V1 graph identities:
 `MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
 `MATRIXLAB_ImageBatchLoader`, and `MATRIXLAB_PromptDirector`. These registrations
-are included in the 25-ID manifest; they do not add categories or replace the
+are included in the 26-ID manifest; they do not add categories or replace the
 current IDs. See [NODES.md](NODES.md) for the exact mapping.
 
 Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The

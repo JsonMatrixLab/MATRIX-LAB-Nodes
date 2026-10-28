@@ -50,4 +50,4 @@ jobs:
           done < <(find web -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
           test "$found" -eq 1
           node --experimental-vm-modules tests/test_frontend_alias_compat.mjs .
-          node --test tests/test_wan3_frontend.mjs tests/test_wan3_halo_housing.mjs
+          node --test tests/test_wan3_frontend.mjs tests/test_wan3_halo_housing.mjs tests/test_scail_window_flat.mjs

@@ -2,6 +2,19 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - MATRIX SCAIL Window integration - 2026-10-28
+
+- Add `MATRIX_SCAILWindow` as the 26th registration and second node in
+  `MATRIX LAB/Video Generation`, preserving its class ID, ordered inputs, widgets,
+  defaults, ranges, `images: IMAGE` output, and SCAIL-2 execution behavior.
+- Change only its display name to `MATRIX SCAIL WINDOW ENGINE` and its category to
+  the unified pack's Video Generation category; saved workflows retain the class ID.
+- Ship FLAT only for this class ID while retaining the existing HALO behavior for all
+  prior nodes, with one FLAT runtime and one shared renderer detector.
+- Set the development version to `0.7.0.dev0`: 22 current nodes plus four aliases.
+- Offline tests pass. The same engine ran the MATRIX SCAIL-2 Motion Control 2.2.0
+  workflow on an RTX 5090 as a standalone pack; renderer Nodes 2.0 is not tested.
+
 ## Unreleased - Qwen Image 2.1 resolution integration - 2026-10-10
 
 - Add `MATRIX_QwenImage21Resolution` as the 25th registered class ID without
