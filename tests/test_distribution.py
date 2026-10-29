@@ -52,6 +52,7 @@ MODEL_GUARD_NODE_ID = "MATRIX_Krea2ModelGuard"
 VIDEO_PROMPT_NODE_IDS = {"MATRIX_VideoMetadataKiller", "MATRIX_Prompt"}
 H3_NODE_ID = "MATRIX_H3Resolution"
 QWEN_IMAGE_21_NODE_ID = "MATRIX_QwenImage21Resolution"
+FLUX_3_KLEIN_NODE_ID = "MATRIX_Flux3KleinResolution"
 WAN_NODE_ID = "MATRIX_Wan3"
 SCAIL_NODE_ID = "MATRIX_SCAILWindow"
 NODE_DIRECTORIES = {
@@ -177,7 +178,7 @@ class DistributionStructureTests(unittest.TestCase):
 
     def test_manifest_matches_imported_inventory_and_categories(self):
         imported_ids = set(self.pack.NODE_CLASS_MAPPINGS)
-        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID, QWEN_IMAGE_21_NODE_ID, WAN_NODE_ID, SCAIL_NODE_ID}
+        expected = BASE_NODE_IDS | {ADDITIVE_NODE_ID, CLIP_NODE_ID, MODEL_GUARD_NODE_ID} | VIDEO_PROMPT_NODE_IDS | set(COMPAT_ALIASES) | {H3_NODE_ID, QWEN_IMAGE_21_NODE_ID, FLUX_3_KLEIN_NODE_ID, WAN_NODE_ID, SCAIL_NODE_ID}
         self.assertEqual(imported_ids, expected)
         self.assertEqual(imported_ids, set(self.manifest["nodes"]))
         self.assertEqual(imported_ids, set(self.manifest["categories"]))

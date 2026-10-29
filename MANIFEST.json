@@ -125,6 +125,11 @@
       "version": "1.0.0"
     },
     {
+      "content_hash": "990c0c5439209df7da6167cbfaee633206bda2de250d56911ed4fd45b7dd227f",
+      "id": "resolution.flux-3-klein-dimensions",
+      "version": "1.0.0"
+    },
+    {
       "content_hash": "79d0ee01b515069b65e66198f5f023d34bed32f3ba21687a763b475ddd6d6c07",
       "id": "ui.appearance",
       "version": "0.7.0"
@@ -142,6 +147,7 @@
     "MATRIX_CropTailPaste": "MATRIX LAB/Sampling & Detail",
     "MATRIX_EasyCrop": "MATRIX LAB/Image Processing",
     "MATRIX_EyeMask": "MATRIX LAB/Masks & Detection",
+    "MATRIX_Flux3KleinResolution": "MATRIX LAB/Resolution & Layout",
     "MATRIX_ImageBatchLoader": "MATRIX LAB/Input & Output",
     "MATRIX_LatentTail": "MATRIX LAB/Sampling & Detail",
     "MATRIX_MetadataKiller": "MATRIX LAB/Input & Output",
@@ -183,6 +189,7 @@
     "MATRIX_Prompt": "e60f34641a750173aabd01caadda42d70be44d57e1a14348117a2cd70cc93378",
     "MATRIX_H3Resolution": "cbf2dbd1136aa17e48d7419933ee4761eed6cc440aee11a65c7ed2f36f07c99b",
     "MATRIX_QwenImage21Resolution": "116205a565d4fbd2d1a59f870a5c6fabdaae96b5cfc2c48dc7ade00c41dcb567",
+    "MATRIX_Flux3KleinResolution": "d5535c55358e0d337ea245053999c74cbd523ccdc10a9b8cd4d74548fb9d5a95",
     "MATRIX_SCAILWindow": "83e263f0001d06a4cbc77e68a3851c4f4e0877465f3fa44512896b953596af75"
   },
   "display_name": "MATRIX LAB NODES",
@@ -191,6 +198,7 @@
     "web/ai_influencer_resolution_2k4k.1dce86d9f5ee222b.js",
     "web/easy_crop.6dbc906cba3704a2.js",
     "web/flat_entry.0f3c3ed2942d4b44.js",
+    "web/flux_3_klein_resolution_control_deck.f85b3ea2b2748d21.js",
     "web/h3_resolution_control_deck.a052234431446e9e.js",
     "web/halo_execution.e0dab22fc32c519c.js",
     "web/image_collection.490245783ceb641a.js",
@@ -211,6 +219,7 @@
     "MATRIX_CropTailPaste",
     "MATRIX_EasyCrop",
     "MATRIX_EyeMask",
+    "MATRIX_Flux3KleinResolution",
     "MATRIX_H3Resolution",
     "MATRIX_ImageBatchLoader",
     "MATRIX_Krea2CLIPLoader",
@@ -231,7 +240,7 @@
   "pack_id": "matrix-lab-nodes",
   "runtime_asset_registry_sha256": "ab1955cfe5e8d05b832a4f63cae121d9afd6f74d3a9048b0107cf634659cada8",
   "status": "assembled-unverified",
-  "version": "0.7.0.dev0",
+  "version": "0.8.0.dev0",
   "candidate_provenance": {
     "strategy": "current-canonical-base-plus-additive-factory-node",
     "base_builder_sha256": "831ce90d7ec059f0538c8b690e2078339fddd81ecf8197fb8ec4767f920606b4",
@@ -282,6 +291,7 @@
       "web/assets/font-manifest.json": "60aa2ed87cce68373e4087805493dedafdfeb8715670cc4c64f594ab28401810",
       "web/easy_crop.6dbc906cba3704a2.js": "6dbc906cba3704a2c08261fdcbefc697932cd55a6ec64826e39b9fea7b8c8bd7",
       "web/gallery.e159304effcb5c7f.mjs": "e159304effcb5c7fbe7cffc159336d87469165e7d42572dbed364cf6e6d4ef0d",
+      "web/flux_3_klein_resolution_control_deck.f85b3ea2b2748d21.js": "f85b3ea2b2748d21a919b125178a81cdb1c62885f47e0feabfe2ee4c87758d8e",
       "web/h3_resolution_control_deck.a052234431446e9e.js": "a052234431446e9e99aa0da9f2663974ed3daf6d4dd9086b6c08671a4af35002",
       "web/halo.87ce22ea9cb20e75.mjs": "87ce22ea9cb20e75b3de2a93406a1aa5c4496acde7cba6202c901c43cf022e32",
       "web/halo_execution.e0dab22fc32c519c.js": "e0dab22fc32c519cef8447d53d283a98a9afbd5ac0693d099a918446e465c520",
@@ -388,6 +398,41 @@
     "runtime_scope": "geometry only; no model inference or image transforms",
     "live_ui_acceptance": "Classic and Nodes 2.0 verified locally on ComfyUI 0.37.0/frontend 1.53.6; Pod not tested",
     "model_license": "Qwen Research License; non-commercial model; geometry table node does not alter it"
+  },
+  "flux_3_klein_resolution_addition": {
+    "baseline_commit": "c4c390af18f0d0590602b334626f1a0cc53587f5",
+    "baseline_version": "0.7.0.dev0",
+    "source_commit": "84ba0797163da3a39da6d38053960b79a89cf7a6",
+    "builder_sha256": "0160269250dab07ab51bcf7d986b00fb79040754d375b3691f84a54b70cc93a4",
+    "declaration_sha256": "d5535c55358e0d337ea245053999c74cbd523ccdc10a9b8cd4d74548fb9d5a95",
+    "block_spec_sha256": "990c0c5439209df7da6167cbfaee633206bda2de250d56911ed4fd45b7dd227f",
+    "backend_sha256": "e958adca56b49c0d00edb3365bd1a833cfe8ac5a00eff65dad5b42d4f4e31543",
+    "frontend_source_sha256": "fbf066ddb40de11985247ca6260d9727eefc8e03305d45eb8d3dbf4fc0cd8470",
+    "frontend_entrypoint_sha256": "f85b3ea2b2748d21a919b125178a81cdb1c62885f47e0feabfe2ee4c87758d8e",
+    "frontend_entrypoint": "web/flux_3_klein_resolution_control_deck.f85b3ea2b2748d21.js",
+    "halo_dependency": "web/halo_resolution.8dff7e8fca32fa44.mjs",
+    "baseline_policy": "immutable-origin-main-and-owner-tested-pack-bytes",
+    "changed_baseline_paths": [
+      "AGENT-INSTALL.md",
+      "CHANGELOG.md",
+      "INSTALL.md",
+      "MANIFEST.json",
+      "NODES.md",
+      "README.md",
+      "__init__.py",
+      "pyproject.toml",
+      "tests/test_distribution.py",
+      "tests/test_frontend_alias_compat.mjs"
+    ],
+    "new_paths": [
+      "_core/resolution_flux_3_klein_dimensions/__init__.py",
+      "docs/nodes/flux-3-klein-resolution.md",
+      "nodes/resolution_layout/matrix_flux3kleinresolution.py",
+      "tests/test_flux_3_klein_resolution.py",
+      "web/flux_3_klein_resolution_control_deck.f85b3ea2b2748d21.js"
+    ],
+    "runtime_scope": "geometry only; no model inference or image transforms",
+    "live_ui_acceptance": "Classic and Nodes 2.0 verified locally on ComfyUI 0.37.0; real render and complete v2 Pod acceptance not tested"
   },
   "scail_window_addition": {
     "baseline_commit": "97a65a299e1b2d6c19158ee1f44294ae27c23c11",

@@ -51,6 +51,10 @@ from .nodes.resolution_layout.matrix_qwenimage21resolution import NODE_CLASS_MAP
 NODE_CLASS_MAPPINGS.update(_qwen_image_21_resolution_c)
 NODE_DISPLAY_NAME_MAPPINGS.update(_qwen_image_21_resolution_d)
 
+from .nodes.resolution_layout.matrix_flux3kleinresolution import NODE_CLASS_MAPPINGS as _flux_3_klein_resolution_c, NODE_DISPLAY_NAME_MAPPINGS as _flux_3_klein_resolution_d
+NODE_CLASS_MAPPINGS.update(_flux_3_klein_resolution_c)
+NODE_DISPLAY_NAME_MAPPINGS.update(_flux_3_klein_resolution_d)
+
 try:
     import folder_paths as _matrix_folder_paths
 except ImportError:

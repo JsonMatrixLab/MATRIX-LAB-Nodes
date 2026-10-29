@@ -2,6 +2,18 @@
 
 User-visible changes are recorded here. This file describes package content; publication tags and release channels are separate facts.
 
+## Unreleased - FLUX 3 Klein resolution integration - 2026-10-29
+
+- Add `MATRIX_Flux3KleinResolution` as the 27th registration without replacing
+  existing nodes or changing saved workflow identities.
+- Provide 28 frozen sizes through `aspect_ratio` and `resolution` widgets and exactly
+  two integer outputs named `width` and `height`; defaults and RESET are `1:1` / `1K`.
+- Reuse the pack's single shared HALO resolution module and font assets; only the
+  node-specific control deck is added.
+- Set the development version to `0.8.0.dev0`: 23 current nodes plus four aliases.
+- Record local renderer Classic and renderer Nodes 2.0 verification on ComfyUI
+  0.37.0. A real FLUX 3 render and complete v2 Pod acceptance pass remain not tested.
+
 ## Unreleased - MATRIX SCAIL Window integration - 2026-10-28
 
 - Add `MATRIX_SCAILWindow` as the 26th registration and second node in

@@ -1,6 +1,6 @@
 # Node reference
 
-The 0.7.0 development pack registers 26 class IDs in seven `MATRIX LAB` groups: 22
+The 0.8.0 development pack registers 27 class IDs in seven `MATRIX LAB` groups: 23
 current nodes and four schema-compatible aliases. The installed `MANIFEST.json` is
 authoritative for a particular artifact.
 
@@ -14,6 +14,7 @@ authoritative for a particular artifact.
 | Resolution & Layout | Current | MATRIX AI INFLUENCER RESOLUTION 2K/4K | `MATRIX_AIInfluencerResolution2K4K` | ratio, 2K/4K tier | `width`, `height` | [Guide](docs/nodes/ai-influencer-resolution-2k4k.md) |
 | Resolution & Layout | Current | MATRIX H3 RESOLUTION | `MATRIX_H3Resolution` | `aspect_ratio`, `resolution_tier`, `custom_width`, `custom_height` | `width`, `height` | [Guide](docs/nodes/h3-resolution.md) |
 | Resolution & Layout | Current | MATRIX QWEN IMAGE 2.1 RESOLUTION | `MATRIX_QwenImage21Resolution` | `aspect_ratio` | `width`, `height` | [Guide](docs/nodes/qwen-image-21-resolution.md) |
+| Resolution & Layout | Current | MATRIX FLUX 3 KLEIN RESOLUTION | `MATRIX_Flux3KleinResolution` | `aspect_ratio`, `resolution` | `width`, `height` | [Guide](docs/nodes/flux-3-klein-resolution.md) |
 | Sampling & Detail | Current | MATRIX SPECTRAL SAMPLER | `MATRIX_SpectralSampler` | sampler and spectral controls | `sampler` | [Guide](docs/nodes/spectral-sampler.md) |
 | Sampling & Detail | Current | MATRIX LATENT TAIL | `MATRIX_LatentTail` | model/noise/conditioning/latent; tail controls | `latent` | [Guide](docs/nodes/latent-tail.md) |
 | Sampling & Detail | Current | MATRIX CROP TAIL PASTE | `MATRIX_CropTailPaste` | image/mask/model/noise/conditioning/VAE; crop controls | `image` | [Guide](docs/nodes/crop-tail-paste.md) |
@@ -44,5 +45,10 @@ The Qwen Image 2.1 HALO controls, seven table selections, RESET, saved state, an
 queue path were verified locally in Classic and Nodes 2.0 with ComfyUI 0.37.0 and
 frontend 1.53.6. A Pod run is **NOT TESTED**. The Qwen Image 2.1 model uses the Qwen
 Research License for non-commercial use; this table node does not alter that license.
+
+The FLUX 3 Klein HALO controls, all 28 table selections, RESET, saved state, queue
+path, and a simulated graph were verified locally in Classic and Nodes 2.0 with
+ComfyUI 0.37.0 on 2026-10-15. A real FLUX 3 render and complete v2 Pod acceptance
+pass are **NOT TESTED**.
 
 SCAIL Window offline tests pass; renderer Nodes 2.0 acceptance of this unified build is not tested.

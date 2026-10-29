@@ -1,19 +1,20 @@
 # Installation contract for AI agents
 
-Install the exact operator-authorized MATRIX LAB NODES package version 0.7.0.dev0 as one
+Install the exact operator-authorized MATRIX LAB NODES package version 0.8.0.dev0 as one
 ComfyUI custom-node pack. Treat the installed `MANIFEST.json` as the exact class
-inventory and reject artifacts whose manifest does not declare version `0.7.0.dev0`.
+inventory and reject artifacts whose manifest does not declare version `0.8.0.dev0`.
 
 ## Hard boundaries
 
 - Resolve the intended ComfyUI root from the launcher or operator configuration; never guess from a common path.
 - Do not overwrite, merge, delete, move, or replace an existing installation without explicit operator approval.
 - An existing target is acceptable only when its recorded source/hash and manifest
-  match the exact operator-authorized 0.7.0.dev0 artifact. Refuse enabled legacy packs
+  match the exact operator-authorized 0.8.0.dev0 artifact. Refuse enabled legacy packs
   that register overlapping class IDs.
 - Treat `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` and
   `MATRIXLAB-UI-Nodes` split packs, a standalone Metadata Killer, and a standalone
-  `MATRIX_Wan3` installation, a standalone `MATRIX_QwenImage21Resolution`, `matrix-scail-window`, and `matrix-scail-window-flat` as explicit
+  `MATRIX_Wan3` installation, a standalone `MATRIX_QwenImage21Resolution`, a standalone
+  `MATRIX_Flux3KleinResolution`, `matrix-scail-window`, and `matrix-scail-window-flat` as explicit
   collision candidates. Preserve them and disable or replace them recoverably only
   with the operator's case-specific authority.
 - Do not change ComfyUI core or replace a working host Python, Torch, or CUDA environment.
@@ -27,12 +28,13 @@ inventory and reject artifacts whose manifest does not declare version `0.7.0.de
 2. Stop ComfyUI through its normal controlled process.
 3. Inspect `custom_nodes` for the target, `matrix-krea2-adapter`, the older
    `MATRIXLAB-Nodes` and `MATRIXLAB-UI-Nodes` split packs, and any standalone
-   Metadata Killer, `MATRIX_Wan3`, `matrix-scail-window`, and `matrix-scail-window-flat`.
+   Metadata Killer, `MATRIX_Wan3`, `MATRIX_QwenImage21Resolution`,
+   `MATRIX_Flux3KleinResolution`, `matrix-scail-window`, and `matrix-scail-window-flat`.
    Report exact folders and preserve them. If the target already
    exists, record its source/hash and read its manifest. Continue in place only if it
-   is the exact authorized 0.7.0.dev0 artifact. Any disable or replacement requires the
+   is the exact authorized 0.8.0.dev0 artifact. Any disable or replacement requires the
    operator's case-specific authority and a recoverable rollback.
-4. Obtain the exact operator-authorized 0.7.0.dev0 commit or release archive. If GitHub requests access,
+4. Obtain the exact operator-authorized 0.8.0.dev0 commit or release archive. If GitHub requests access,
    use an authenticated repository source or an owner-supplied archive. Record the
    commit SHA or SHA-256 before installation.
 5. If the exact artifact is not already installed, place it in a new direct child
@@ -41,8 +43,8 @@ inventory and reject artifacts whose manifest does not declare version `0.7.0.de
    surprises, or files outside that folder.
 6. Verify that the root contains `__init__.py`, `MANIFEST.json`, `requirements.txt`,
    `_core/`, `nodes/`, and `web/`. Read `MANIFEST.json`; require `pack_id`
-   `matrix-lab-nodes`, version `0.7.0.dev0`, 26 unique class IDs, and seven category groups.
-   The IDs must resolve to 22 current nodes plus the four aliases listed in
+   `matrix-lab-nodes`, version `0.8.0.dev0`, 27 unique class IDs, and seven category groups.
+   The IDs must resolve to 23 current nodes plus the four aliases listed in
    `NODES.md`. Do not infer the
    inventory from filenames or an older manifest.
 7. Require ComfyUI 0.37.0/frontend 1.53.6 and an existing host PyAV (`av`). Resolve
@@ -50,9 +52,10 @@ inventory and reject artifacts whose manifest does not declare version `0.7.0.de
    deliberately not an installer dependency. Preserve an already working Torch/CUDA
    and media stack; stop if dependency resolution would replace host-critical packages.
 8. Restart ComfyUI through its normal launcher. Treat any pack import or frontend asset error as failure.
-9. Confirm from startup records and live node metadata that all 26 IDs resolve to the
+9. Confirm from startup records and live node metadata that all 27 IDs resolve to the
    unified `matrix-lab-nodes` folder. Stop if any provider or frontend asset resolves
    to `matrix-krea2-adapter`, an older split pack, the standalone Metadata Killer,
+   `MATRIX_QwenImage21Resolution`, `MATRIX_Flux3KleinResolution`,
    `matrix-scail-window`, or `matrix-scail-window-flat`.
 10. In the visible UI, load separate copies of a legacy-ID workflow and a current-ID
     workflow. Verify green MATRIX controls for both IDs in each pair: Spectral
@@ -62,7 +65,9 @@ inventory and reject artifacts whose manifest does not declare version `0.7.0.de
     queue any model, detector, sampler, provider path, or paid action.
 12. Add `MATRIX_QwenImage21Resolution`, verify its `1:1` default and 2048 by 2048
     outputs, and do not queue a model workflow.
-13. Report the installed source/hash, target folder, manifest version and all 26
+13. Add `MATRIX_Flux3KleinResolution`, verify its `1:1` / `1K` defaults and 1024 by
+    1024 outputs, and do not queue a model workflow.
+14. Report the installed source/hash, target folder, manifest version and all 27
     providers, dependency actions, paired-ID visible results, geometry result, and
     every blocker. Distinguish offline checks from unperformed live renderer, GPU,
     model, and workflow acceptance.

@@ -2,12 +2,12 @@
 
 [![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
 
-Twenty-one current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
+Twenty-three current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
 output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
-26 registered class IDs remain in seven consistent `MATRIX LAB` categories.
+27 registered class IDs remain in seven consistent `MATRIX LAB` categories.
 
-> **Development package version 0.7.0.dev0.** The pack includes MATRIX WAN 3.0,
-> MATRIX QWEN IMAGE 2.1 RESOLUTION and MATRIX SCAIL WINDOW ENGINE while retaining all
+> **Development package version 0.8.0.dev0.** The pack includes MATRIX WAN 3.0,
+> MATRIX QWEN IMAGE 2.1 RESOLUTION, MATRIX FLUX 3 KLEIN RESOLUTION, and MATRIX SCAIL WINDOW ENGINE while retaining all
 > prior nodes and the four Krea 2 V1 aliases. Older H3 graphs: read the
 > [H3 guide and migration boundary](docs/nodes/h3-resolution.md).
 
@@ -33,7 +33,8 @@ replacement with Photo Finisher; see the [migration guide](docs/migration.md).
 Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable
 it beside `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` or
 `MATRIXLAB-UI-Nodes` split packs, a standalone Metadata Killer, or a standalone
-`MATRIX_Wan3`, `MATRIX_QwenImage21Resolution`, `matrix-scail-window`, or `matrix-scail-window-flat` installation: registrations or
+`MATRIX_Wan3`, `MATRIX_QwenImage21Resolution`, `MATRIX_Flux3KleinResolution`,
+`matrix-scail-window`, or `matrix-scail-window-flat` installation: registrations or
 frontend targeting overlap. Preserve existing packs and workflows, obtain authority
 before disabling them recoverably, and review the [migration guide](docs/migration.md)
 before switching.
@@ -44,13 +45,14 @@ before switching.
 - [**MATRIX METADATA KILLER**](docs/nodes/metadata-killer.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
 - [**MATRIX VIDEO METADATA KILLER**](docs/nodes/video-metadata-killer.md) — remux MP4 video/audio into a newly saved native VIDEO while removing descriptive container and stream tags.
 
-## Resolution & Layout (5 current)
+## Resolution & Layout (6 current)
 
 - [**MATRIX RESOLUTION**](docs/nodes/resolution.md) — calculate 1K, 2K, 4K, or exact custom pixel dimensions across common aspect ratios.
 - [**MATRIX AI INFLUENCER RESOLUTION**](docs/nodes/ai-influencer-resolution.md) — select 1:1, 9:16, or 3:4 geometry at 1K, 2K, or 4K.
 - [**MATRIX AI INFLUENCER RESOLUTION 2K/4K**](docs/nodes/ai-influencer-resolution-2k4k.md) — use the focused two-tier geometry selector required by current Krea 2 graphs.
 - [**MATRIX H3 RESOLUTION**](docs/nodes/h3-resolution.md) — return exact integer `width` and `height` generation geometry from four canonical widgets.
 - [**MATRIX QWEN IMAGE 2.1 RESOLUTION**](docs/nodes/qwen-image-21-resolution.md) — select one of the seven native Qwen Image 2.1 sizes with a `1:1` default and HALO RESET state.
+- [**MATRIX FLUX 3 KLEIN RESOLUTION**](docs/nodes/flux-3-klein-resolution.md) — select one of 28 frozen FLUX 3 Klein sizes across four resolution tiers with a `1:1` / `1K` default and HALO RESET state.
 
 Resolution nodes return integer geometry. They do not certify that a model supports the selected dimensions.
 
@@ -97,7 +99,7 @@ ComfyUI host. The pack does not install or replace the host's media stack.
 Four aliases preserve schema-compatible V1 graph identities:
 `MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
 `MATRIXLAB_ImageBatchLoader`, and `MATRIXLAB_PromptDirector`. These registrations
-are included in the 26-ID manifest; they do not add categories or replace the
+are included in the 27-ID manifest; they do not add categories or replace the
 current IDs. See [NODES.md](NODES.md) for the exact mapping.
 
 Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The
@@ -111,6 +113,11 @@ The Qwen Image 2.1 resolution controls were verified locally in renderer Classic
 renderer Nodes 2.0 on ComfyUI 0.37.0/frontend 1.53.6; a Pod run is not tested. The
 Qwen Image 2.1 model is under the Qwen Research License for non-commercial use. This
 geometry table node ships no model and does not change that license.
+
+The FLUX 3 Klein resolution controls and all 28 sizes were verified locally in
+renderer Classic and renderer Nodes 2.0 on ComfyUI 0.37.0 on 2026-10-15. A real
+FLUX 3 render and a complete v2 Pod acceptance pass are not tested. This geometry
+table node ships no model.
 
 ## Package boundary
 

@@ -51,6 +51,7 @@ assert.equal(registrations.length, expectedRegistrations);
 assert.equal(new Set(registrations.map(item => item.name)).size, expectedRegistrations);
 assert(registrations.some(item => item.name === "matrix.h3-resolution.halo.classic"));
 assert(registrations.some(item => item.name === "matrix.qwen-image-21-resolution.halo"));
+assert(registrations.some(item => item.name === "matrix.flux-3-klein-resolution.halo"));
 assert(registrations.some(item => item.name === "matrixlab.video-prompt"));
 const pairs = [
   ["MATRIX_SpectralSampler", "MATRIXSpectralSampler", "halo.execution"],
@@ -125,6 +126,22 @@ for (const [aspect_ratio, expected] of Object.entries(qwenTable)) {
 }
 assert.equal(qwen.applyQwenImage21Action({aspect_ratio: "9:16"}, "reset").aspect_ratio, "1:1");
 assert.throws(() => qwen.calculateQwenImage21Resolution({aspect_ratio: "21:9"}), /aspect_ratio/);
+const flux = modules.get(file("flux_3_klein_resolution_control_deck")).namespace;
+const fluxTables = {
+  "1K": {"1:1": [1024, 1024], "4:3": [1184, 880], "3:4": [880, 1184], "3:2": [1248, 832], "2:3": [832, 1248], "16:9": [1360, 768], "9:16": [768, 1360]},
+  "1.5K": {"1:1": [1536, 1536], "4:3": [1776, 1328], "3:4": [1328, 1776], "3:2": [1888, 1248], "2:3": [1248, 1888], "16:9": [2048, 1152], "9:16": [1152, 2048]},
+  "2K": {"1:1": [2048, 2048], "4:3": [2352, 1776], "3:4": [1776, 2352], "3:2": [2496, 1680], "2:3": [1680, 2496], "16:9": [2720, 1536], "9:16": [1536, 2720]},
+  "4K": {"1:1": [4096, 4096], "4:3": [4096, 3088], "3:4": [3088, 4096], "3:2": [4096, 2752], "2:3": [2752, 4096], "16:9": [4096, 2320], "9:16": [2320, 4096]},
+};
+assert.deepEqual({...flux.DEFAULT_STATE}, {aspect_ratio: "1:1", resolution: "1K"});
+for (const [resolution, rows] of Object.entries(fluxTables)) {
+  for (const [aspect_ratio, expected] of Object.entries(rows)) {
+    assert.deepEqual(Array.from(flux.calculateFlux3KleinResolution({aspect_ratio, resolution})), expected);
+  }
+}
+assert.deepEqual({...flux.applyFlux3KleinAction({aspect_ratio: "9:16", resolution: "4K"}, "reset")}, {aspect_ratio: "1:1", resolution: "1K"});
+assert.throws(() => flux.calculateFlux3KleinResolution({aspect_ratio: "21:9", resolution: "1K"}), /aspect_ratio/);
+assert.throws(() => flux.calculateFlux3KleinResolution({aspect_ratio: "1:1", resolution: "8K"}), /resolution/);
 for (const [relative, expected] of Object.entries(manifest.frontend_alias_compatibility.frontend_assets)) {
   const data = fs.readFileSync(path.join(root, relative));
   assert.equal(crypto.createHash("sha256").update(data).digest("hex"), expected);

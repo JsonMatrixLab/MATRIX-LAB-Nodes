@@ -1,8 +1,8 @@
 # Installation for people
 
-Install the exact authorized MATRIX LAB NODES package version 0.7.0.dev0 as one ComfyUI
-custom-node pack. Its `MANIFEST.json` must declare version `0.7.0.dev0` and the expected
-26 registered class IDs in seven category groups.
+Install the exact authorized MATRIX LAB NODES package version 0.8.0.dev0 as one ComfyUI
+custom-node pack. Its `MANIFEST.json` must declare version `0.8.0.dev0` and the expected
+27 registered class IDs in seven category groups.
 
 ## Before you begin
 
@@ -13,8 +13,9 @@ custom-node pack. Its `MANIFEST.json` must declare version `0.7.0.dev0` and the 
 - Close ComfyUI before changing custom nodes.
 - Check for the older `MATRIXLAB-Nodes` and `MATRIXLAB-UI-Nodes` split packs,
   `matrix-krea2-adapter`, a standalone Metadata Killer, and a standalone
-  `MATRIX_Wan3` installation, a standalone `MATRIX_QwenImage21Resolution`, or either
-  standalone `matrix-scail-window` or `matrix-scail-window-flat` pack. They cannot remain
+  `MATRIX_Wan3` installation, a standalone `MATRIX_QwenImage21Resolution`, a standalone
+  `MATRIX_Flux3KleinResolution`, or either standalone `matrix-scail-window` or
+  `matrix-scail-window-flat` pack. They cannot remain
   enabled beside this unified package because their registrations or frontend
   targeting overlap.
 - Preserve every existing pack before changing it. Disable or replace a conflicting
@@ -49,14 +50,15 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 
 1. Start ComfyUI through its normal launcher and inspect startup output for import errors.
 2. Open node search and find `MATRIX RESOLUTION`, `MATRIX QWEN IMAGE 2.1 RESOLUTION`,
-   `MATRIX SCAIL WINDOW ENGINE`, `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
-3. Compare the installed classes with `MANIFEST.json`. Require version `0.7.0.dev0`, 26
+   `MATRIX FLUX 3 KLEIN RESOLUTION`, `MATRIX SCAIL WINDOW ENGINE`,
+   `MATRIX PHOTO FINISHER`, and `MATRIX AUTO PROMPTER`.
+3. Compare the installed classes with `MANIFEST.json`. Require version `0.8.0.dev0`, 27
    unique registered class IDs, and seven `MATRIX LAB` category groups. The inventory
-   consists of 22 current nodes and four schema-compatible V1 aliases.
-4. Confirm all 26 IDs report the unified `matrix-lab-nodes` pack as their provider.
+   consists of 23 current nodes and four schema-compatible V1 aliases.
+4. Confirm all 27 IDs report the unified `matrix-lab-nodes` pack as their provider.
    Stop if any ID or frontend asset still resolves to `matrix-krea2-adapter`, an
-   older split pack, the standalone Metadata Killer, `matrix-scail-window`, or
-   `matrix-scail-window-flat`.
+   older split pack, the standalone Metadata Killer, `MATRIX_QwenImage21Resolution`,
+   `MATRIX_Flux3KleinResolution`, `matrix-scail-window`, or `matrix-scail-window-flat`.
 5. Open copies of an alias-ID workflow and a current-ID workflow. Confirm the green
    MATRIX controls appear for both IDs in each pair: Spectral Sampler, AI Influencer
    Resolution 2K/4K, Image Batch Loader, and Auto Prompter. Do not save or rewrite
@@ -64,7 +66,9 @@ Extract the release archive to a new folder named `matrix-lab-nodes` directly un
 6. Add `MATRIX_Resolution`, select `3:4` and `2K`, and confirm outputs of 1536 by 2048 without queueing a model workflow.
 7. Add `MATRIX_QwenImage21Resolution`, confirm the default is `1:1`, and confirm
    outputs of 2048 by 2048 without queueing a model workflow.
-8. Follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
+8. Add `MATRIX_Flux3KleinResolution`, confirm the defaults are `1:1` and `1K`, and
+   confirm outputs of 1024 by 1024 without queueing a model workflow.
+9. Follow [docs/migration.md](docs/migration.md) if ComfyUI reports missing retired or incompatible classes.
 
 This verification proves discovery and the local geometry path only. It does not prove every model, detector, sampler, GPU, or frontend renderer.
 
